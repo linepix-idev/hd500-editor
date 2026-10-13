@@ -100,7 +100,7 @@ function prepareDrag(e,it,el) {
     if(!g.started) {
       g.started=true; g.ghost=el.cloneNode(true); g.ghost.classList.add('drag-ghost'); g.ghost.removeAttribute('tabindex'); g.ghost.inert=true; g.ghost.setAttribute('aria-hidden','true');
       g.ghost.style.width=r.width+'px'; g.ghost.style.height=r.height+'px'; document.body.append(g.ghost);
-      g.gap=h('div',{class:'drop-gap',style:{width:r.width+'px'},'aria-hidden':'true'});
+      g.gap=h('div',{class:'drop-gap',style:{width:r.width+'px',height:r.height+'px'},'aria-hidden':'true'});
       el.before(g.gap); el.classList.add('drag-origin'); document.body.classList.add('chain-dragging');
       document.querySelector('#dragStatus').textContent='Moving block. Escape cancels.';
     }

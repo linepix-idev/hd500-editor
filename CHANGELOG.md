@@ -1,7 +1,13 @@
 # Changelog
 
 ## 0.2.6
-- "Based on …" for effect models too (e.g. Screamer → Ibanez Tube Screamer, Script Phase → MXR Phase 90), from Line 6's public POD HD Model Gallery; shown in picker, inspector, tooltips and search.
+- "Based on …" for effect models too (e.g. Screamer → Ibanez Tube Screamer, Script Phase → MXR Phase 90), from [Line 6's public POD HD Model Gallery](https://line6.com/data/6/0a06434c883751e6fd5654eee/application/pdf/POD%20HD%20Series%20Model%20Gallery%20-%20English%20%28%20Rev%20E%20%29.pdf); shown in picker, inspector, tooltips and search.
+
+- Shared on/off switch geometry with equal thumb insets, 44 px targets, accessible states, focus rings and reduced motion in both themes.
+- SF Pro typography stack, readable type scale, tabular numbers, wrapping model labels, consistent spacing, delayed tooltips and improved 900 px layouts.
+- Model Info sheets for amps, cabs, microphones and effects, with original gear metadata, reusable sound descriptions and parameter guides; explanatory text is searchable and translated into Portuguese.
+- Refined pedal enclosures, colors and controls, amp faceplates, speaker configurations and microphone silhouettes; regenerated gear reference sheet.
+- Expanded demo browser checks for model help, translations, switch endpoints and zoom; UI interaction tests now default to port 5231.
 
 ## 0.2.5
 - "Based on …" for every amp model (e.g. Mandarin 80 → Orange OR80), shown in the model picker, the inspector and tooltips; the model search also matches the original name (try "twin" or "orange").

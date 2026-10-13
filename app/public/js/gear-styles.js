@@ -2,24 +2,28 @@
 export const STY = {
  "pedals": {
   "Screamer": {
-   "color": "#3fae49",
+   "color": "#31934b",
    "body": "boss",
-   "knob": "white"
+   "knob": "black",
+   "controls": 3
   },
   "Tube Drive": {
-   "color": "#d6a24a",
-   "body": "boss",
-   "knob": "black"
+   "color": "#eee4cb",
+   "body": "rat",
+   "knob": "black",
+   "controls": 4
   },
   "Overdrive": {
    "color": "#f2c230",
-   "body": "boss",
-   "knob": "black"
+   "body": "mxr",
+   "knob": "black",
+   "controls": 2
   },
   "Classic Dist": {
-   "color": "#2b2b30",
-   "body": "mxr",
-   "knob": "white"
+   "color": "#202124",
+   "body": "rat",
+   "knob": "black",
+   "controls": 3
   },
   "Heavy Dist": {
    "color": "#1f1f23",
@@ -32,9 +36,11 @@ export const STY = {
    "knob": "black"
   },
   "Fuzz Pi": {
-   "color": "#3a3d44",
+   "color": "#d1d1cc",
    "body": "muff",
-   "knob": "chrome"
+   "knob": "black",
+   "controls": 3,
+   "stripe": "#ae2929"
   },
   "Facial Fuzz": {
    "color": "#d8453f",
@@ -42,9 +48,10 @@ export const STY = {
    "knob": "chrome"
   },
   "Jumbo Fuzz": {
-   "color": "#8a5a3a",
-   "body": "round",
-   "knob": "cream"
+   "color": "#8b8983",
+   "body": "tall",
+   "knob": "black",
+   "controls": 2
   },
   "Octave Fuzz": {
    "color": "#8e9299",
@@ -77,9 +84,10 @@ export const STY = {
    "knob": "white"
   },
   "Red Comp": {
-   "color": "#d8332f",
+   "color": "#c73c33",
    "body": "mxr",
-   "knob": "white"
+   "knob": "white",
+   "controls": 2
   },
   "Blue Comp": {
    "color": "#3b78d8",
@@ -132,9 +140,11 @@ export const STY = {
    "knob": "black"
   },
   "Script Phase": {
-   "color": "#f4a53f",
+   "color": "#ed7b21",
    "body": "mxr",
-   "knob": "black"
+   "knob": "black",
+   "controls": 1,
+   "script": true
   },
   "Analog Chorus": {
    "color": "#6cc3ea",
@@ -197,12 +207,12 @@ export const STY = {
    "knob": "cream"
   },
   "Tape Echo": {
-   "color": "#9aa0a6",
+   "color": "#4a392a",
    "body": "echo",
    "knob": "black"
   },
   "Tube Echo": {
-   "color": "#2a2a2e",
+   "color": "#b79b72",
    "body": "echo",
    "knob": "cream"
   },
@@ -432,12 +442,12 @@ export const STY = {
    "knob": "black"
   },
   "Tube Echo Dry": {
-   "color": "#34343a",
+   "color": "#b79b72",
    "body": "echo",
    "knob": "cream"
   },
   "Tape Echo Dry": {
-   "color": "#aab0b6",
+   "color": "#4a392a",
    "body": "echo",
    "knob": "black"
   },
@@ -575,7 +585,8 @@ export const STY = {
    "trim": "#8c6a3a",
    "layout": "combo",
    "grilleType": "tweed",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 6
   },
   "Blackface ‘Lux": {
    "tolex": "#1c1d21",
@@ -584,7 +595,8 @@ export const STY = {
    "trim": "#8a8e95",
    "layout": "combo",
    "grilleType": "silver",
-   "knob": "black"
+   "knob": "black",
+   "controls": 6
   },
   "Blackface Double": {
    "tolex": "#1a1b1f",
@@ -593,7 +605,8 @@ export const STY = {
    "trim": "#8a8e95",
    "layout": "combo",
    "grilleType": "silver",
-   "knob": "black"
+   "knob": "black",
+   "controls": 6
   },
   "Hiway 100": {
    "tolex": "#202226",
@@ -602,7 +615,8 @@ export const STY = {
    "trim": "#c9a14a",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 7
   },
   "Brit J-45": {
    "tolex": "#1b1c20",
@@ -611,7 +625,8 @@ export const STY = {
    "trim": "#e9e4d6",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 6
   },
   "Brit J-800": {
    "tolex": "#18191c",
@@ -620,7 +635,8 @@ export const STY = {
    "trim": "#e9e4d6",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Brit P-75": {
    "tolex": "#2a2018",
@@ -629,7 +645,8 @@ export const STY = {
    "trim": "#c9a14a",
    "layout": "head",
    "grilleType": "none",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 7
   },
   "Plexi Lead 100": {
    "tolex": "#17181b",
@@ -638,16 +655,18 @@ export const STY = {
    "trim": "#f1e7c9",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 6
   },
   "Treadplate": {
    "tolex": "#202226",
-   "grille": "#16171a",
-   "panel": "#9ea3ab",
+   "grille": "#a6a9af",
+   "panel": "#24262a",
    "trim": "#c9ced6",
-   "layout": "combo",
+   "layout": "metalHead",
    "grilleType": "diamond-plate",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 6
   },
   "Class A-15": {
    "tolex": "#7a4a2a",
@@ -656,7 +675,8 @@ export const STY = {
    "trim": "#c9ad7a",
    "layout": "combo",
    "grilleType": "diamond",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 4
   },
   "Class A-30 TB": {
    "tolex": "#6a3f23",
@@ -665,7 +685,8 @@ export const STY = {
    "trim": "#d1b988",
    "layout": "combo",
    "grilleType": "diamond",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 4
   },
   "Super O": {
    "tolex": "#b6482e",
@@ -674,7 +695,8 @@ export const STY = {
    "trim": "#d9cfa8",
    "layout": "combo",
    "grilleType": "diamond",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 4
   },
   "Divide 9/15": {
    "tolex": "#3b2f26",
@@ -683,7 +705,8 @@ export const STY = {
    "trim": "#8c7550",
    "layout": "combo",
    "grilleType": "tweed",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 6
   },
   "Gibtone 185": {
    "tolex": "#5a3b27",
@@ -692,7 +715,8 @@ export const STY = {
    "trim": "#8c7550",
    "layout": "combo",
    "grilleType": "tweed",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 4
   },
   "Flip Top": {
    "tolex": "#202226",
@@ -701,7 +725,8 @@ export const STY = {
    "trim": "#9aa0a8",
    "layout": "combo",
    "grilleType": "basket",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 6
   },
   "Solo 100": {
    "tolex": "#18191c",
@@ -710,7 +735,8 @@ export const STY = {
    "trim": "#d7dae0",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Bomber Uber": {
    "tolex": "#17181b",
@@ -719,7 +745,8 @@ export const STY = {
    "trim": "#c0c4cc",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 7
   },
   "Angel F-Ball": {
    "tolex": "#1a1214",
@@ -728,7 +755,8 @@ export const STY = {
    "trim": "#c0c4cc",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "phD Motorway": {
    "tolex": "#232529",
@@ -737,7 +765,8 @@ export const STY = {
    "trim": "#8a8e95",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 7
   },
   "Line 6 Elektrik": {
    "tolex": "#202226",
@@ -746,7 +775,8 @@ export const STY = {
    "trim": "#d9482b",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Line 6 Doom": {
    "tolex": "#141416",
@@ -755,7 +785,8 @@ export const STY = {
    "trim": "#d9482b",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Line 6 Epic": {
    "tolex": "#17181b",
@@ -764,7 +795,8 @@ export const STY = {
    "trim": "#3b78d8",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Mandarin 80": {
    "tolex": "#e8731f",
@@ -773,7 +805,8 @@ export const STY = {
    "trim": "#f4d9a8",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 7
   },
   "PV Panama": {
    "tolex": "#17181b",
@@ -782,7 +815,8 @@ export const STY = {
    "trim": "#d8332f",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Mahadeva": {
    "tolex": "#1d1e22",
@@ -791,7 +825,8 @@ export const STY = {
    "trim": "#c9ced6",
    "layout": "combo",
    "grilleType": "basket",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 6
   },
   "Brit 2204": {
    "tolex": "#17181b",
@@ -800,7 +835,8 @@ export const STY = {
    "trim": "#f1e7c9",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Octone": {
    "tolex": "#15161a",
@@ -809,7 +845,8 @@ export const STY = {
    "trim": "#3fc5e0",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Insane": {
    "tolex": "#15161a",
@@ -818,7 +855,8 @@ export const STY = {
    "trim": "#d8332f",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Big Bottom": {
    "tolex": "#1a1b1e",
@@ -827,7 +865,8 @@ export const STY = {
    "trim": "#8a8e95",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 7
   },
   "Variac'ed Plexi": {
    "tolex": "#1a1814",
@@ -836,7 +875,8 @@ export const STY = {
    "trim": "#e6d9ae",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 6
   },
   "Purge": {
    "tolex": "#14161a",
@@ -845,7 +885,8 @@ export const STY = {
    "trim": "#46d18b",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Aggro": {
    "tolex": "#18141a",
@@ -854,7 +895,8 @@ export const STY = {
    "trim": "#b05fd0",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   },
   "Smash": {
    "tolex": "#1c1814",
@@ -863,7 +905,8 @@ export const STY = {
    "trim": "#e0a040",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 7
   },
   "Small Tweed": {
    "tolex": "#d9c394",
@@ -872,7 +915,8 @@ export const STY = {
    "trim": "#8c6a3a",
    "layout": "combo",
    "grilleType": "tweed",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 2
   },
   "Jazz Rivet": {
    "tolex": "#d9dadd",
@@ -881,7 +925,8 @@ export const STY = {
    "trim": "#8a8e95",
    "layout": "combo",
    "grilleType": "basket",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 6
   },
   "A30 Fawn": {
    "tolex": "#b79a6a",
@@ -890,7 +935,8 @@ export const STY = {
    "trim": "#d1b988",
    "layout": "combo",
    "grilleType": "diamond",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 4
   },
   "Black Panel Pete": {
    "tolex": "#18191c",
@@ -899,7 +945,8 @@ export const STY = {
    "trim": "#8a8e95",
    "layout": "combo",
    "grilleType": "silver",
-   "knob": "black"
+   "knob": "black",
+   "controls": 6
   },
   "Acoustic": {
    "tolex": "#c9a878",
@@ -908,7 +955,8 @@ export const STY = {
    "trim": "#6a4a2a",
    "layout": "combo",
    "grilleType": "basket",
-   "knob": "cream"
+   "knob": "cream",
+   "controls": 6
   },
   "SVT": {
    "tolex": "#1b1c20",
@@ -917,7 +965,8 @@ export const STY = {
    "trim": "#9aa0a8",
    "layout": "head",
    "grilleType": "none",
-   "knob": "chrome"
+   "knob": "chrome",
+   "controls": 7
   },
   "G Cougar 800": {
    "tolex": "#17181b",
@@ -926,7 +975,8 @@ export const STY = {
    "trim": "#e0a02a",
    "layout": "head",
    "grilleType": "none",
-   "knob": "black"
+   "knob": "black",
+   "controls": 7
   }
  }
 };

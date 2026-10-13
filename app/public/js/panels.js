@@ -56,7 +56,7 @@ export function renderMixer(root) {
   };
   const trails = h('button', { class: 'switch', role: 'switch', 'aria-checked': String(p.trails), 'aria-label': 'Trails', onClick: () => {
     p.trails = !p.trails; trails.setAttribute('aria-checked', String(p.trails)); edit('setup', { id: 0x38, value: p.trails ? 1 : 0 }).catch(fail);
-  } }, h('i'));
+  } });
   root.replaceChildren(
     h('div', { class: 'mx' }, path('A'), path('B')),
     h('div', { class: 'row mx-trails' }, h('div', {}, h('b', {}, 'Trails'), h('p', { class: 'dim', style: { margin: '2px 0 0', fontSize: '12px' } }, 'Delay and reverb tails keep ringing after the effect is turned off.')), trails),

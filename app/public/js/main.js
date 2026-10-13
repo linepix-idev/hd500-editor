@@ -1,11 +1,13 @@
 import { lang, langs, setLang, tr } from './i18n.js';
-import { h, api, fail, toast, $, modal, menu, download, pickFile, bytesToB64, b64ToBytes } from './util.js';
+import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, bytesToB64, b64ToBytes } from './util.js';
 import { S, onChange, notify, presetLabel, GROUP_CLASS } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
 import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown } from './panels.js';
 import { selectSlot } from './nav.js';
 import { icon, buttonIcon, categoryIcon } from './icons.js';
+
+initTooltips();
 
 const TABS = { setup: renderSetup, mixer: renderMixer, controllers: renderControllers, fs: renderFootswitches, advanced: renderAdvanced };
 let lastPreset = null, saving = false;

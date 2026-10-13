@@ -4,7 +4,10 @@ e gera app/public/js/i18n-pt.js (tabela inglês -> português usada em tempo de 
 import json, re, glob, sys, os
 root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 pairs = json.load(open(f'{root}/tools/i18n/pairs.json'))
-files = glob.glob(f'{root}/app/public/js/*.js') + [f'{root}/app/public/index.html', f'{root}/app/server.mjs'] + glob.glob(f'{root}/core/*.mjs')
+files = glob.glob(f'{root}/app/public/js/*.js') + [f'{root}/app/public/index.html', f'{root}/app/server.mjs']
+# UI generation must not rewrite protocol/preset source as a side effect.
+# Core translation is a separate, explicitly requested maintenance operation.
+if '--include-core' in sys.argv: files += glob.glob(f'{root}/core/*.mjs')
 files = [f for f in files if not f.endswith('i18n-pt.js') and not f.endswith('i18n.js')]
 def esc(s, q): return s.replace('\\', '\\\\').replace(q, '\\' + q)
 count = 0

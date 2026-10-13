@@ -89,3 +89,40 @@ export function pickFile(accept) {
     inp.onchange = () => res(inp.files[0] ?? null); inp.click();
   });
 }
+
+/** Delayed, keyboard-accessible tooltips. Native titles are restored on dismissal. */
+export function initTooltips() {
+  let owner, tip, timer, title, describedBy;
+  const clear = () => {
+    clearTimeout(timer); tip?.remove(); tip = null;
+    if (owner) {
+      if (title) owner.setAttribute('title', title);
+      if (describedBy) owner.setAttribute('aria-describedby', describedBy);
+      else owner.removeAttribute('aria-describedby');
+    }
+    owner = null;
+  };
+  const schedule = e => {
+    const target = e.target.closest?.('[title]');
+    if (!target || !target.getAttribute('title') || e.type === 'pointerover' && e.pointerType === 'touch') return;
+    if (target === owner) return;
+    clear(); owner = target; title = target.getAttribute('title'); describedBy = target.getAttribute('aria-describedby');
+    target.removeAttribute('title');
+    timer = setTimeout(() => {
+      if (!target.isConnected) return clear();
+      tip = h('div', { class: 'tooltip', id: 'hd500-tooltip', role: 'tooltip' }, title);
+      document.body.append(tip); target.setAttribute('aria-describedby', [describedBy, tip.id].filter(Boolean).join(' '));
+      const r = target.getBoundingClientRect(), t = tip.getBoundingClientRect();
+      tip.style.left = Math.max(8, Math.min(r.left + r.width/2 - t.width/2, innerWidth-t.width-8))+'px';
+      tip.style.top = (r.bottom+t.height+16 <= innerHeight ? r.bottom+8 : Math.max(8,r.top-t.height-8))+'px';
+    }, 500);
+  };
+  document.addEventListener('pointerover', schedule);
+  document.addEventListener('focusin', schedule);
+  document.addEventListener('pointerout', e => { if(owner?.contains(e.target) && !owner.contains(e.relatedTarget)) clear(); });
+  document.addEventListener('focusout', clear);
+  document.addEventListener('pointerdown', clear);
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') clear(); }, true);
+  addEventListener('scroll', clear, true);
+  addEventListener('resize', clear);
+}

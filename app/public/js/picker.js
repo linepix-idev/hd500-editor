@@ -1,31 +1,46 @@
+import { modelSearchText, micModels } from './descriptions.js';
+import { infoButton, showModelInfo } from './model-info.js';
+import { micEl } from './gear.js';
+import { tr } from './i18n.js';
 import { gearEl } from './gear-spec.js';
 import { h, api, fail, modal, toast } from './util.js';
 import { S, GROUP_CLASS, presetLabel } from './store.js';
 import { icon, categoryIcon } from './icons.js';
 
 /** Escolha de modelo (amp, cab ou efeito) para um bloco. */
-export function pickModel(item) {
-  const list = item.kind === 'amp' ? S.cat.amps : item.kind === 'cab' ? S.cat.cabs : S.cat.pedals;
+export function pickModel(item, state = {}) {
+  const models = item.kind === 'amp' ? S.cat.amps : item.kind === 'cab' ? S.cat.cabs : S.cat.pedals;
   const q = h('input', { type: 'search', placeholder: 'Search model…', 'aria-label': 'Search model' });
   const grid = h('div', { class: 'models' }), chips = h('div', { class: 'category-chips', role: 'group', 'aria-label': 'Model categories' });
-  const groups = [...new Set(list.map(m => m.group ?? (item.kind === 'amp' ? 'Amps' : 'Cabs')))];
-  let close, category = null;
+  q.value = state.search ?? '';
+  const groups = [...new Set(models.map(m => m.group ?? (item.kind === 'amp' ? 'Amps' : 'Cabs')))];
+  let close, category = state.category ?? null, microphones = state.microphones ?? false;
+  const back = () => pickModel(item, { search: q.value, category, microphones });
+  const micToggle = item.kind === 'cab' ? h('button', { 'aria-pressed': String(microphones), onClick: () => { microphones = !microphones; category = null; micToggle.setAttribute('aria-pressed', String(microphones)); draw(); } }, 'Microphones') : null;
   const draw = () => {
     const term = q.value.trim().toLowerCase(), matches = new Map();
-    for (const m of list) {
-      const group=m.group ?? (item.kind==='amp'?'Amps':'Cabs');
+    for (const m of microphones ? micModels : models) {
+      const group=m.group ?? (microphones ? 'Microphones' : item.kind==='amp'?'Amps':'Cabs');
       if(category && group!==category) continue;
-      if(term && !m.name.toLowerCase().includes(term) && !(m.basedOn??'').toLowerCase().includes(term) && !group.toLowerCase().includes(term)) continue;
+      if(term && ![modelSearchText({...m, kind: microphones ? 'mic' : item.kind}), modelSearchText({...m, kind: microphones ? 'mic' : item.kind}, tr), group].join(' ').toLowerCase().includes(term)) continue;
       (matches.get(group) ?? matches.set(group,[]).get(group)).push(m);
     }
-    chips.replaceChildren(...[null,...groups].map(g=>h('button',{class:g ? `${item.kind} ${GROUP_CLASS(g)}` : '', 'aria-pressed':String(category===g),onClick:()=>{category=g;draw();chips.children[[null,...groups].indexOf(g)]?.focus();}},g?icon(categoryIcon({kind:item.kind,group:g})):icon('colors'),g??'All')));
+    chips.replaceChildren(...[null,...(microphones ? [] : groups)].map(g=>h('button',{class:g ? `${item.kind} ${GROUP_CLASS(g)}` : '', 'aria-pressed':String(category===g),onClick:()=>{category=g;draw();chips.children[[null,...groups].indexOf(g)]?.focus();}},g?icon(categoryIcon({kind:item.kind,group:g})):icon('colors'),g??'All')));
     grid.replaceChildren(...[...matches].flatMap(([g,ms])=>[
-      h('h4',{class:GROUP_CLASS(g)},g),...ms.map(m=>h('button',{class:`${item.kind} ${GROUP_CLASS(m.group)} ${m.type===item.type?'cur':''}`,onClick:()=>{close();api('edit',{op:'model',item:item.id,type:m.type}).then(()=>autoController(item.id,m.group)).catch(fail);}},gearEl({kind:item.kind,name:m.name,group:m.group,paramCount:m.params?.length}),h('span',{class:'model-text'},m.name,m.basedOn?h('small',{class:'based-on'},m.basedOn):null)))
+      h('h4',{class:GROUP_CLASS(g)},g), ...ms.map(m => {
+        const model = {...m, kind: microphones ? 'mic' : item.kind};
+        return h('div', { class: 'model-card' },
+          h('button', { class: `model-choice ${item.kind} ${GROUP_CLASS(m.group)} ${m.type===item.type?'cur':''}`,
+            onClick: () => { if(microphones) return showModelInfo(model, {onBack: back}); close(); api('edit',{op:'model',item:item.id,type:m.type}).then(()=>autoController(item.id,m.group)).catch(fail); } },
+            microphones ? micEl(m.name) : gearEl({ ...model, paramCount: m.params?.length }),
+            h('span',{class:'model-text'},m.name,m.basedOn?h('small',{class:'based-on'},tr(`Based on ${m.basedOn}`)):null)),
+          infoButton(model, { onBack: back }));
+      })
     ]));
     if(!matches.size)grid.append(h('p',{class:'placeholder'},'No models found.'));
   };
   q.addEventListener('input', draw); draw();
-  close = modal(`Model — ${item.kind === 'amp' ? 'Amp' : item.kind === 'cab' ? 'Cab' : 'Effect'}`, [q, chips, grid]);
+  close = modal(`Model — ${item.kind === 'amp' ? 'Amp' : item.kind === 'cab' ? 'Cab' : 'Effect'}`, [q, micToggle, chips, grid]);
   q.focus();
 }
 

@@ -12,10 +12,10 @@ try {
   await shot('t1-home');
   for (const tab of ['fs', 'advanced', 'setup']) { await page.click(`[data-tab="${tab}"]`); await wait(150); await shot('t2-' + tab); }
   await page.click('.block[data-item="4"] .nm'); await shot('t3-select');
-  await page.click('#inspector .model-title'); await page.waitForSelector('.models button'); await shot('t4-picker');
+  await page.click('#inspector .model-title'); await page.waitForSelector('.models .model-choice'); await shot('t4-picker');
   assert.equal(await page.$eval('.dlg', e => e.getAttribute('aria-modal')), 'true');
   await page.type('.dlg input[type="search"]', 'no-model-with-this-name');
-  assert.equal(await page.$$eval('.models button', n => n.length), 0);
+  assert.equal(await page.$$eval('.models .model-choice', n => n.length), 0);
   await page.keyboard.press('Escape');
   await page.click('.block[data-item="0"]'); await shot('t5-amp');
   await page.click('.block[data-item="1"]'); await shot('t6-cab');

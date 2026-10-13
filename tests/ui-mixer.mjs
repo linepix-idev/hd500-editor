@@ -1,9 +1,9 @@
 // Painel do Mixer (modo demo): faders, pan, mute e trails chegam ao pedal simulado.
-import puppeteer from 'puppeteer-core';
+import { launchUI } from './browser.mjs';
 const port = process.argv[2] ?? 5231, base = `http://127.0.0.1:${port}`;
 const api = async p => (await fetch(`${base}/api/${p}`)).json();
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const b = await puppeteer.launch({ executablePath: process.env.CHROME ?? '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--disable-gpu'], defaultViewport: { width: 1440, height: 900 } });
+const b = await launchUI({ width: 1440, height: 900 });
 const p = await b.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
 await p.evaluateOnNewDocument(() => localStorage.setItem('hd500.lang', 'en'));
 await p.goto(base, { waitUntil: 'networkidle2' }); await p.waitForSelector('.block');

@@ -1,10 +1,10 @@
 // Arrastar nós com o ponteiro (modo demo; não toca no pedal): mover entre faixas e cancelar com Esc.
 //   HD500_DEMO=1 PORT=5231 node app/server.mjs   e depois   node tests/ui-drag.mjs [porta]
-import puppeteer from 'puppeteer-core';
+import { launchUI } from './browser.mjs';
 const port = process.argv[2] ?? 5231, base = `http://127.0.0.1:${port}`;
 const api = async (p, b) => (await fetch(`${base}/api/${p}`, b ? { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1' }, body: JSON.stringify(b) } : {})).json();
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const browser = await puppeteer.launch({ executablePath: process.env.CHROME ?? '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--disable-gpu'], defaultViewport: { width: 1440, height: 900 } });
+const browser = await launchUI({ width: 1440, height: 900 });
 const page = await browser.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
 await page.evaluateOnNewDocument(() => localStorage.setItem('hd500.lang', 'en'));
 await page.goto(base, { waitUntil: 'networkidle2' }); await page.waitForSelector('.block'); await wait(800);

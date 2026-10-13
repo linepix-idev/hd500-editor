@@ -1,15 +1,18 @@
-// Interações reais: knob por teclado, bypass e desfazer — confere no pedal pela API e restaura o estado.
-import puppeteer from 'puppeteer-core';
-const api = async (p, b) => (await fetch('http://127.0.0.1:5230/api/' + p, b ? { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1' }, body: JSON.stringify(b) } : {})).json();
-const browser = await puppeteer.launch({ executablePath: process.env.CHROME ?? '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--disable-gpu'], defaultViewport: { width: 1500, height: 1000 } });
+// Keyboard, bypass and paste checks against the demo server on port 5231.
+import { launchUI, UI_URL } from './browser.mjs';
+const api = async (p, b) => (await fetch(UI_URL + '/api/' + p, b ? { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1' }, body: JSON.stringify(b) } : {})).json();
+const browser = await launchUI({ width: 1500, height: 1000 });
 const page = await browser.newPage();
 await page.evaluateOnNewDocument(() => { localStorage.setItem('hd500.lang', 'en'); });
  const errs = []; page.on('pageerror', e => errs.push(e.message));
-await page.goto('http://127.0.0.1:5230/', { waitUntil: 'networkidle2' }); await page.waitForSelector('.block');
+await page.goto(UI_URL, { waitUntil: 'networkidle2' }); await page.waitForSelector('.block');
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const val = async () => (await api('state')).preset.items.find(i => i.id === 0).params[0].value;
 let ok = true; const check = (name, cond) => { console.log(cond ? '✔' : '✖', name); ok &&= cond; };
 
+// The default demo preset has no amp; install a model for the knob interaction.
+const initial = await api('state'), cat = await api('catalog');
+await api('edit', { op: 'model', item: 0, type: cat.amps.find(m => m.name === 'Blackface Double Normal').type }); await wait(500);
 const v0 = await val();
 await page.click('.block[data-item="0"] .nm'); await page.evaluate(() => document.querySelector('#inspector .knob svg').focus());
 for (let i = 0; i < 3; i++) await page.keyboard.press('ArrowUp');           // +0,05 cada
@@ -34,7 +37,8 @@ await page.click('.block[data-item="5"]', { button: 'right' }); check('menu: col
 await wait(2500);
 const after = (await api('state')).preset.items.find(i => i.id === 5);
 check(`colar traz o modelo e os valores (${after.model})`, after.type === t4.type && Math.abs(after.params[0].value - t4.params[0].value) < 0.01);
-await api('select', { set: st.selection.set, preset: st.selection.preset });
+await api('select', st.selection); await wait(500);
 check('slot recarregado, bloco 5 como antes', (await api('state')).preset.items.find(i => i.id === 5).type === t5.type);
+await api('select', initial.selection);
 check('sem erros na página', errs.length === 0);
 await browser.close(); process.exit(ok ? 0 : 1);

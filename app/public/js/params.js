@@ -1,3 +1,4 @@
+import { infoButton } from './model-info.js';
 import { h, api, fail, throttle, menu } from './util.js';
 import { Knob } from './knob.js';
 import { S } from './store.js';
@@ -40,10 +41,10 @@ function ctlMenu(item, p) {
 /** Controle de um parâmetro: knob, ou lista suspensa para parâmetros de opções. */
 export function ParamControl(item, p, color) {
   if (p.kind === 'list' && p.options) {
-    const sel = h('select', { 'aria-label': p.name, onChange: () => send(item, p, Number(sel.value)) }, p.options.map((o, i) => h('option', { value: i }, o)));
+    const sel = h('select', { 'aria-label': /Microfone/.test(p.name) ? 'Microphone' : p.name, onChange: () => { send(item, p, Number(sel.value)); if (/Mic|Microfone/.test(p.name)) el.querySelector('.model-info-button')?.replaceWith(infoButton({ kind: 'mic', name: p.options[Number(sel.value)] })); } }, p.options.map((o, i) => h('option', { value: i }, o)));
     sel.value = Math.round(p.value);
-    const el = h('div', { class: 'knob listp', dataset: { pid: p.id, idx: p.index } }, sel, h('div', { class: 'lab' }, p.name));
-    el.update = v => { sel.value = Math.round(v); };
+    const el = h('div', { class: 'knob listp', dataset: { pid: p.id, idx: p.index } }, sel, h('div', { class: 'lab' }, /Microfone/.test(p.name) ? 'Microphone' : p.name), /Mic|Microfone/.test(p.name) ? infoButton({ kind: 'mic', name: p.options[Math.round(p.value)] }) : null);
+    el.update = v => { sel.value = Math.round(v); if (/Mic|Microfone/.test(p.name)) el.querySelector('.model-info-button')?.replaceWith(infoButton({ kind: 'mic', name: p.options[Math.round(v)] })); };
     return el;
   }
   const badge = p.ctl ? (S.cat.ctl[p.ctl] ?? 'C').replace('EXP ', 'E') : null;

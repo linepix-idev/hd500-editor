@@ -1,0 +1,20 @@
+// Generate a local SVG reference sheet from the same illustrations used by the UI.
+import { readFileSync, writeFileSync } from 'node:fs';
+import { gearIcon, micIcon } from '../app/public/js/gear.js';
+import { micModels } from '../app/public/js/descriptions.js';
+const cat = JSON.parse(readFileSync(new URL('../catalog/catalog.json', import.meta.url)));
+const extra = JSON.parse(readFileSync(new URL('../catalog/extra-models.json', import.meta.url)));
+for (const key of ['amps','cabs']) cat[key] = [...new Map([...cat[key],...(extra[key] ?? [])].map(m=>[m.type,m])).values()];
+const all = [...cat.pedals.map(m=>({...m,kind:'fx'})), ...cat.amps.map(m=>({...m,kind:'amp'})), ...cat.cabs.map(m=>({...m,kind:'cab'})), ...micModels];
+const featured = ['Screamer','Script Phase','Fuzz Pi','Classic Dist','Tube Drive','Tape Echo','Blackface Double Normal','Plexi Lead 100 Normal','Class A-30 TB','Treadplate','112 Blue Bell','212 Silver Bell','412 Tread V-30','810 SV Beast','57 On XS','4038 Rbn','121 Rbn','87 Cond'];
+const models = process.argv.includes('--featured') ? featured.map(n=>all.find(m=>m.name===n)).filter(Boolean) : all;
+const cols=6, cellW=170, cellH=132, width=cols*cellW, height=Math.ceil(models.length/cols)*cellH;
+const escape = s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const labelLines = name => { const words=name.split(' '), lines=['']; for(const word of words) { if((lines.at(-1)+' '+word).trim().length>27) lines.push(word); else lines[lines.length-1]=(lines.at(-1)+' '+word).trim(); } return lines; };
+const cells=models.map((m,i)=>{ const x=(i%cols)*cellW, y=Math.floor(i/cols)*cellH;
+ const art=m.kind==='mic'?micIcon(m.name):gearIcon({...m,paramCount:m.params?.length});
+ return `<g transform="translate(${x},${y})"><rect x="4" y="4" width="162" height="124" rx="12" fill="#303744"/>${art.replace('<svg ', '<svg x="49" y="10" ')}<text x="85" y="90" text-anchor="middle" fill="#f0f2f6" font-family="sans-serif" font-size="11">${labelLines(m.name).map((line,i)=>`<tspan x="85" dy="${i ? 14 : 0}">${escape(line)}</tspan>`).join('')}</text><text x="85" y="120" text-anchor="middle" fill="#b1b9c9" font-family="sans-serif" font-size="11">${escape(m.group??m.kind)}</text></g>`;
+}).join('');
+const out=process.argv.find(s=>s.endsWith('.svg')) ?? 'docs/img/gear-sheet.svg';
+writeFileSync(out, `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="#171b23"/>${cells}</svg>`);
+console.log(`${models.length} models: ${out}`);

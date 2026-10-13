@@ -1,6 +1,6 @@
 # Liquid Glass UI
 
-The source UI remains plain, local ES modules. No bundler, font, icon package, CDN, external image, API change or core change is required. The working branch is `codex/liquid-glass-ui`; changes are uncommitted.
+The source UI remains plain, local ES modules. No bundler, font, icon package, CDN, external image, API change or core change is required. Changes remain uncommitted in the working tree. Core and protocol files are unchanged.
 
 ## Design decisions
 
@@ -65,22 +65,47 @@ Category class names normalize spaces and punctuation, so FX Loop, Preamp+EQ and
 | Double-click preset name, or Enter on its button | Rename inline; Enter commits, Escape cancels |
 | ? | Help |
 
+## 0.2.6 refinements
+
+On/off buttons share one track and one pseudo-element thumb. The inspector and Trails track is 48 × 28 px with a 22 px thumb and 3 px inset; the chain track is 36 × 20 px with a 16 px thumb and 2 px inset. Travel is calculated from track width, thumb size and both insets. The transparent hit area is at least 44 × 44 px. State comes from `aria-checked`, with slate off and green on colors, visible keyboard focus and motion preferences. Footswitch tiles keep their pressed-button semantics because one tile may invert several blocks independently. Controller assignment remains a three-way choice (Off / EXP 1 / EXP 2).
+
+The text stack is `-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", Inter, system-ui, "Segoe UI", Roboto, sans-serif`; large headings prefer SF Pro Display. CSS tokens define 11 px captions, 12 px supporting text, 14 px body text, 20 px titles and 28 px large titles. Numeric controls use tabular figures. Model and parameter labels wrap, chain nodes have more room, and layout becomes a single column at 900 px. Content spacing uses 4 / 8 / 12 / 16 / 24 px tokens. Controls, range inputs and icon buttons have larger touch areas. Tooltips wait 500 ms, support focus and dismiss on scrolling or Escape. Scrollbars follow the theme.
+
+An Info button beside each picker model and in the inspector opens a read-only sheet with a larger gear illustration, name, group, available “Based on” metadata, sound/use description and parameter explanations. Back to models preserves the search and category. Cab sheets and cab pickers offer all eight microphones; the cab microphone parameter has an Info button for the current choice. Help navigation never changes the model or parameter values. Original gear names are shown where supplied by `amp-origins.json` and `fx-origins.json`; cab and mic entries explicitly say that original gear is not specified, rather than inventing an attribution.
+
+`catalog/descriptions.json` holds original wording by effect group, amp family, cabinet configuration, microphone type and parameter name. It covers all 229 merged catalog models and every catalog parameter; unknown future parameters receive a generic explanation. Search matches descriptions and parameter guides in English and Portuguese. `tools/gen-descriptions.mjs` generates an offline ES module, and `tools/i18n/pairs.json` supplies Portuguese. The i18n generator excludes `core/` by default; `--include-core` is reserved for explicit core maintenance. The legacy core microphone label is normalized for display in the UI.
+
+Gear illustrations now use original control counts, a single Big Muff footswitch, a wide Rat enclosure, a green Screamer with a rubber pad, an orange script-style Phase 90, tape reels for Echoplex models, a metal-front Rectifier head, family-specific amp controls, speaker layouts including 1×8 and 8×10, and distinct ribbon/condenser silhouettes. This is original SVG artwork; no manufacturer logos or manual illustrations are copied. Origins were checked against the public [Line 6 POD HD Model Gallery](https://line6.com/data/6/0a06434c883751e6fd5654eee/application/pdf/POD%20HD%20Series%20Model%20Gallery%20-%20English%20%28%20Rev%20E%20%29.pdf).
+
+The regenerated [complete gear sheet](img/gear-sheet.svg) includes 237 illustrations (catalog plus microphones). The [featured gear sheet](img/gear-featured.png) was rasterized with local librsvg/Cairo and visually inspected. That review prompted enclosure, switch-pad, faceplate and microphone refinements. This is an artwork review, not a browser screenshot.
+
 ## Verification and pending work
 
-Syntax checks of all UI ES modules passed. A lightweight DOM initialization review also exercised module startup, graph construction, 64 sidebar slots, bank groups, SVG wires, knobs, footswitch rendering, model search, the legend and cached cross-set search. A simulated pointer review additionally checked Escape without an edit, cross-lane order with eight slots, moving an empty slot, trash and footswitch API bodies. These were logic reviews, not browser, geometry or touch tests. `python3 tools/i18n/apply.py` completed, and the core test suite passed. `npm test` was attempted: its security tests could not listen on localhost (`listen EPERM`) in this sandbox. This is an environment block; the server and security suite were not changed to hide it.
+Passed: syntax checks of every UI and test ES module; catalog description coverage for all 229 models; named parameter coverage including extra cab parameters; Portuguese coverage of descriptions and guides; generated description-module equality with JSON; attached Screamer origin; i18n generation; SVG XML parsing; and `git diff --check`. Direct core tests pass six tests and skip the optional real `.h5e` fixture. No hardware integration tests were run, and `core/` has no diff.
 
-The mandatory visual loop is **pending**, not certified. Starting `HD500_DEMO=1 PORT=5231 node app/server.mjs` failed with `listen EPERM`. Chrome also exited before CDP initialization: its crash handler reports `setsockopt: Operation not permitted`, and Puppeteer reports `Target closed`. Consequently no new screenshots were captured or inspected, `docs/img` still contains the previous captures, and `/tmp/hd500-ui/contact.png` has not been generated. The smoke and screenshot commands were attempted and failed at browser launch. The pointer test was attempted and failed with `connect EPERM` while reaching the demo server. Final material quality, actual AA contrast, hover/focus/drag appearance, responsive geometry and touch behavior still require real Chrome verification.
+`HD500_DEMO=1 PORT=5231 npm test` was attempted. The two security tests cannot bind localhost (`listen EPERM`), so the full suite is **not green in this environment**. Starting the demo server on 5231 fails for the same reason. All eight `tests/ui-*.mjs` scripts were attempted with demo mode enabled: seven fail when Chrome closes before page initialization (`TargetCloseError`), and the pointer test fails fetching the demo state (`connect EPERM`). `tests/screenshots.mjs` also fails at Chrome launch. These are environment failures; security tests were not weakened or skipped.
 
-Prepared checks (run only with the simulated server):
+No new browser captures were produced. Existing editor screenshots in `docs/img` remain previous captures; only the gear sheets are new. Browser geometry, focus/hover/pressed states, touch and drag behavior, full contrast AA, and clipping at zoom still need visual certification. In particular, enlarged targets and wrapping labels must be checked at 900 px and on the smaller drawer layout. No claim of complete AA or browser verification is made.
+
+Prepared checks, using only a simulated pedal:
 
 ```sh
 HD500_DEMO=1 PORT=5231 node app/server.mjs
 # In another terminal:
-npm test
-node tests/ui-smoke.mjs /tmp/hd500-ui
+HD500_DEMO=1 PORT=5231 npm test
+HD500_DEMO=1 node tests/ui-smoke.mjs /tmp/hd500-ui
+HD500_DEMO=1 node tests/ui-model-info.mjs /tmp/hd500-ui
 HD500_DEMO=1 node tests/ui-pointer-demo.mjs /tmp/hd500-ui
-node tests/screenshots.mjs docs/img
+HD500_DEMO=1 node tests/ui-interact.mjs
+HD500_DEMO=1 node tests/ui-controllers.mjs 5231
+HD500_DEMO=1 node tests/ui-mixer.mjs 5231
+HD500_DEMO=1 node tests/ui-drag.mjs 5231
+HD500_DEMO=1 node tests/ui-rename.mjs 5231
+HD500_DEMO=1 node tests/screenshots.mjs docs/img
+node tools/gen-descriptions.mjs
+node tools/gen-gear-styles.mjs
+node tools/gear-sheet.mjs
 python3 tools/i18n/apply.py
 ```
 
-The browser scripts default to `http://127.0.0.1:5231` and `/usr/bin/google-chrome`; override with `HD500_UI_URL` and `CHROME` if needed. Screenshots cover both themes at 1440 × 900, 1100 × 800 and 390 × 800, plus footswitch, library, model-sheet and mobile-drawer states. `tests/contact-sheet.py` composes those real captures into `/tmp/hd500-ui/contact.png` using Pillow. The demo-only pointer script checks lane order, all lane destinations, an empty slot, Escape cancellation, footswitch assignment, trash and touch input, then restores the initial preset. Existing real-hardware scripts were neither run nor used.
+Restart the demo server before each mutating script to restore its fixture; model help and smoke checks are read-only. The browser launcher defaults to `http://127.0.0.1:5231` and `/usr/bin/google-chrome`; `HD500_UI_URL` and `CHROME` are available for controlled demo setups. `tests/ui-model-info.mjs` covers both switch endpoints at 50 / 67 / 75 / 80 / 90 / 100 / 110 / 125 / 150 / 175 / 200 percent CSS zoom in light and dark, saves zoom captures, checks 1440 / 1100 / 900 / 390 px layouts, reduced motion, Info focus restoration, search, Portuguese and unchanged preset state. `tests/screenshots.mjs` adds 900 px and a model Info capture to the existing theme, footswitch, library, picker and drawer captures. The contact sheet uses actual Chrome captures when those are available.

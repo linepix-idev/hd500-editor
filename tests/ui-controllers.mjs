@@ -1,9 +1,9 @@
 // Painel de Controladores, FS com vários blocos e atribuição automática de Wah/Volume (modo demo).
-import puppeteer from 'puppeteer-core';
+import { launchUI } from './browser.mjs';
 const port = process.argv[2] ?? 5231, base = `http://127.0.0.1:${port}`;
 const api = async (p, b) => (await fetch(`${base}/api/${p}`, b ? { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1' }, body: JSON.stringify(b) } : {})).json();
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const b = await puppeteer.launch({ executablePath: process.env.CHROME ?? '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--disable-gpu'], defaultViewport: { width: 1440, height: 1100 } });
+const b = await launchUI({ width: 1440, height: 1100 });
 const p = await b.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
 await p.evaluateOnNewDocument(() => localStorage.setItem('hd500.lang', 'en'));
 await p.goto(base, { waitUntil: 'networkidle2' }); await p.waitForSelector('.block'); await wait(800);
@@ -29,9 +29,9 @@ const after = [(await item(6)).active, (await item(5)).active];
 check('FS com vários blocos: cada bloco inverte (um liga, o outro desliga)', after[0] === !before[0] && after[1] === !before[1]);
 // 3) Wah ganha EXP 1
 await p.click('.block[data-item="9"]'); await p.keyboard.press('Enter'); await wait(300);
-await p.evaluate(() => document.querySelector('.model-title')?.click()); await p.waitForSelector('.models button');
-await p.type('input[type="search"]', 'Chrome'); await wait(300);
-await p.evaluate(() => [...document.querySelectorAll('.models button')].find(x => x.textContent.trim() === 'Chrome').click()); await wait(2200);
+await p.evaluate(() => document.querySelector('.model-title')?.click()); await p.waitForSelector('.models .model-choice');
+await p.type('.dlg input[type="search"]', 'Chrome'); await wait(300);
+await p.evaluate(() => [...document.querySelectorAll('.models .model-choice')].find(x => x.querySelector('.model-text')?.firstChild?.textContent === 'Chrome').click()); await wait(2200);
 const w = await item(9);
 check('modelo Wah recebe Position no EXP 1 automaticamente', w.group === 'Wah' && w.params[0].ctl === 1);
 check('sem erros na página', errs.length === 0);

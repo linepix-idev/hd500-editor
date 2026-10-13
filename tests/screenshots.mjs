@@ -9,7 +9,7 @@ try {
   const errors=[],page = await openUI(browser,errors);
   await page.waitForFunction(() => !document.querySelector('#libraryList .skeleton'));
   await page.click('.block[data-item="5"] .nm');
-  for (const theme of ['dark','light']) for (const [width,height] of [[1440,900],[1100,800],[390,800]]) {
+  for (const theme of ['dark','light']) for (const [width,height] of [[1440,900],[1100,800],[900,800],[390,800]]) {
     await page.setViewport({width,height}); await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);await wait(300);
     await page.screenshot({path:`${out}/liquid-${theme}-${width}.png`});
   }
@@ -19,6 +19,7 @@ try {
   await page.click('[data-tab="fs"]');await wait(200);await page.screenshot({path:`${out}/footswitches.png`});
   await page.focus('#librarySearch');await wait(200);await page.screenshot({path:`${out}/library.png`});
   await page.click('#inspector .model-title');await wait(250);await page.screenshot({path:`${out}/models.png`});await page.keyboard.press('Escape');
+  await page.click('#inspector .model-info-button');await wait(250);await page.screenshot({path:`${out}/model-info.png`});await page.keyboard.press('Escape');
   await page.setViewport({width:390,height:800});await page.click('#sidebarToggle');await wait(300);await page.screenshot({path:`${out}/library-mobile.png`});
   assert.deepEqual(errors,[]);
 } finally {await browser.close();}

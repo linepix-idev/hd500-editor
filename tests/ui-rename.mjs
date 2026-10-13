@@ -1,9 +1,9 @@
 // Renomear preset (atual e de outro slot) e set pela interface (modo demo).
-import puppeteer from 'puppeteer-core';
+import { launchUI } from './browser.mjs';
 const port = process.argv[2] ?? 5231, base = `http://127.0.0.1:${port}`;
 const api = async (p, b) => (await fetch(`${base}/api/${p}`, b ? { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1' }, body: JSON.stringify(b) } : {})).json();
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const b = await puppeteer.launch({ executablePath: process.env.CHROME ?? '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--disable-gpu'], defaultViewport: { width: 1440, height: 900 } });
+const b = await launchUI({ width: 1440, height: 900 });
 const p = await b.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
 let nextAnswer = ''; p.on('dialog', async d => { if (d.type() === 'prompt') await d.accept(nextAnswer); else await d.accept(); });
 await p.evaluateOnNewDocument(() => localStorage.setItem('hd500.lang', 'en'));
