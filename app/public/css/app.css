@@ -14,8 +14,9 @@
   --space-3:12px;
   --space-4:16px;
   --space-6:24px;
-  --switch-off:#657084;
-  --switch-on:#218657;
+  --switch-off:rgba(120,120,128,.42);
+  --switch-on:#30d158;
+  --ios-red:#ff453a;
   --bg:#1c1c1e;
   --panel:rgba(44,44,46,.84);
   --panel2:#303033;
@@ -51,8 +52,9 @@
 }
 :root[data-theme=light] {
   color-scheme:light;
-  --switch-off:#697386;
-  --switch-on:#18794e;
+  --switch-off:rgba(120,120,128,.32);
+  --switch-on:#34c759;
+  --ios-red:#ff3b30;
   --bg:#f2f2f7;
   --panel:rgba(250,250,252,.88);
   --panel2:#f2f2f7;
@@ -2036,3 +2038,23 @@ main { gap:28px; padding:32px; }
 
 .live-toggle { display:inline-flex; align-items:center; gap:2px; }
 .live-toggle label { font:500 13px var(--font-text); color:var(--dim); cursor:pointer; white-space:nowrap; }
+
+/* ---- One switch language: iOS green when on, translucent gray when off, same geometry everywhere ---- */
+.switch, .block .led { --track-width:42px; --track-height:26px; --thumb-size:22px; --thumb-inset:2px; }
+.block .led { --track-width:34px; --track-height:20px; --thumb-size:16px; width:44px; min-width:44px; }
+.switch::before, .block .led::before { box-shadow:none; }
+.switch::after, .block .led::after { box-shadow:0 2px 4px rgba(0,0,0,.28), 0 0 0 .5px rgba(0,0,0,.04); }
+.switch:hover, .block .led:hover, .switch:active, .block .led:active { background:transparent; }
+.switch:focus-visible::before, .block .led:focus-visible::before { outline:2px solid var(--accent); outline-offset:2px; }
+.mx-mute[aria-pressed=true] { background:var(--ios-red); color:#fff; }
+
+/* ---- Block inspector: caption, large title, grouped parameter card ---- */
+#inspector .insp-head { display:grid; grid-template-columns:auto 1fr auto auto auto; align-items:center; gap:16px; margin:0 0 24px; }
+#inspector .category-tile { width:56px; height:56px; border-radius:14px; display:grid; place-items:center; background:var(--panel2); }
+#inspector .insp-title { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#inspector .insp-title .chip { align-self:flex-start; background:none; border:0; padding:0; font:600 11px var(--font-text); letter-spacing:.06em; text-transform:uppercase; color:var(--dim); }
+#inspector .insp-title .model-title { align-self:flex-start; padding:0; background:none; border:0; min-height:0; font:700 28px/1.15 var(--font-display); letter-spacing:-.02em; color:var(--text); }
+#inspector .based-on { font:400 13px var(--font-text); color:var(--dim); }
+#inspector .fs-assign { display:flex; align-items:center; gap:4px; padding:0 4px 0 10px; border-radius:99px; background:var(--panel2); color:var(--dim); }
+#inspector .fs-assign select { border:0; background:transparent; min-height:36px; padding:0 6px; color:var(--text); font:500 14px var(--font-text); }
+#inspector .knobs { background:var(--panel2); border-radius:16px; padding:24px 16px 20px; }
