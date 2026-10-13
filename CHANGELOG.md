@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.2.9
+- Tap tempo: a Tap button (or the T key) in the Inputs tab sets the preset tempo from your taps (average of the last intervals) and sends it to the pedal live; tempo changed on the pedal updates the editor.
+- Cleaner gear icon for the Advanced tab.
 - Fix: importing (.h5e), copying, moving, swapping or clearing onto the preset currently open now reloads the editor; before, the screen kept showing the old preset.
 - Fix: Save failed with ENOTDIR in the packaged app (backups were written inside the read-only app bundle). Backups now go to ~/.local/share/hd500-editor/backups (override with HD500_BACKUPS).
 

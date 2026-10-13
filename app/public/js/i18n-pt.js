@@ -399,5 +399,8 @@ export const PT = {
  "Edits go to the pedal when you release the control.": "Os ajustes vão para o pedal quando você solta o controle.",
  "Input routing help": "Ajuda de roteamento de entrada",
  "Mixer help": "Ajuda do mixer",
- "Blue selects. Green is on. Dashed cables mean bypass.": "Azul seleciona. Verde indica ligado. Cabos tracejados indicam bypass."
+ "Blue selects. Green is on. Dashed cables mean bypass.": "Azul seleciona. Verde indica ligado. Cabos tracejados indicam bypass.",
+ "Tap the tempo (T)": "Toque no ritmo (T)",
+ "Tap tempo": "Tap tempo",
+ "Tap": "Tap"
 };

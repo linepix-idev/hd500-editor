@@ -4,7 +4,7 @@ import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, 
 import { S, onChange, notify, presetLabel } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
-import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown } from './panels.js';
+import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, tapHandler } from './panels.js';
 import { selectSlot } from './nav.js';
 import { icon, buttonIcon } from './icons.js';
 
@@ -74,7 +74,7 @@ async function init() {
     const { item, active } = JSON.parse(e.data); if (liveEdits.ignores(`active:${item}`)) return; const it = S.st?.preset.items.find(i => i.id === item); if (!it) return;
     it.active = active; notify(); flashItem(item); if (it.fs) flashFs(it.fs);
   });
-  es.addEventListener('setup', e => { const ev = JSON.parse(e.data); if (liveEdits.ignores(`setup:${ev.id}`)) return; const set = S.st?.preset.settings.find(x => x.id === ev.id); if (set) set.value = ev.value;  { const m = S.st?.preset.mixer, k = ({ 44: 'levelA', 45: 'levelB', 46: 'panA', 47: 'panB' })[ev.id]; if (m && k) { m[k] = ev.value; if (S.tab === 'mixer') renderSide(); } if (ev.id === 56 && S.st) { S.st.preset.trails = ev.value === 1; if (S.tab === 'mixer') renderSide(); } } learnSetup(ev); });
+  es.addEventListener('setup', e => { const ev = JSON.parse(e.data); if (liveEdits.ignores(`setup:${ev.id}`)) return; const set = S.st?.preset.settings.find(x => x.id === ev.id); if (set) set.value = ev.value;  { const m = S.st?.preset.mixer, k = ({ 44: 'levelA', 45: 'levelB', 46: 'panA', 47: 'panB' })[ev.id]; if (m && k) { m[k] = ev.value; if (S.tab === 'mixer') renderSide(); } if (ev.id === 23 && S.st && typeof ev.value === 'number') { S.st.preset.tempo = ev.value; if (S.tab === 'setup') renderSide(); } if (ev.id === 56 && S.st) { S.st.preset.trails = ev.value === 1; if (S.tab === 'mixer') renderSide(); } } learnSetup(ev); });
   es.addEventListener('unknown', e => learnUnknown(JSON.parse(e.data)));
   es.addEventListener('progress', e => libraryProgress(JSON.parse(e.data)));
 }
@@ -193,6 +193,7 @@ $('#librarySidebar').addEventListener('keydown',e=>{
 const openMixer = () => { S.tab = 'mixer'; renderSide(); document.querySelector('#side')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); };
 { const b = $('#openMixer'); b.append(icon('mixer'), document.createTextNode('Mixer')); b.onclick = openMixer; }
 document.addEventListener('open-mixer', openMixer);
+addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && e.key.toLowerCase() === 't' && !e.target.matches('input, textarea, select, [contenteditable]')) { if (S.tab !== 'setup') { S.tab = 'setup'; renderSide(); } tapHandler?.(); } });
 addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === 'm' && !e.target.matches('input, textarea, select, [contenteditable]')) openMixer(); });
 
 // lápis visíveis: renomear o preset atual e o set atual
