@@ -2104,3 +2104,11 @@ button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { tran
 .library-list > .slot { content-visibility:auto; contain-intrinsic-size:auto 40px; }
 .chain-scroll, #librarySidebar, #side, #inspector { contain:layout paint; }
 @media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:.001ms !important; animation-delay:0s !important; transition-duration:.001ms !important; } }
+
+/* Info button: SF-style "info.circle" — thin ring, dot over a stem, accent tinted */
+.model-info-button, .picker .model-info-button, #modal .model-info-button { flex:none; width:44px; height:44px; min-width:44px; padding:0; background:transparent !important; border:0 !important; box-shadow:none; color:var(--accent); display:grid; place-items:center; opacity:.85; }
+.model-info-button:hover { opacity:1; background:color-mix(in srgb,var(--accent) 12%,transparent) !important; border-radius:50%; }
+.model-info-button:active { transform:scale(.92); }
+.model-info-button span { position:relative; display:block; width:20px; height:20px; border:1.5px solid currentColor; border-radius:50%; font-size:0; line-height:0; }
+.model-info-button span::before { content:""; position:absolute; left:50%; top:4px; width:2.4px; height:2.4px; margin-left:-1.2px; border-radius:50%; background:currentColor; }
+.model-info-button span::after { content:""; position:absolute; left:50%; top:8px; width:2px; height:6px; margin-left:-1px; border-radius:1px; background:currentColor; }
