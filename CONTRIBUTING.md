@@ -8,14 +8,16 @@ Thank you for helping keep the POD HD500 alive! You don't need to be a programme
 npm install
 npm test            # unit tests, no pedal needed
 npm start           # web UI at http://127.0.0.1:5230 (needs a pedal)
-npm run test:ui     # browser tests against a connected pedal (Chrome required) — they restore what they change
+npm run test:ui     # browser smoke checks against the demo on port 5231 (Chrome required)
 ```
 
 Linux needs the udev rule (`99-line6-hd500.rules`) and the pedal re-plugged once.
 
+For UI work without hardware, use the demo workflow and browser checks in [README](README.md#ui-development). All new UI text needs a `[Portuguese, English]` pair in `tools/i18n/pairs.json`; finish with `python3 tools/i18n/apply.py`.
+
 ## Safe-hacking rules
 
-1. **Back up first** — *Library → Export all* (or `node tools/backup-all.mjs`).
+1. **Back up first** — *Library sidebar → … → Export all* (or `node tools/backup-all.mjs`).
 2. Experiment on the **edit buffer** (nothing is saved until you press *Save*) or on an empty slot (set 7 is empty on many pedals).
 3. Never include Line 6 binaries, firmware, images or decompiler output in a pull request.
 

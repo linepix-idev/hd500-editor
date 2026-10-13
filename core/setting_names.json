@@ -20,5 +20,9 @@
   "88": "Cab B — low cut",
   "90": "Cab B — res level",
   "92": "Cab B — thump",
-  "94": "Cab B — decay"
+  "94": "Cab B — decay",
+  "44": "Mixer — Path A level (dB, -60 = mute … +12)",
+  "45": "Mixer — Path B level (dB, -60 = mute … +12)",
+  "46": "Mixer — Path A pan (-1 … +1)",
+  "47": "Mixer — Path B pan (-1 … +1)"
 }

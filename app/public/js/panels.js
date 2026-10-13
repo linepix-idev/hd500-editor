@@ -1,8 +1,10 @@
 import { h, api, fail, toast, menu, modal, download, pickFile, b64ToBytes, bytesToB64, $ } from './util.js';
-import { S, notify, presetLabel } from './store.js';
+import { S, notify, presetLabel, GROUP_CLASS } from './store.js';
 import { edit } from './params.js';
-import { pickPreset, pickDestination } from './picker.js';
+import { pickDestination } from './picker.js';
 import { selectSlot } from './nav.js';
+import { icon } from './icons.js';
+import { tr } from './i18n.js';
 
 // ---------------------------------------------------------------------------------------- Entradas / preset
 export function renderSetup(root) {
@@ -25,14 +27,13 @@ export function renderSetup(root) {
 }
 
 // ---------------------------------------------------------------------------------------- Footswitches
-let fsFlash = new Map();
 export function renderFootswitches(root) {
   const its = S.st.preset.items.filter(i => i.kind === 'fx' && !i.empty);
   const tile = (fs) => {
     const assigned = its.filter(i => i.fs === fs), on = assigned.some(i => i.active);
-    const b = h('button', { class: `fsbtn ${on ? 'hot' : ''} ${fs === 9 ? 'exp' : ''}`, dataset: { fs }, 'aria-pressed': on, title: 'Click: toggles this footswitch\'s blocks. Drag a block from the chain to assign it.',
+    const b = h('button', { class: `fsbtn ${on ? 'hot' : ''} ${fs === 9 ? 'exp' : ''}`, dataset: { fs }, 'aria-pressed': String(on), title: 'Click: toggles this footswitch\'s blocks. Drag a block from the chain to assign it.',
       onClick: () => assigned.forEach(i => { i.active = !on; edit('active', { item: i.id, active: !on }).catch(fail); }) || notify() },
-      h('b', {}, S.cat.fs[fs]), assigned.length ? assigned.map(i => h('small', {}, i.model)) : h('small', {}, 'free'));
+      icon(fs === 9 ? 'expression' : 'footswitch'), h('b', {}, S.cat.fs[fs]), assigned.length ? assigned.map(i => h('span', { class: `fs-chip ${GROUP_CLASS(i.group)}`, title: i.model }, i.model)) : h('small', {}, 'free'));
     b.addEventListener('dragover', e => { e.preventDefault(); b.classList.add('dragover'); });
     b.addEventListener('dragleave', () => b.classList.remove('dragover'));
     b.addEventListener('drop', e => { e.preventDefault(); b.classList.remove('dragover'); const id = Number(e.dataTransfer.getData('text/plain')); if (id >= 4) edit('fs', { item: id, fs }).catch(fail); });
@@ -49,45 +50,26 @@ export function flashFs(fs) {
 }
 
 // ---------------------------------------------------------------------------------------- Biblioteca
-const L = { set: null, names: new Map(), busy: null };
-export function renderLibrary(root) {
-  if (L.set == null) L.set = S.st.selection.set;
-  const sel = h('select', { 'aria-label': 'Set', onChange: () => { L.set = Number(sel.value); load(); } }, S.st.setNames.map((n, i) => h('option', { value: i }, `${i + 1} · ${n}`)));
-  sel.value = L.set;
-  const names = L.names.get(L.set);
-  if (!names && !L.busy) queueMicrotask(load);
-  const bar = h('div', { class: 'bar', id: 'libbar', hidden: !L.busy }, h('i', { style: { width: '0%' } }));
-  const grid = h('div', { class: 'slots' }, Array.from({ length: S.cat.presets }, (_, i) => Slot(L.set, i, names?.[i])));
-  root.replaceChildren(
-    h('div', { class: 'row' }, sel, h('button', { onClick: load }, names ? 'Re-read names' : 'Read names'),
-      h('button', { onClick: () => rename() }, 'Rename set')),
-    bar, grid,
-    h('div', { class: 'row', style: { marginTop: '10px' } },
-      h('button', { onClick: exportSet }, 'Export set'), h('button', { onClick: exportAll }, 'Export all'),
-      h('button', { onClick: importBundle }, 'Import bundle…'), h('button', { onClick: importH5e }, 'Import .h5e…'), h('button', { onClick: exportList }, 'Export list (CSV)')),
-    h('p', { class: 'dim', style: { fontSize: '12px' } }, 'Click to load. Right-click: copy, swap, clear, export. Drag one slot onto another to copy. Before any write the previous content goes to the backups/ folder.'));
-
-  async function load() { if (L.busy) return; L.busy = true; $('#libbar') && ($('#libbar').hidden = false); try { L.names.set(L.set, await api('library/slots', { set: L.set })); } catch (e) { fail(e); } L.busy = null; renderLibrary(root); }
-  async function rename() { const n = prompt('New set name (up to 16 characters)', S.st.setNames[L.set]); if (n != null) { try { await api('library/rename-set', { set: L.set, name: n }); } catch (e) { fail(e); } } }
-}
+const L = { set: null, names: new Map(), pending: new Map(), errors: new Map(), versions: new Map(), queue: Promise.resolve(), search: '', generation: 0 };
+let sidebarSignature = '', selectionSet = null;
 function Slot(set, i, name) {
   const cur = set === S.st.selection.set && i === S.st.selection.preset;
-  const b = h('button', { class: `slot ${cur ? 'cur' : ''}`, draggable: true, title: name ?? '', onClick: () => selectSlot(set, i),
-    onContextmenu: e => { e.preventDefault(); slotMenu(e, set, i); } }, h('i', {}, presetLabel(i)), h('span', {}, name ?? '—'));
+  const b = h('button', { class: `slot ${cur ? 'cur' : ''} ${name == null ? 'skeleton' : ''}`, dataset: { set, preset: i }, 'aria-current': cur ? 'true' : 'false', 'aria-label': `${presetLabel(i)} · ${name ?? tr('Loading…')}`, draggable: true, title: name ?? '', onClick: async () => { await selectSlot(set, i); if (!S.st?.dirty && matchMedia('(max-width: 799px)').matches) closeDrawer(); },
+    onContextmenu: e => { e.preventDefault(); slotMenu(e, set, i); } }, h('i', {}, presetLabel(i)), h('span', {}, cur && S.st.dirty ? S.st.preset.name : name ?? (cur ? S.st.preset.name : '—')), cur ? h('span', { class: S.st.dirty ? 'modified-mark' : 'loaded-mark', 'aria-label': S.st.dirty ? 'Unsaved changes' : 'Loaded preset' }, S.st.dirty ? '●' : '') : null);
   b.addEventListener('dragstart', e => e.dataTransfer.setData('application/x-slot', JSON.stringify({ set, preset: i })));
   b.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('application/x-slot') || e.dataTransfer.types.includes('Files')) { e.preventDefault(); b.classList.add('dragover'); } });
   b.addEventListener('dragleave', () => b.classList.remove('dragover'));
   b.addEventListener('drop', async e => {
-    e.preventDefault(); b.classList.remove('dragover');
+    e.preventDefault(); e.stopPropagation(); b.classList.remove('dragover');
     const f = e.dataTransfer.files?.[0];
     try {
-      if (f) { await importH5eFile(f, { set, preset: i }); }
+      if (f) { if (!/\.h5e$/i.test(f.name)) throw new Error('Choose an .h5e preset file.'); if (confirm(`Import “${f.name}” to ${presetLabel(i)}? The destination will be replaced (a backup is kept).`)) await importH5eFile(f, { set, preset: i }); }
       else { const from = JSON.parse(e.dataTransfer.getData('application/x-slot')); if (confirm(`Copy ${presetLabel(from.preset)} (set ${from.set + 1}) to ${presetLabel(i)} (set ${set + 1})? The destination will be replaced (a backup is kept).`)) { await api('library/copy', { from, to: { set, preset: i } }); toast('Copied.'); invalidate(set); } }
     } catch (err) { fail(err); }
   });
   return b;
 }
-const invalidate = set => { L.names.delete(set); notify(); };
+export const invalidate = set => { if (set == null) { L.names.clear(); L.errors.clear(); for(let i=0;i<8;i++) L.versions.set(i,(L.versions.get(i)??0)+1); } else { L.names.delete(set); L.errors.delete(set); L.versions.set(set,(L.versions.get(set)??0)+1); } sidebarSignature=''; notify(); if(L.search) queueMicrotask(()=>searchSets(++L.generation)); };
 function slotMenu(e, set, i) {
   const at = { set, preset: i };
   menu(e.clientX, e.clientY, [
@@ -121,10 +103,77 @@ async function importBundle() {
   let b; try { b = JSON.parse(await f.text()); } catch { return fail(new Error('invalid file')); }
   const n = b.sets?.reduce((a, s) => a + s.presets.length, 0) ?? 0;
   if (!confirm(`Write ${n} presets from ${b.sets?.length ?? 0} set(s) to the pedal, in the same places? The current slots go to the backups/ folder.`)) return;
-  try { const r = await api('library/import', { bundle: b, renameSets: confirm('Also restore the set names?') }); toast(`${r.written} presets written.`); L.names.clear(); notify(); } catch (e) { fail(e); }
+  try { const r = await api('library/import', { bundle: b, renameSets: confirm('Also restore the set names?') }); toast(`${r.written} presets written.`); invalidate(); } catch (e) { fail(e); }
 }
-export function libraryProgress({ what, done, total }) {
-  const bar = $('#libbar'); if (!bar) return; bar.hidden = false; bar.firstChild.style.width = Math.round(done / total * 100) + '%'; if (done >= total) setTimeout(() => (bar.hidden = true), 400);
+export function libraryProgress({ done, total }) {
+  const bar = $('#libbar'); if (!bar) return;
+  bar.hidden = false; const value = Math.round(done / total * 100);
+  bar.firstChild.style.width = value + '%'; bar.setAttribute('aria-valuenow', value);
+  if (done >= total) setTimeout(() => { if (!L.pending.size) bar.hidden = true; }, 400);
+}
+function closeDrawer() { $('#drawerBackdrop').click(); }
+async function namesFor(set) {
+  if(L.names.has(set)) return L.names.get(set);
+  if(L.pending.has(set)) return L.pending.get(set);
+  const version=L.versions.get(set)??0;
+  const job=L.queue.catch(()=>{}).then(async()=>{
+    $('#libbar').hidden=false; $('#libbar').firstChild.style.width='8%';
+    try { const names=await api('library/slots',{set}); if((L.versions.get(set)??0)===version) { L.names.set(set,names); L.errors.delete(set); } return names; }
+    catch(e){L.errors.set(set,e.message);throw e;}
+  }).finally(()=>{ L.pending.delete(set); renderSidebar(); if(!L.pending.size) $('#libbar').hidden=true; });
+  L.pending.set(set,job); L.queue=job; return job;
+}
+async function searchSets(generation) {
+  for(let set=0;set<S.cat.sets;set++) {
+    if(generation!==L.generation||!L.search) break;
+    if(!L.names.has(set)&&!L.errors.has(set)) try{await namesFor(set);}catch{}
+  }
+  renderSidebar();
+}
+export function renderSidebar() {
+  if(!S.st?.preset) return;
+  const selected=S.st.selection;
+  if(L.set==null || (selectionSet!=null&&selectionSet!==selected.set)) L.set=selected.set;
+  selectionSet=selected.set;
+  const sel=$('#setSel');
+  if(sel.options.length!==S.st.setNames.length || [...sel.options].some((o,i)=>o.textContent!==`${i+1} · ${S.st.setNames[i]}`)) sel.replaceChildren(...S.st.setNames.map((n,i)=>h('option',{value:i},`${i+1} · ${n}`)));
+  sel.value=L.set;
+  if(!L.search && !L.names.has(L.set) && !L.pending.has(L.set) && !L.errors.has(L.set)) queueMicrotask(()=>namesFor(L.set).catch(()=>{}));
+  const signature=JSON.stringify([L.set,L.search,[...L.names],selected,S.st.dirty,S.st.preset.name,[...L.errors],L.pending.size]);
+  if(signature===sidebarSignature) return; sidebarSignature=signature;
+  const root=$('#libraryList'),focused=document.activeElement?.closest('.slot'),focusKey=focused?`${focused.dataset.set}:${focused.dataset.preset}`:null,scroll=root.scrollTop;
+  const content=[];
+  if(L.search) {
+    for(let set=0;set<S.cat.sets;set++) {
+      const matches=L.names.get(set)?.map((name,i)=>({name,i})).filter(x=>x.name.toLowerCase().includes(L.search));
+      if(matches?.length) content.push(h('h3',{class:'bank-title'},S.st.setNames[set]),...matches.map(x=>Slot(set,x.i,x.name)));
+    }
+    if(!content.length) content.push(h('p',{class:'placeholder'},L.names.size<S.cat.sets?'Searching sets…':'No presets found.'));
+    if(L.names.size<S.cat.sets) content.push(h('p',{class:'dim',style:{fontSize:'11px',padding:'8px'}},'Searching sets…'));
+    if(L.errors.size) content.push(h('button',{onClick:()=>{L.errors.clear();searchSets(++L.generation);}},'Try again'));
+  } else {
+    const names=L.names.get(L.set);
+    if(L.errors.has(L.set)) content.push(h('p',{class:'dim'},'Could not read preset names.'),h('button',{onClick:()=>{L.errors.delete(L.set);namesFor(L.set).catch(()=>{});}},'Try again'));
+    for(let bank=0;bank<16;bank++) content.push(h('h3',{class:'bank-title'},`${tr('Bank')} ${bank+1}`),...Array.from({length:4},(_,letter)=>{const i=bank*4+letter;return Slot(L.set,i,names?.[i]);}));
+  }
+  root.replaceChildren(...content); root.scrollTop=scroll;
+  if(focusKey){const [set,preset]=focusKey.split(':');root.querySelector(`[data-set="${set}"][data-preset="${preset}"]`)?.focus({preventScroll:true});}
+}
+export function initSidebar() {
+  $('#setSel').onchange=()=>{L.set=Number($('#setSel').value);L.search='';$('#librarySearch').value='';L.generation++;renderSidebar();};
+  let debounce;
+  $('#librarySearch').oninput=e=>{L.search=e.target.value.trim().toLowerCase(); const generation=++L.generation;renderSidebar();clearTimeout(debounce);if(L.search) debounce=setTimeout(()=>searchSets(generation),240);};
+  $('#libraryList').addEventListener('keydown',e=>{
+    if(!['ArrowUp','ArrowDown','Home','End'].includes(e.key))return;
+    const rows=[...$('#libraryList').querySelectorAll('.slot')],at=rows.indexOf(e.target.closest('.slot'));
+    const next=e.key==='Home'?0:e.key==='End'?rows.length-1:Math.max(0,Math.min(rows.length-1,at+(e.key==='ArrowDown'?1:-1)));
+    e.preventDefault();e.stopPropagation();rows[next]?.focus();
+  });
+  $('#libraryMore').onclick=e=>{const r=e.currentTarget.getBoundingClientRect();menu(r.left,r.bottom+5,[
+    ['Re-read names',()=>{invalidate(L.set);namesFor(L.set).catch(()=>{});}],
+    ['Rename set',async()=>{const name=prompt('New set name (up to 16 characters)',S.st.setNames[L.set]);if(name!=null)try{await api('library/rename-set',{set:L.set,name});}catch(e){fail(e);}}],
+    ['Export set',exportSet],['Export all',exportAll],['Import bundle…',importBundle],['Import .h5e…',importH5e],['Export list (CSV)',exportList],
+  ]);};
 }
 
 // ---------------------------------------------------------------------------------------- Avançado

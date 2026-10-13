@@ -34,6 +34,8 @@ Command `0x16` writes one setting by id; the editor keeps an id → offset table
 
 Input sources (raw values): Input 1: 1 Guitar · 2 Mic · 3 Aux · 5 Guitar+Aux · 6 Guitar+Variax · 7 Guitar+Aux+Variax · 8 Variax · 9 Variax Mags. Input 2 additionally has 0 = Same. In-Z: 0 Auto, 1 22K, 2 32K, 3 70K, 4 90K, 5 136K, 6 230K, 7 1M, 8 3.5M.
 
+**Mixer** (float32, per preset; confirmed on hardware): `0x2C` path A level, `0x2D` path B level (dB, −60 = mute … +12), `0x2E` path A pan, `0x2F` path B pan (−1 … +1). Values arrive live as `SETUP` messages when you turn the knobs on the pedal.
+
 Most settings are still unnamed — see the *Advanced → Learn* tab and CONTRIBUTING.md.
 
 ## `.h5e` (official editor export)

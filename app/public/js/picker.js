@@ -1,22 +1,30 @@
 import { h, api, fail, modal, toast } from './util.js';
 import { S, GROUP_CLASS, presetLabel } from './store.js';
+import { icon, categoryIcon } from './icons.js';
 
 /** Escolha de modelo (amp, cab ou efeito) para um bloco. */
 export function pickModel(item) {
   const list = item.kind === 'amp' ? S.cat.amps : item.kind === 'cab' ? S.cat.cabs : S.cat.pedals;
   const q = h('input', { type: 'search', placeholder: 'Search model…', 'aria-label': 'Search model' });
-  const grid = h('div', { class: 'models' });
-  let close;
+  const grid = h('div', { class: 'models' }), chips = h('div', { class: 'category-chips', role: 'group', 'aria-label': 'Model categories' });
+  const groups = [...new Set(list.map(m => m.group ?? (item.kind === 'amp' ? 'Amps' : 'Cabs')))];
+  let close, category = null;
   const draw = () => {
-    const term = q.value.trim().toLowerCase(), groups = new Map();
-    for (const m of list) { if (term && !m.name.toLowerCase().includes(term) && !(m.group ?? '').toLowerCase().includes(term)) continue; const g = m.group ?? (item.kind === 'amp' ? 'Amps' : 'Cabs'); (groups.get(g) ?? groups.set(g, []).get(g)).push(m); }
-    grid.replaceChildren(...[...groups].flatMap(([g, ms]) => [
-      h('h4', { class: GROUP_CLASS(g === 'Amps' || g === 'Cabs' ? null : g) }, g),
-      ...ms.map(m => h('button', { class: `${GROUP_CLASS(m.group)} ${m.type === item.type ? 'cur' : ''}`, onClick: () => { close(); api('edit', { op: 'model', item: item.id, type: m.type }).catch(fail); } }, m.name)),
+    const term = q.value.trim().toLowerCase(), matches = new Map();
+    for (const m of list) {
+      const group=m.group ?? (item.kind==='amp'?'Amps':'Cabs');
+      if(category && group!==category) continue;
+      if(term && !m.name.toLowerCase().includes(term) && !group.toLowerCase().includes(term)) continue;
+      (matches.get(group) ?? matches.set(group,[]).get(group)).push(m);
+    }
+    chips.replaceChildren(...[null,...groups].map(g=>h('button',{class:g ? `${item.kind} ${GROUP_CLASS(g)}` : '', 'aria-pressed':String(category===g),onClick:()=>{category=g;draw();chips.children[[null,...groups].indexOf(g)]?.focus();}},g?icon(categoryIcon({kind:item.kind,group:g})):icon('colors'),g??'All')));
+    grid.replaceChildren(...[...matches].flatMap(([g,ms])=>[
+      h('h4',{class:GROUP_CLASS(g)},g),...ms.map(m=>h('button',{class:`${item.kind} ${GROUP_CLASS(m.group)} ${m.type===item.type?'cur':''}`,onClick:()=>{close();api('edit',{op:'model',item:item.id,type:m.type}).catch(fail);}},icon(categoryIcon({kind:item.kind,group:m.group})),m.name))
     ]));
+    if(!matches.size)grid.append(h('p',{class:'placeholder'},'No models found.'));
   };
   q.addEventListener('input', draw); draw();
-  close = modal(`Model — ${item.kind === 'amp' ? 'Amp' : item.kind === 'cab' ? 'Cab' : 'Effect'}`, [q, grid]);
+  close = modal(`Model — ${item.kind === 'amp' ? 'Amp' : item.kind === 'cab' ? 'Cab' : 'Effect'}`, [q, chips, grid]);
   q.focus();
 }
 

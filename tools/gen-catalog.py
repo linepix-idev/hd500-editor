@@ -38,6 +38,11 @@ def parse(path, tkey):
         out.append(e)
     return out
 cat = {'amps': parse('amp.go', 'atype'), 'cabs': parse('cab.go', 'ctype'), 'pedals': parse('pedal.go', 'ptype')}
+# modelos extras (pacotes), lidos do editor oficial e confirmados no pedal
+extra = json.load(open('catalog/extra-models.json'))
+cab_params = cat['cabs'][1]['params']
+cat['amps'] += [{'type': a['type'], 'name': a['name'], 'params': a['params']} for a in extra['amps']]
+cat['cabs'] += [{'type': c['type'], 'name': c['name'], 'params': cab_params} for c in extra['cabs']]
 json.dump(cat, open('catalog/catalog.json', 'w'), ensure_ascii=False, indent=1)
 for k, v in cat.items():
     print(k, len(v), 'entradas,', sum(len(x['params']) for x in v), 'parâmetros')

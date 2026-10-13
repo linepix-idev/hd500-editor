@@ -31,6 +31,8 @@ const SETUP = new Map(SETUP_MAP.map(([id, off, size]) => [id, { id, off, size }]
 /** Nomes conhecidos (colaborações em core/setting_names.json). */
 export const SETUP_NAMES = Object.fromEntries(Object.entries(JSON.parse(readFileSync(new URL('./setting_names.json', import.meta.url)))).map(([k, v]) => [Number(k), v]));
 
+/** Mixer por preset (floats): nível em dB (−60 = mudo … +12) e pan (−1 … +1) dos caminhos A e B. Confirmado no pedal. */
+export const MIXER = { levelA: 0x2c, levelB: 0x2d, panA: 0x2e, panB: 0x2f };
 export const SETUP_CAB_ER = [0x32, 0x33], SETUP_CAB_MIC = [0x34, 0x35];
 export const MICS = ['57 On XS', '57 Off XS', '409 Dyn', '421 Dyn', '4038 Rbn', '121 Rbn', '67 Cond', '87 Cond'];
 export const DT_IDS = [[0x26, 0x27, 0x28], [0x29, 0x2a, 0x2b]];
@@ -93,7 +95,8 @@ export class Preset {
 
   toJSON() {
     const items = this.items;
-    return { name: this.name, tempo: this.tempo, items, body: this.body.toString('base64'),
+    const f = id => this.body.readFloatLE(SETUP.get(id).off);
+    return { name: this.name, tempo: this.tempo, mixer: { levelA: f(MIXER.levelA), levelB: f(MIXER.levelB), panA: f(MIXER.panA), panB: f(MIXER.panB) }, items, body: this.body.toString('base64'),
       setup: { input1: this.setup(0x36), input2: this.setup(0x37), inZ: this.setup(0x55) },
       settings: [...SETUP.values()].map(s => ({ id: s.id, name: SETUP_NAMES[s.id] ?? null, offset: s.off, size: s.size, float: s.size === 4, value: s.size === 4 ? this.body.readFloatLE(s.off) : this.setup(s.id) })) };
   }

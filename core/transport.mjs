@@ -49,16 +49,16 @@ export function openDevice() {
     if (!cur) return;
     const m = cur; cur = null; expected = 0; clearTimeout(idle);
     for (const w of [...waiters]) if (w.pred(m)) { waiters.splice(waiters.indexOf(w), 1); w.res(m); }
-    for (const l of listeners) l(m);
+    for (const l of listeners) { try { l(m); } catch (e) { console.error('listener:', e.message); } }
   };
   inEp.startPoll(4, 64);
   inEp.on('data', b => {
     const n = b[0], t = b[2], data = b.subarray(4, 4 + n);
-    if (t === 1) { deliver(); cur = Buffer.from(data); expected = ((data.readUInt16LE(0)) + 1) * 4; }
+    if (t === 1) { cur = Buffer.from(data); expected = ((data.readUInt16LE(0)) + 1) * 4; }
     else if (t === 4 && cur) cur = Buffer.concat([cur, data]);
     else return;
     clearTimeout(idle);
-    if (cur.length >= expected) deliver(); else idle = setTimeout(deliver, 150); // mensagem truncada: entrega o que veio
+    if (cur.length >= expected) deliver(); else idle = setTimeout(() => { cur = null; expected = 0; }, 400); // mensagem incompleta (pacote perdido): descarta; quem pediu tenta de novo
   });
   inEp.on('error', () => {});
 

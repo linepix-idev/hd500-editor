@@ -23,7 +23,7 @@ export class Pod extends EventEmitter {
       case M.CMD.ACTIVE: this.emit('active', { item: M.word(m, 1), active: M.word(m, 2) > 0 }); break;
       case M.CMD.SETUP: { const vtype = M.word(m, 1); this.emit('setup', { id: M.word(m, 2), vtype, value: vtype === 1 ? m.readFloatLE(20) : M.word(m, 3) }); break; }
       case M.CMD.ALERT: case M.CMD.PRESET_SELECTED: case M.CMD.SET_SELECTED: this.emit('selection'); break;
-      case M.CMD.PRESET_LOAD: this.emit('load', Preset.fromLoad(m)); break;
+      case M.CMD.PRESET_LOAD: break; // chega como resposta a consultas; quem pediu já a recebe pelo request()
       case M.CMD.PRESET_SET_ACK: case M.CMD.STATUS_RESP: case M.CMD.SET_LOAD: case M.CMD.SET_NAME_ACK: break; // respostas a pedidos nossos
       default: { // mensagem que o editor ainda não entende: útil para descobrir recursos novos
         const words = []; for (let o = 8; o + 4 <= Math.min(m.length, 40); o += 4) words.push(m.readUInt32LE(o));
@@ -32,9 +32,10 @@ export class Pod extends EventEmitter {
     }
   }
 
-  // --- leitura ---
-  async readCurrent() { return Preset.fromLoad(await this.dev.request(M.queryPreset(), M.isPresetLoad, 3500)); }
-  async readSlot(set, preset) { return Preset.fromLoad(await this.dev.request(M.queryPreset(preset, set), M.isPresetLoad, 3500)); }
+  // --- leitura --- (consultas são idempotentes: uma resposta perdida/truncada é refeita uma vez)
+  async #twice(fn) { try { return await fn(); } catch (e) { if (!/não respondeu|did not answer/.test(e.message)) throw e; return fn(); } }
+  async readCurrent() { return this.#twice(async () => Preset.fromLoad(await this.dev.request(M.queryPreset(), M.isPresetLoad, 2500))); }
+  async readSlot(set, preset) { return this.#twice(async () => Preset.fromLoad(await this.dev.request(M.queryPreset(preset, set), M.isPresetLoad, 2500))); }
   async status(id) { return M.word(await this.dev.request(M.queryStatus(id), m => M.cmdOf(m) === M.CMD.STATUS_RESP && M.word(m, 1) === id), 2); }
   async selection() { return { set: await this.status(M.STATUS.SET), preset: await this.status(M.STATUS.PRESET) }; }
   async setName(set) { return M.setNameOf(await this.dev.request(M.querySet(set), M.is(M.CMD.SET_LOAD), 2500)); }
