@@ -2,12 +2,18 @@ import { h, api, fail, toast } from './util.js';
 import { S, notify, GROUP_CLASS } from './store.js';
 import { ParamControl, edit, fmt } from './params.js';
 import { pickModel } from './picker.js';
+import { icon, categoryIcon } from './icons.js';
 
 const GROUP_COLOR = g => `var(--g-${({ 'Preamp+EQ': 'preamp', 'Volume/Pan': 'volume', 'FX Loop': 'fx' })[g] ?? (g ?? 'none').toLowerCase()})`;
 
+let inspectedKey = null;
 export function renderInspector(root) {
   const it = S.st.preset.items.find(i => i.id === S.sel);
   if (!it) { root.replaceChildren(h('div', { class: 'placeholder' }, 'Select a block in the signal chain.')); return; }
+  const key = `${it.id}:${it.type}`;
+  if(root.querySelector('.knob[data-dragging]') && key === inspectedKey) return;
+  if(inspectedKey != null && key !== inspectedKey && !matchMedia('(prefers-reduced-motion: reduce)').matches) root.animate([{ opacity: .7, transform: 'translateY(4px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  inspectedKey = key;
   const color = it.kind === 'amp' ? 'var(--amp)' : it.kind === 'cab' ? 'var(--cab)' : GROUP_COLOR(it.group);
   const kindName = it.kind === 'amp' ? `Amp ${it.id === 0 ? 'A' : 'B'}` : it.kind === 'cab' ? `Cab ${it.id === 1 ? 'A' : 'B'}` : `Effect ${it.id - 3}`;
   const fsSel = h('select', { 'aria-label': 'Footswitch', onChange: () => edit('fs', { item: it.id, fs: Number(fsSel.value) }).catch(fail) },
@@ -15,17 +21,17 @@ export function renderInspector(root) {
   fsSel.value = it.fs;
 
   const head = h('div', { class: 'insp-head', style: { '--c': color } },
-    h('span', { class: 'chip' }, kindName), h('h2', {}, it.empty ? 'Empty' : it.model),
-    h('button', { onClick: () => pickModel(it) }, it.empty ? 'Choose model…' : 'Change model…'),
-    h('span', { class: 'grow' }),
-    it.kind === 'fx' && !it.empty ? h('label', { class: 'dim' }, 'Footswitch ', fsSel) : null,
-    !it.empty ? h('button', { class: it.active ? 'primary' : '', onClick: () => { it.active = !it.active; notify(); api('edit', { op: 'active', item: it.id, active: it.active }).catch(fail); } }, it.active ? 'On' : 'Off') : null);
+    h('span', { class: 'category-tile' }, icon(categoryIcon(it))),
+    h('div', { class: 'insp-title' }, h('span', { class: 'chip' }, kindName),
+      h('button', { class: 'model-title', title: 'Change model…', 'aria-label': 'Change model…', onClick: () => pickModel(it) }, it.empty ? 'Choose model…' : it.model, icon('down'))),
+    it.kind === 'fx' && !it.empty ? h('label', { class: 'fs-assign', title: 'Footswitch' }, icon('footswitch'), fsSel) : null,
+    !it.empty ? h('button', { class: 'switch', role: 'switch', 'aria-label': 'Block enabled', 'aria-checked': String(it.active), title: 'Toggle (bypass)', onClick: () => { it.active = !it.active; notify(); api('edit', { op: 'active', item: it.id, active: it.active }).catch(fail); } }) : null);
 
-  if (it.empty) { root.replaceChildren(head, h('div', { class: 'placeholder' }, 'This slot is empty. Choose a model to start.')); return; }
+  if (it.empty) { root.replaceChildren(head, h('div', { class: 'placeholder' }, icon('plus'), 'This slot is empty. Choose a model to start.')); return; }
   const knobs = h('div', { class: 'knobs', style: { '--c': color } }, it.params.map(p => ParamControl(it, p, color)));
   const ctls = it.params.filter(p => p.ctl);
   const dt = it.kind === 'amp' && it.dt ? DtRow(it) : null;
-  const ctlBox = ctls.length ? h('div', { style: { marginTop: '16px' } }, h('h3', { style: { fontSize: '13px', margin: '0 0 6px' } }, 'Controllers (expression pedal)'),
+  const ctlBox = ctls.length ? h('div', { class: 'controller-range', style: { marginTop: '16px' } }, h('h3', { style: { fontSize: '13px', margin: '0 0 6px' } }, 'Controllers (expression pedal)'),
     ...ctls.map(p => RangeRow(it, p))) : null;
   root.replaceChildren(...[head, it.params.length ? knobs : h('div', { class: 'placeholder' }, 'No parameters.'), dt, ctlBox].filter(Boolean));
 }

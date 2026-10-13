@@ -818,5 +818,237 @@
 [
 "JSON inválido",
 "invalid JSON"
+],
+[
+"Set atual",
+"Current set"
+],
+[
+"Seu som, conectado",
+"Your sound, connected"
+],
+[
+"Selecione para editar. Arraste para conectar.",
+"Select to shape. Drag to connect."
+],
+[
+"Edição ao vivo",
+"Live edit buffer"
+],
+[
+"As alterações são gravadas ao escolher Salvar.",
+"Changes are saved when you choose Save."
+],
+[
+"Feito para a música.",
+"Made for the music."
+],
+[
+"Mostrar/ocultar biblioteca",
+"Toggle library"
+],
+[
+"Mostrar/ocultar biblioteca (B)",
+"Toggle library (B)"
+],
+[
+"Renomear preset",
+"Rename preset"
+],
+[
+"Alterações não salvas",
+"Unsaved changes"
+],
+[
+"Fechar biblioteca",
+"Close library"
+],
+[
+"Biblioteca de presets",
+"Preset library"
+],
+[
+"Ações da biblioteca",
+"Library actions"
+],
+[
+"Buscar em todos os presets…",
+"Search all presets…"
+],
+[
+"Buscar em todos os presets",
+"Search all presets"
+],
+[
+"Lendo nomes dos presets",
+"Reading preset names"
+],
+[
+"Cores do sinal",
+"Signal colors"
+],
+[
+"Arraste um bloco aqui para limpá-lo",
+"Drag a block here to clear it"
+],
+[
+"Limpar bloco selecionado",
+"Clear selected block"
+],
+[
+"Controles do preset",
+"Preset controls"
+],
+[
+"Slot vazio",
+"Empty slot"
+],
+[
+"Selecione o bloco. Arraste para mover. Alt + setas para reordenar.",
+"Select block. Drag to move. Alt + arrows to reorder."
+],
+[
+"Movendo bloco. Esc cancela.",
+"Moving block. Escape cancels."
+],
+[
+"Movimento cancelado.",
+"Move cancelled."
+],
+[
+"Bloco posicionado.",
+"Block placed."
+],
+[
+"Entrada 1",
+"Input 1"
+],
+[
+"Entrada 2",
+"Input 2"
+],
+[
+"Antes · compartilhado",
+"Before · shared"
+],
+[
+"Depois · mix",
+"After · mix"
+],
+[
+"Estéreo",
+"Stereo"
+],
+[
+"Saída",
+"Output"
+],
+[
+"Antes",
+"Before"
+],
+[
+"Depois",
+"After"
+],
+[
+"Caminho A",
+"Path A"
+],
+[
+"Caminho B",
+"Path B"
+],
+[
+"Bloco ligado",
+"Block enabled"
+],
+[
+"Salvar alterações",
+"Save unsaved changes"
+],
+[
+"Renomear preset (clique duplo)",
+"Rename preset (double-click)"
+],
+[
+"Alt + setas",
+"Alt + arrows"
+],
+[
+"Mover efeito selecionado",
+"Move selected effect"
+],
+[
+"Cancelar arraste",
+"Cancel drag"
+],
+[
+"A cor acompanha o som: bloco, cabo e knob.",
+"Color follows the sound: block, cable and knob."
+],
+[
+"Laranja seleciona. Verde está ligado. Cabos tracejados indicam bypass.",
+"Orange selects. Green is on. Dashed cables mean bypass."
+],
+[
+"Preset carregado",
+"Loaded preset"
+],
+[
+"Escolha um arquivo de preset .h5e.",
+"Choose an .h5e preset file."
+],
+[
+"Importar “${f.name}” em ${presetLabel(i)}? O destino será substituído (um backup é mantido).",
+"Import “${f.name}” to ${presetLabel(i)}? The destination will be replaced (a backup is kept)."
+],
+[
+"Buscando nos sets…",
+"Searching sets…"
+],
+[
+"Nenhum preset encontrado.",
+"No presets found."
+],
+[
+"Não foi possível ler os nomes dos presets.",
+"Could not read preset names."
+],
+[
+"Banco ${bank+1}",
+"Bank ${bank+1}"
+],
+[
+"Categorias de modelos",
+"Model categories"
+],
+[
+"Todos",
+"All"
+],
+[
+"Nenhum modelo encontrado.",
+"No models found."
+],
+[
+"${label} (0 a 100%)",
+"${label} (0 to 100%)"
+],
+[
+"8 sets · 64 presets",
+"8 sets · 64 presets"
+],
+[
+"Carregando…",
+"Loading…"
+],
+[
+"Idioma",
+"Language"
+],
+[
+"Banco",
+"Bank"
 ]
 ]

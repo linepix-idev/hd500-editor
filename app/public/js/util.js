@@ -1,10 +1,16 @@
+import { icon, menuIcon } from './icons.js';
 // Utilidades de interface (sem dependências).
 export function h(tag, attrs = {}, ...kids) {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs ?? {})) {
     if (v == null || v === false) continue;
     if (k === 'class') el.className = v;
-    else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+    else if (k === 'style' && typeof v === 'object') {
+      for (const [property, value] of Object.entries(v)) {
+        if (property.startsWith('--')) el.style.setProperty(property, value);
+        else el.style[property] = value;
+      }
+    }
     else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'dataset') Object.assign(el.dataset, v);
     else if (v === true) el.setAttribute(k, '');
@@ -37,27 +43,39 @@ export function throttle(key, fn, ms = 45) {
   t.timer = setTimeout(() => { t.last = Date.now(); fn(); }, Math.max(0, ms - (Date.now() - t.last)));
 }
 
+let closeMenu = null;
 export function menu(x, y, entries) {
-  document.querySelectorAll('.menu').forEach(m => m.remove());
-  const m = h('div', { class: 'menu', role: 'menu' }, entries.filter(Boolean).map(([label, fn]) => h('button', { role: 'menuitem', onClick: () => { m.remove(); fn(); } }, label)));
-  document.body.append(m);
-  const r = m.getBoundingClientRect();
-  m.style.left = Math.min(x, innerWidth - r.width - 8) + 'px'; m.style.top = Math.min(y, innerHeight - r.height - 8) + 'px';
-  const off = e => { if (!m.contains(e.target)) { m.remove(); removeEventListener('pointerdown', off, true); } };
-  setTimeout(() => addEventListener('pointerdown', off, true));
-  return m;
+  closeMenu?.();
+  const previous=document.activeElement;
+  const m=h('div',{class:'menu',role:'menu'},entries.filter(Boolean).map(([label,fn])=>h('button',{role:'menuitem',class:/clear|delete/i.test(label)?'destructive':'',onClick:()=>{close();Promise.resolve().then(fn).catch(fail);}},icon(menuIcon(label)),h('span',{},label))));
+  const close=()=>{m.remove();removeEventListener('pointerdown',off,true);removeEventListener('keydown',keys,true);previous?.isConnected&&previous.focus({preventScroll:true});if(closeMenu===close)closeMenu=null;};
+  const off=e=>{if(!m.contains(e.target))close();};
+  const keys=e=>{
+    const btns=[...m.querySelectorAll('button')],index=btns.indexOf(document.activeElement);
+    if(e.key==='Escape'||e.key==='Tab'){close();if(e.key==='Escape')e.preventDefault();e.stopPropagation();}
+    else if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();e.stopPropagation();btns[e.key==='Home'?0:e.key==='End'?btns.length-1:(index+(e.key==='ArrowDown'?1:btns.length-1))%btns.length]?.focus();}
+  };
+  document.body.append(m);const r=m.getBoundingClientRect();
+  m.style.left=Math.max(8,Math.min(x,innerWidth-r.width-8))+'px';m.style.top=Math.max(8,Math.min(y,innerHeight-r.height-8))+'px';
+  addEventListener('pointerdown',off,true);addEventListener('keydown',keys,true);closeMenu=close;m.querySelector('button')?.focus();return m;
 }
-
+let closeModal = null;
 export function modal(title, body, { onClose } = {}) {
-  const root = $('#modal');
-  const close = () => { root.hidden = true; root.replaceChildren(); onClose?.(); removeEventListener('keydown', esc); };
-  const esc = e => { if (e.key === 'Escape') close(); };
-  root.replaceChildren(h('div', { class: 'dlg', role: 'dialog', 'aria-label': title },
-    h('header', {}, h('h3', {}, title), h('button', { class: 'icon', 'aria-label': 'Close', onClick: close }, '✕')),
-    h('div', { class: 'bd' }, body)));
-  root.hidden = false; addEventListener('keydown', esc);
-  root.onclick = e => { if (e.target === root) close(); };
-  return close;
+  closeModal?.(); closeMenu?.();
+  const root=$('#modal'),previous=document.activeElement,background=[$('#top'),$('.app-layout')];
+  const close=()=>{root.hidden=true;root.replaceChildren();background.forEach(x=>x.inert=false);removeEventListener('keydown',keys,true);previous?.isConnected&&previous.focus({preventScroll:true});onClose?.();if(closeModal===close)closeModal=null;};
+  const keys=e=>{
+    if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();close();}
+    if(e.key==='Tab'){
+      const nodes=[...root.querySelectorAll('button,input,select,[tabindex="0"]')].filter(n=>!n.disabled&&n.getClientRects().length),first=nodes[0],last=nodes.at(-1);
+      if(e.shiftKey&&(document.activeElement===first||!root.contains(document.activeElement))){e.preventDefault();last?.focus();}
+      else if(!e.shiftKey&&(document.activeElement===last||!root.contains(document.activeElement))){e.preventDefault();first?.focus();}
+    }
+  };
+  root.replaceChildren(h('div',{class:'dlg',role:'dialog','aria-modal':'true','aria-label':title},
+    h('header',{},h('h3',{},title),h('button',{class:'icon','aria-label':'Close',onClick:close},icon('close'))),h('div',{class:'bd'},body)));
+  root.hidden=false;background.forEach(x=>x.inert=true);addEventListener('keydown',keys,true);closeModal=close;
+  root.onclick=e=>{if(e.target===root)close();};root.querySelector('input,button')?.focus();return close;
 }
 
 export function download(name, data, type = 'application/octet-stream') {

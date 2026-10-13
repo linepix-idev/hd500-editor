@@ -9,12 +9,12 @@ Runs on Linux, Windows and macOS, talks to the pedal directly over USB, and goes
 
 ## What you can do
 
-- **Signal chain view** (Helix-style): drag effects between *before/after the amp* and path **A / B**, see which input feeds which path.
+- **Glass signal graph**: drag effects between *before/after the amp* and path **A / B**, see which input feeds which path.
 - **Edit everything live**: every amp, cab and effect model (61 amps · 18 cabs · 115 effects), all parameters, bypass, footswitch assignment, expression-pedal (EXP 1/2) assignment with heel/toe range.
 - **Input routing**: Guitar, Mic, Aux, Variax and combinations on Input 1 / Input 2, guitar impedance, tempo, Dynamic Tone (topology/class/mode).
 - **Footswitch panel**: a virtual footswitch strip that mirrors the pedal in real time — step on FS5 and the block lights up on screen.
-- **Library manager** for all 8 sets × 64 presets: rename sets, copy, swap, clear, drag-and-drop between slots, **export/import the whole library**, import/export official **`.h5e`** presets, automatic **backups** before every write.
-- **Undo / redo**, unsaved-changes tracking, light and dark themes.
+- **Preset sidebar** for all 8 sets × 64 presets, with bank groups and search across sets: rename sets, copy, swap, clear, drag-and-drop between slots, **export/import the whole library**, import/export official **`.h5e`** presets, automatic **backups** before every write.
+- **Undo / redo**, inline preset naming, unsaved-changes tracking, light and dark glass themes, keyboard navigation and reduced-motion / solid-material fallbacks.
 - **Advanced**: every preset setting by id, raw preset bytes, MIDI-assignment records, global pedal settings, and a *Learn* mode that shows which setting you just touched on the pedal — help us name the unknown ones!
 
 ## Status
@@ -46,6 +46,23 @@ npm run app        # desktop window (Electron)
 npm start          # or: web UI at http://127.0.0.1:5230
 HD500_DEMO=1 npm start   # no pedal? try it with a simulated one
 ```
+
+## UI development
+
+The interface uses local ES modules, inline SVG symbols and system fonts; it works offline without a build step. Open the library with **B**, search all presets with **L**, and use **Alt + arrows** on an effect to move it by keyboard. Library import/export and set actions live in the sidebar's **…** menu.
+
+Use the simulated pedal for UI work:
+
+```sh
+HD500_DEMO=1 PORT=5231 node app/server.mjs
+# With the demo running in another terminal:
+node tests/ui-smoke.mjs /tmp/hd500-ui
+HD500_DEMO=1 node tests/ui-pointer-demo.mjs /tmp/hd500-ui
+node tests/screenshots.mjs docs/img
+python3 tools/i18n/apply.py
+```
+
+Screenshots cover both themes at desktop, tablet and phone sizes; their contact sheet is written to `/tmp/hd500-ui/contact.png` (Pillow required). Design decisions, shortcuts and outstanding visual verification are documented in [UI notes](docs/ui-notes.md).
 
 ## Safety
 

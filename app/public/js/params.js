@@ -22,6 +22,8 @@ export const edit = (op, args) => api('edit', { op, ...args });
 
 function send(item, p, value) {
   p.value = value;
+  const current = S.st?.preset?.items.find(it => it.id === item.id)?.params.find(q => q.index === p.index && q.id === p.id && q.setup === p.setup);
+  if(current) current.value = value;
   throttle(`${item.id}:${p.id}:${p.index}`, () => {
     if (p.setup != null) return edit(p.float ? 'setupF' : 'setup', { id: p.setup, value }).catch(fail); // ajuste do preset (E.R., microfone)
     return edit(p.cab ? 'cabParam' : 'param', { item: item.id, index: p.index, id: p.id, value }).catch(fail);
