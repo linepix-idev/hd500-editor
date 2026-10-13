@@ -1590,5 +1590,29 @@
 [
 "Informações do modelo — ${name}",
 "Model info — ${name}"
+],
+[
+"Ao vivo",
+"Live"
+],
+[
+"Aplicar ajustes durante o arraste",
+"Apply edits while dragging"
+],
+[
+"Aplicar ajustes ao soltar",
+"Apply edits on release"
+],
+[
+"Ajuda de roteamento de entrada",
+"Input routing help"
+],
+[
+"Ajuda do mixer",
+"Mixer help"
+],
+[
+"Azul seleciona. Verde indica ligado. Cabos tracejados indicam bypass.",
+"Blue selects. Green is on. Dashed cables mean bypass."
 ]
 ]

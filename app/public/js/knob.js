@@ -7,7 +7,7 @@ const NS = 'http://www.w3.org/2000/svg';
 const svg = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
 
 /** Knob rotativo 0..1. Arraste na vertical (Shift = fino), roda do mouse, setas, duplo clique para digitar. */
-export function Knob({ label, value, format, onInput, onCommit, color, badge, range, onContext, title }) {
+export function Knob({ label, value, format, onStart, onInput, onCommit, color, badge, range, onContext, title }) {
   let v = clamp(value, 0, 1);
   const root = h('div', { class: 'knob', style: color ? { '--c': color } : null, title: title ?? label });
   const s = svg('svg', { viewBox: '0 0 68 68', role: 'slider', tabindex: 0, 'aria-label': label, 'aria-valuemin': 0, 'aria-valuemax': 1 });
@@ -29,14 +29,14 @@ export function Knob({ label, value, format, onInput, onCommit, color, badge, ra
   const set = (nv, commit) => { v = clamp(nv, 0, 1); paint(); onInput(v); if (commit) onCommit?.(v); };
 
   let drag = null;
-  s.addEventListener('pointerdown', e => { if (e.button !== 0) return; s.setPointerCapture(e.pointerId); drag = { y: e.clientY, v, moved: false }; root.dataset.dragging = 'true'; e.preventDefault(); });
+  s.addEventListener('pointerdown', e => { if (e.button !== 0) return; s.setPointerCapture(e.pointerId); drag = { y: e.clientY, v, moved: false }; root.dataset.dragging = 'true'; onStart?.(); e.preventDefault(); });
   s.addEventListener('pointermove', e => { if (!drag) return; const sens = e.shiftKey ? 900 : 180, next = clamp(drag.v + (drag.y - e.clientY) / sens, 0, 1); if(next === v) return; drag.moved = true; set(next); });
   const end = () => {
     if (!drag) return;
     const moved = drag.moved; drag = null; root.removeAttribute('data-dragging'); onCommit?.(v);
     if (moved) root.dispatchEvent(new Event('knobend', { bubbles: true }));
   };
-  s.addEventListener('pointerup', end); s.addEventListener('pointercancel', end);
+  s.addEventListener('pointerup', end); s.addEventListener('pointercancel', end); s.addEventListener('lostpointercapture', end);
   s.addEventListener('wheel', e => { e.preventDefault(); set(v - Math.sign(e.deltaY) * (e.shiftKey ? 0.004 : 0.02), true); }, { passive: false });
   s.addEventListener('keydown', e => {
     const step = e.shiftKey ? 0.01 : 0.05;

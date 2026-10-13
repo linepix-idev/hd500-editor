@@ -1,45 +1,28 @@
-# Liquid Glass UI
+# HD500 Editor UI — 0.2.7
 
-The source UI remains plain, local ES modules. No bundler, font, icon package, CDN, external image, API change or core change is required. Changes remain uncommitted in the working tree. Core and protocol files are unchanged.
+The UI uses local ES modules, original SVG artwork and the system font stack. English is the source; Portuguese comes from `tools/i18n/pairs.json` and `python3 tools/i18n/apply.py`. Core files are unchanged. All development and tests use `HD500_DEMO=1 PORT=5231`; no real pedal or commit is involved.
 
-## Design decisions
+## Minimal surfaces and gear
 
-The library is now a persistent sidebar. It shows the current set's 64 slots in 16 banks, the loaded preset and an unsaved dot. Selecting a set browses its names; selecting a slot uses `nav.js` and its unsaved-change guard. Names are requested through the existing `library/slots` endpoint, cached by set, loaded sequentially for search and invalidated after writes, copies, swaps, clears and imports. Search loads other sets on demand. The sidebar's ellipsis menu keeps bundle import/export, set export/rename, CSV export and re-reading names. Slot context menus and confirmed slot/file drops reuse the library operations.
+Gear uses a flat silhouette in the original unit's color plus one identifying feature: a large footswitch dot, up to three knob dots, or one treadle pad. There are no screws, lettering, LEDs, reel markings, grille patterns, gradients or tiny switches. Amp icons use a body, faceplate, flat grille color and at most five knob dots. Cabs retain a simple speaker arrangement; microphones use three shapes. Feature contrast follows enclosure/faceplate brightness. `catalog/gear-styles.json` is the editable source; `node tools/gen-gear-styles.mjs` regenerates the browser styles.
 
-A mesh of diffuse orange, blue and violet gradients sits behind translucent layers. Sidebar, canvas, inspector, menus and sheets use increasingly elevated glass, saturation, hairline borders, internal highlights and layered shadows. Light surfaces use neutral text and darker variants of category strokes for legibility; the underlying category palette is unchanged. Dark and light themes share geometry and materials. Reduced transparency replaces glass with solid surfaces; reduced motion removes transitions, springs, flow and animations. Unsupported backdrop filters also fall back to solid surfaces.
+The canvas, inspector and settings panel sit on flat surfaces. Glass is reserved for toolbar, sidebar and sheets/menus. Category tints, duplicated node group labels, animated flow decoration, the background color mesh and canvas/footer slogans are removed. Nodes have one quiet selection outline. Titles are larger, spacing is generous, settings use inset groups, and routing/mixer help and Dynamic Tone are behind disclosure controls. Model Info retains detailed help and origins; search still includes descriptions and original gear names.
 
-The signal graph shows shared before/mix lanes and both parallel paths even when empty, so destinations stay discoverable. Local SVG Bézier cables take their destination's category color; bypass cables are dashed. Flow marks animate during a drag only. The graph scrolls inside its canvas rather than widening the page. The inspector uses a clickable model title, an enabled switch, a footswitch selector with an icon, thin parameter rings and centered values. Footswitch tiles mirror two rows of the pedal, with an expression tile and category-tinted assignment chips. Model sheets provide search, category chips and a grid.
+Blue is the action/selection accent (`#0a84ff` dark, `#007aff` light). Path A uses muted blue and path B muted violet. Gear color identifies the original equipment; UI category controls are neutral. Green indicates enabled/connected/Live; gray indicates off. Bypass also desaturates the gear and dashes its cable. Switch tracks are 51 × 31 px with a 27 px thumb and 2 px end insets; targets remain at least 44 px. Labels, accessible state, keyboard focus, motion and transparency preferences remain supported.
 
-Dragging uses pointer capture and a movement threshold. A lifted ghost follows the pointer, an exact-width gap previews insertion, surrounding nodes move with a short spring and edge movement scrolls the canvas. Effects (including empty slots) move between all six lanes. Any populated block can be dragged to the trash; effects can be dropped on footswitch tiles. Escape and pointer cancellation restore the layout without an edit. The existing `edit`/`chain` order contract and optimistic state update are preserved; a failed edit re-reads the authoritative state.
+The library shows 64 slots in 16 banks, caches names by set, and searches other sets on demand. A preset-label rail replaces the sidebar at 800–1199 px; below 800 px it becomes a focus-managed drawer. The graph scrolls within the canvas. The lower panels stack at 900 px. Model sheets have searchable categories and a flat inset list of choices; origins and Info remain available.
 
-At 1200 px and above the sidebar is expanded; at 800–1199 px it becomes a preset-label rail with an expansion control; below 800 px it becomes a keyboard-accessible drawer. Inputs, Footswitches and Advanced use a segmented tablist with arrow-key navigation. Menus and modal sheets support keyboard focus, Escape and focus restoration; sheets make the background inert. UI strings live in English, with Portuguese generated from `tools/i18n/pairs.json` using `tools/i18n/apply.py`.
+## Live editing and undo
 
-## Color map
+The toolbar's quiet Live pill defaults on. Turning it off changes continuous gestures to release-only application; discrete choices and toggles apply immediately. Save still backs up the previous slot and writes the edit buffer to flash.
 
-| Meaning | Token | Palette |
-| --- | --- | --- |
-| Primary action / selection / unsaved | accent | `#ff7a2f` |
-| Amp | amp | `#e3b341` |
-| Cab | cab | `#5ea2ff` |
-| Dynamics | g-dynamics | `#e07a5f` |
-| Distortion | g-distortion | `#f0566a` |
-| Modulation | g-modulation | `#3ec1a8` |
-| Delay | g-delay | `#5b8def` |
-| Reverb | g-reverb | `#9b6bff` |
-| Filter | g-filter | `#f2b84b` |
-| Pitch | g-pitch | `#f06ec2` |
-| Preamp / EQ | g-preamp | `#7fd36b` |
-| Volume / Pan | g-volume | `#a6adbb` |
-| Wah | g-wah | `#ffa94d` |
-| FX Loop | g-fx | `#7d8696` |
-| Connected / enabled | good | `#46d18b` |
-| Error / destructive | bad | dark `#ff7988`, light `#b7233e` |
+`live-edits.js` coalesces by parameter key on animation frames, caps continuous sends near 60/s even on faster displays, and allows one HTTP request in flight per parameter. UI values paint before any network work. New moves replace the pending value; a release is an ordering boundary that retains its final value even while a request is pending. Subsequent gestures retain separate ends. Pointer cancel/lost capture finalize the current value. Save, select, model, undo and other structural actions flush pending client edits first.
 
-Category class names normalize spaces and punctuation, so FX Loop, Preamp+EQ and Volume/Pan receive the same treatment as other categories. A Signal colors sheet explains selection, enabled state and bypass.
+Knobs, mixer faders/pans, tempo and expression range sliders use `gesture: 'start' | 'move' | 'end'`. Lists, model choices and toggles apply immediately without a Save. Setup and parameter changes use `Pod.param`, `Pod.setup`, `Pod.active`, or the existing `Pod.paramRange`. The model command sends immediately, then waits for the new parameter layout before refreshing the UI. Only structural operations (assignments, ordering, rename, undo/redo and file operations) use whole-preset commands.
 
-## Local icons
+`edit-flow.mjs` serializes device operations and coalesces queued moves per key. Start/end and structural actions are ordering barriers, so final edits precede save, selection and undo. Lightweight requests acknowledge acceptance immediately; async device errors arrive via the event stream. GET state waits behind accepted work. Parameter ticks do not re-read/re-apply a preset or push undo entries. History captures the baseline on the first changed gesture tick and one final body at its end. Overlapping gestures finish as one history group. Undo/redo restore complete bodies, as before.
 
-`app/public/js/icons.js` provides 20 × 20 SVGs with 1.6 px rounded strokes and `currentColor`: save, undo, redo, re-read, import, export, library folder, jack, guitar, microphone, output, footswitch, expression pedal, amp, cab, dynamics, distortion, modulation, delay, reverb, filter, pitch, EQ, volume, wah, loop, trash, copy, paste, settings, help, sun, moon, globe, eye, power, four arrows, sidebar, search, plus, close, ellipsis, check, swap and colors. Toolbar controls, tabs, blocks, model chips, assignment tiles and menus use local symbols. No emoji assets are used.
+Gesture completion emits only dirty/undo/redo metadata; moving knobs and mixer controls update in place. Echoes on recently sent keys are suppressed at server and client for a short 600 ms window to prevent stale values from fighting the drag. This window can also briefly suppress a physical adjustment to the same key; hardware timing remains unverified. Remote changes outside the window retain their original event behavior. `app/demo-device.mjs` extends the existing DemoPod to mirror its expression-range stub without changing core or protocol files.
 
 ## Shortcuts
 
@@ -65,47 +48,25 @@ Category class names normalize spaces and punctuation, so FX Loop, Preamp+EQ and
 | Double-click preset name, or Enter on its button | Rename inline; Enter commits, Escape cancels |
 | ? | Help |
 
-## 0.2.6 refinements
+## Verification
 
-On/off buttons share one track and one pseudo-element thumb. The inspector and Trails track is 48 × 28 px with a 22 px thumb and 3 px inset; the chain track is 36 × 20 px with a 16 px thumb and 2 px inset. Travel is calculated from track width, thumb size and both insets. The transparent hit area is at least 44 × 44 px. State comes from `aria-checked`, with slate off and green on colors, visible keyboard focus and motion preferences. Footswitch tiles keep their pressed-button semantics because one tile may invert several blocks independently. Controller assignment remains a three-way choice (Off / EXP 1 / EXP 2).
+Direct core tests pass six checks and skip the optional real `.h5e` fixture. The ten direct DemoPod tests pass: 200 rapid parameter moves coalesce to two sends, the final value wins, one undo restores the whole drag, one in-flight request survives slow transport, Live off waits for release, queued server moves respect end/save ordering, separate gestures retain their ends, failed requests drain, echo suppression expires, high-refresh input stays near 60 sends/s, and mixer/setup/tempo/bypass/ranges use small commands. Tests throw if a parameter drag reads or applies a whole preset. An in-process HTTP test also exercises the actual routes: requests acknowledge while the DemoPod command is blocked, 200 pending moves become one command, and undo restores the baseline in one step.
 
-The text stack is `-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", Inter, system-ui, "Segoe UI", Roboto, sans-serif`; large headings prefer SF Pro Display. CSS tokens define 11 px captions, 12 px supporting text, 14 px body text, 20 px titles and 28 px large titles. Numeric controls use tabular figures. Model and parameter labels wrap, chain nodes have more room, and layout becomes a single column at 900 px. Content spacing uses 4 / 8 / 12 / 16 / 24 px tokens. Controls, range inputs and icon buttons have larger touch areas. Tooltips wait 500 ms, support focus and dismiss on scrolling or Escape. Scrollbars follow the theme.
+The local SVG gear sheet was regenerated and a raster preview visually inspected. Icons were checked at 32 and 64 px; contrast of light-body footswitch dots and dark amp knob rows was increased after inspection. This is artwork review, not a browser rendering check.
 
-An Info button beside each picker model and in the inspector opens a read-only sheet with a larger gear illustration, name, group, available “Based on” metadata, sound/use description and parameter explanations. Back to models preserves the search and category. Cab sheets and cab pickers offer all eight microphones; the cab microphone parameter has an Info button for the current choice. Help navigation never changes the model or parameter values. Original gear names are shown where supplied by `amp-origins.json` and `fx-origins.json`; cab and mic entries explicitly say that original gear is not specified, rather than inventing an attribution.
+`HD500_DEMO=1 PORT=5231 npm test` cannot pass in this sandbox: both security tests fail binding `127.0.0.1:5231` with `listen EPERM`. Security checks remain intact. Starting the demo server fails with the same error. All nine `tests/ui-*.mjs` checks were attempted: seven stop at Chrome startup (`TargetCloseError`), and the pointer/live scripts fail connecting to the demo (`connect EPERM`). `tests/screenshots.mjs` also fails at Chrome startup. No new browser screenshots were produced; existing PNG captures in `docs/img` are from the previous UI. Full layout, switch geometry at zoom, focus, touch and visual calm still require a browser pass in an unrestricted demo environment. No hardware latency claim is made.
 
-`catalog/descriptions.json` holds original wording by effect group, amp family, cabinet configuration, microphone type and parameter name. It covers all 229 merged catalog models and every catalog parameter; unknown future parameters receive a generic explanation. Search matches descriptions and parameter guides in English and Portuguese. `tools/gen-descriptions.mjs` generates an offline ES module, and `tools/i18n/pairs.json` supplies Portuguese. The i18n generator excludes `core/` by default; `--include-core` is reserved for explicit core maintenance. The legacy core microphone label is normalized for display in the UI.
-
-Gear illustrations now use original control counts, a single Big Muff footswitch, a wide Rat enclosure, a green Screamer with a rubber pad, an orange script-style Phase 90, tape reels for Echoplex models, a metal-front Rectifier head, family-specific amp controls, speaker layouts including 1×8 and 8×10, and distinct ribbon/condenser silhouettes. This is original SVG artwork; no manufacturer logos or manual illustrations are copied. Origins were checked against the public [Line 6 POD HD Model Gallery](https://line6.com/data/6/0a06434c883751e6fd5654eee/application/pdf/POD%20HD%20Series%20Model%20Gallery%20-%20English%20%28%20Rev%20E%20%29.pdf).
-
-The regenerated [complete gear sheet](img/gear-sheet.svg) includes 237 illustrations (catalog plus microphones). The [featured gear sheet](img/gear-featured.png) was rasterized with local librsvg/Cairo and visually inspected. That review prompted enclosure, switch-pad, faceplate and microphone refinements. This is an artwork review, not a browser screenshot.
-
-## Verification and pending work
-
-Passed: syntax checks of every UI and test ES module; catalog description coverage for all 229 models; named parameter coverage including extra cab parameters; Portuguese coverage of descriptions and guides; generated description-module equality with JSON; attached Screamer origin; i18n generation; SVG XML parsing; and `git diff --check`. Direct core tests pass six tests and skip the optional real `.h5e` fixture. No hardware integration tests were run, and `core/` has no diff.
-
-`HD500_DEMO=1 PORT=5231 npm test` was attempted. The two security tests cannot bind localhost (`listen EPERM`), so the full suite is **not green in this environment**. Starting the demo server on 5231 fails for the same reason. All eight `tests/ui-*.mjs` scripts were attempted with demo mode enabled: seven fail when Chrome closes before page initialization (`TargetCloseError`), and the pointer test fails fetching the demo state (`connect EPERM`). `tests/screenshots.mjs` also fails at Chrome launch. These are environment failures; security tests were not weakened or skipped.
-
-No new browser captures were produced. Existing editor screenshots in `docs/img` remain previous captures; only the gear sheets are new. Browser geometry, focus/hover/pressed states, touch and drag behavior, full contrast AA, and clipping at zoom still need visual certification. In particular, enlarged targets and wrapping labels must be checked at 900 px and on the smaller drawer layout. No claim of complete AA or browser verification is made.
-
-Prepared checks, using only a simulated pedal:
+Run the demo server and each browser test from a fresh demo fixture:
 
 ```sh
 HD500_DEMO=1 PORT=5231 node app/server.mjs
-# In another terminal:
+# Another terminal, same demo-only configuration:
 HD500_DEMO=1 PORT=5231 npm test
-HD500_DEMO=1 node tests/ui-smoke.mjs /tmp/hd500-ui
-HD500_DEMO=1 node tests/ui-model-info.mjs /tmp/hd500-ui
-HD500_DEMO=1 node tests/ui-pointer-demo.mjs /tmp/hd500-ui
-HD500_DEMO=1 node tests/ui-interact.mjs
-HD500_DEMO=1 node tests/ui-controllers.mjs 5231
-HD500_DEMO=1 node tests/ui-mixer.mjs 5231
-HD500_DEMO=1 node tests/ui-drag.mjs 5231
-HD500_DEMO=1 node tests/ui-rename.mjs 5231
-HD500_DEMO=1 node tests/screenshots.mjs docs/img
-node tools/gen-descriptions.mjs
+HD500_DEMO=1 PORT=5231 node tests/live-edit.test.mjs
+HD500_DEMO=1 PORT=5231 node tests/ui-live.mjs
+HD500_DEMO=1 PORT=5231 node tests/screenshots.mjs docs/img
+# Run each remaining tests/ui-*.mjs against the fresh demo on 5231.
 node tools/gen-gear-styles.mjs
 node tools/gear-sheet.mjs
 python3 tools/i18n/apply.py
 ```
-
-Restart the demo server before each mutating script to restore its fixture; model help and smoke checks are read-only. The browser launcher defaults to `http://127.0.0.1:5231` and `/usr/bin/google-chrome`; `HD500_UI_URL` and `CHROME` are available for controlled demo setups. `tests/ui-model-info.mjs` covers both switch endpoints at 50 / 67 / 75 / 80 / 90 / 100 / 110 / 125 / 150 / 175 / 200 percent CSS zoom in light and dark, saves zoom captures, checks 1440 / 1100 / 900 / 390 px layouts, reduced motion, Info focus restoration, search, Portuguese and unchanged preset state. `tests/screenshots.mjs` adds 900 px and a model Info capture to the existing theme, footswitch, library, picker and drawer captures. The contact sheet uses actual Chrome captures when those are available.

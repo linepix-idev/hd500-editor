@@ -176,9 +176,9 @@ function drawWires() {
     if(!a||!b)return;
     const ar=a.getBoundingClientRect(),br=b.getBoundingClientRect(),x=ar.right-bounds.left,y=ar.top+ar.height/2-bounds.top,u=br.left-bounds.left,v=br.top+br.height/2-bounds.top,curve=Math.max(16,(u-x)/2);
     const d=`M${x} ${y} C${x+curve} ${y} ${u-curve} ${v} ${u} ${v}`;
-    const bypass=a.classList.contains('off')||b.classList.contains('off'),color=getComputedStyle(b).getPropertyValue('--c').trim()||'var(--io)';
+    const bypass=a.classList.contains('off')||b.classList.contains('off'), pathRow=b.closest('[data-path]')??a.closest('[data-path]'),color=pathRow?.dataset.path==='A'?'var(--path-a)':pathRow?.dataset.path==='B'?'var(--path-b)':'var(--io)';
     const path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d',d);path.setAttribute('stroke',color);path.style.setProperty('--wire-color',color);path.setAttribute('class',`connection ${bypass?'bypass':''}`);svg.append(path);
-    if(!bypass){const flow=path.cloneNode();flow.setAttribute('class','connection flow');svg.append(flow);}
+
   };
   const sequence=nodes=>nodes.forEach((n,i)=>i&&join(nodes[i-1],n));
   const before=lane('pre'),after=lane('post');sequence([root.querySelector('[data-source="1"]'),...before]);join(root.querySelector('[data-source="2"]'),before[0]);sequence([...after,root.querySelector('#chainOutput')]);

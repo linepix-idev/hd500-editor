@@ -9,7 +9,7 @@ const call = (port, { method = 'GET', path = '/api/catalog', headers = {}, body 
 });
 
 test('o servidor local recusa Host estranho, Origin de outro site e POST sem cabeçalho próprio', async t => {
-  const port = await start(0); t.after(stop);
+  const port = await start(Number(process.env.PORT ?? 0)); t.after(stop);
   assert.equal((await call(port)).status, 200);                                                     // uso normal
   assert.equal((await call(port, { headers: { Host: 'evil.example' } })).status, 403);              // DNS rebinding
   assert.equal((await call(port, { headers: { Origin: 'https://evil.example' } })).status, 403);   // outro site
@@ -19,7 +19,7 @@ test('o servidor local recusa Host estranho, Origin de outro site e POST sem cab
 });
 
 test('a interface estática e o catálogo carregam sem pedal', async t => {
-  const port = await start(0); t.after(stop);
+  const port = await start(Number(process.env.PORT ?? 0)); t.after(stop);
   const home = await call(port, { path: '/' }); assert.equal(home.status, 200); assert.match(home.body, /HD500/);
   const cat = JSON.parse((await call(port)).body); assert.ok(cat.amps.length > 50 && cat.pedals.length > 100);
 });

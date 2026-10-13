@@ -1,13 +1,15 @@
+import { liveEdits } from './editing.js';
 import { lang, langs, setLang, tr } from './i18n.js';
 import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, bytesToB64, b64ToBytes } from './util.js';
-import { S, onChange, notify, presetLabel, GROUP_CLASS } from './store.js';
+import { S, onChange, notify, presetLabel } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
 import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown } from './panels.js';
 import { selectSlot } from './nav.js';
-import { icon, buttonIcon, categoryIcon } from './icons.js';
+import { icon, buttonIcon } from './icons.js';
 
 initTooltips();
+new ResizeObserver(() => document.documentElement.style.setProperty('--toolbar-height', `${$('#top').getBoundingClientRect().height}px`)).observe($('#top'));
 
 const TABS = { setup: renderSetup, mixer: renderMixer, controllers: renderControllers, fs: renderFootswitches, advanced: renderAdvanced };
 let lastPreset = null, saving = false;
@@ -41,7 +43,15 @@ function renderSide() {
   TABS[S.tab]($('#tabBody'));
 }
 onChange(render);
-$('#inspector').addEventListener('knobend', notify);
+function paintStatus(status = S.st) {
+  if (!status || !S.st?.preset) return;
+  Object.assign(S.st, { dirty: status.dirty, canUndo: status.canUndo, canRedo: status.canRedo });
+  $('#dirty').hidden = !status.dirty; $('#revert').hidden = !status.dirty;
+  $('#undo').disabled = !status.canUndo; $('#redo').disabled = !status.canRedo;
+  $('#save').setAttribute('aria-label', status.dirty ? 'Save unsaved changes' : 'Save to pedal');
+  document.title = `${status.dirty ? '● ' : ''}${S.st.preset.name} — HD500 Editor`;
+}
+document.addEventListener('local-edit', () => paintStatus());
 
 async function load(st) { if(!S.cat) S.cat=await api('catalog'); S.st = st; notify(); }
 async function init() {
@@ -53,19 +63,25 @@ async function init() {
   const es = new EventSource('/api/events');
   es.onerror=()=>{ $('#conn').classList.remove('on'); $('#connText').textContent='server offline'; };
   es.onopen=()=>{ if(S.st) { $('#conn').classList.toggle('on',!!S.st.connected);$('#connText').textContent=S.st.connected?'POD HD500 connected':'disconnected'; } };
-  es.addEventListener('state', e => load(JSON.parse(e.data)));
-  es.addEventListener('param', e => { const { item, id, value } = JSON.parse(e.data); const it = S.st?.preset.items.find(i => i.id === item); const p = it?.params.find(p => p.id === id); if (p) p.value = value; patchParam(item, id, value); });
+  es.addEventListener('state', async e => {
+    if (liveEdits.pending) { await liveEdits.flush(); return load(await api('state')); }
+    load(JSON.parse(e.data));
+  });
+  es.addEventListener('history', e => { paintStatus(JSON.parse(e.data)); renderSidebar(); });
+  es.addEventListener('edit-error', async e => { fail(new Error(JSON.parse(e.data).error)); await liveEdits.flush(); await load(await api('state')); });
+  es.addEventListener('param', e => { const { item, id, value } = JSON.parse(e.data); if (liveEdits.ignores(`param:${item}:${id}`)) return; const it = S.st?.preset.items.find(i => i.id === item); const p = it?.params.find(p => p.id === id); if (p) p.value = value; patchParam(item, id, value); });
   es.addEventListener('active', e => { // alteração feita no pedal (footswitch)
-    const { item, active } = JSON.parse(e.data), it = S.st?.preset.items.find(i => i.id === item); if (!it) return;
+    const { item, active } = JSON.parse(e.data); if (liveEdits.ignores(`active:${item}`)) return; const it = S.st?.preset.items.find(i => i.id === item); if (!it) return;
     it.active = active; notify(); flashItem(item); if (it.fs) flashFs(it.fs);
   });
-  es.addEventListener('setup', e => { const ev = JSON.parse(e.data); const set = S.st?.preset.settings.find(x => x.id === ev.id); if (set) set.value = ev.value;  { const m = S.st?.preset.mixer, k = ({ 44: 'levelA', 45: 'levelB', 46: 'panA', 47: 'panB' })[ev.id]; if (m && k) { m[k] = ev.value; if (S.tab === 'mixer') renderSide(); } if (ev.id === 56 && S.st) { S.st.preset.trails = ev.value === 1; if (S.tab === 'mixer') renderSide(); } } learnSetup(ev); });
+  es.addEventListener('setup', e => { const ev = JSON.parse(e.data); if (liveEdits.ignores(`setup:${ev.id}`)) return; const set = S.st?.preset.settings.find(x => x.id === ev.id); if (set) set.value = ev.value;  { const m = S.st?.preset.mixer, k = ({ 44: 'levelA', 45: 'levelB', 46: 'panA', 47: 'panB' })[ev.id]; if (m && k) { m[k] = ev.value; if (S.tab === 'mixer') renderSide(); } if (ev.id === 56 && S.st) { S.st.preset.trails = ev.value === 1; if (S.tab === 'mixer') renderSide(); } } learnSetup(ev); });
   es.addEventListener('unknown', e => learnUnknown(JSON.parse(e.data)));
   es.addEventListener('progress', e => libraryProgress(JSON.parse(e.data)));
 }
 async function reconnect() { try { if(!S.cat) S.cat=await api('catalog'); await load(await api('reconnect', {})); } catch (e) { fail(e); } }
 
 // ---- topo
+$('#live').onclick = () => { liveEdits.setLive(!liveEdits.live); $('#live').setAttribute('aria-pressed', String(liveEdits.live)); $('#live').title = liveEdits.live ? 'Apply edits while dragging' : 'Apply edits on release'; };
 initSidebar();
 const step = d => { if(S.st?.connected) return selectSlot(undefined, (S.st.selection.preset + d + S.cat.presets) % S.cat.presets); };
 $('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);
@@ -158,8 +174,10 @@ $('#libraryClose').onclick=closeSidebar;$('#sidebarToggle').onclick=toggleSideba
 $('#chainTrash').onclick=()=>clearBlock();
 $('#language').onclick=e=>{const r=e.currentTarget.getBoundingClientRect();menu(r.left,r.bottom+4,Object.entries(langs).map(([key,name])=>[name,()=>setLang(key)]));};
 $('#colorLegend').onclick=()=>{
-  const groups=[{kind:'amp',group:'Amp'},{kind:'cab',group:'Cab'},...['Dynamics','Distortion','Modulation','Delay','Reverb','Filter','Pitch','Preamp+EQ','Volume/Pan','Wah','FX Loop'].map(group=>({kind:'fx',group}))];
-  modal('Signal colors',[h('p',{class:'dim'},'Color follows the sound: block, cable and knob.'),h('div',{class:'legend-grid'},groups.map(it=>h('div',{class:`legend-item ${it.kind} ${GROUP_CLASS(it.group)}`},icon(categoryIcon(it)),h('span',{},it.group)))),h('p',{class:'dim'},'Orange selects. Green is on. Dashed cables mean bypass.')]);
+  modal('Signal colors', [h('div', { class: 'legend-grid' },
+    h('div', { class: 'legend-item' }, h('i', { class: 'legend-dot', style: { background: 'var(--path-a)' } }), 'Path A'),
+    h('div', { class: 'legend-item' }, h('i', { class: 'legend-dot', style: { background: 'var(--path-b)' } }), 'Path B')),
+    h('p', { class: 'dim' }, 'Blue selects. Green is on. Dashed cables mean bypass.')]);
 };
 
 $('#librarySidebar').addEventListener('keydown',e=>{

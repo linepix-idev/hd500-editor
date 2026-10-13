@@ -4,30 +4,30 @@ import { readFileSync } from 'fs';
 import { pathToFileURL } from 'url';
 import { Pod, SETS, PRESETS_PER_SET } from '../core/device.mjs';
 import { deviceVisible } from '../core/transport.mjs';
-import { DemoPod } from '../core/demo.mjs';
+import { DemoPod } from './demo-device.mjs';
 const DEMO = !!process.env.HD500_DEMO; // pedal simulado, sem hardware
 import { Preset, catalog, chainOf, FS_NAMES, CTL_NAMES, INPUT1, INPUT2, INZ, LANES } from '../core/preset.mjs';
 import * as Lib from '../core/library.mjs';
+import { EditQueue, GestureHistory, FAST_EDITS } from './edit-flow.mjs';
+import { parameterEdits } from './parameter-edits.mjs';
+import { editKey } from './public/js/live-edits.js';
 
 const PORT = Number(process.env.PORT ?? 5230);
 const BACKUPS = new Lib.Backups(new URL('../backups', import.meta.url).pathname);
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
-// histórico para desfazer/refazer (cada entrada = corpo completo do buffer de edição)
-const hist = { list: [], idx: -1, timer: null };
-let loadedBody = null;  // conteúdo do slot quando foi lido/gravado: base para saber se há alterações não salvas
-const same = (a, b) => a && b && Buffer.compare(a, b) === 0;
-function snapshot() {
-  clearTimeout(hist.timer);
-  hist.timer = setTimeout(() => {
-    if (!preset || same(hist.list[hist.idx], preset.body)) return;
-    hist.list = hist.list.slice(0, hist.idx + 1); hist.list.push(Buffer.from(preset.body)); if (hist.list.length > 200) hist.list.shift();
-    hist.idx = hist.list.length - 1; emit('state', view());
-  }, 500);
-}
-function resetHistory() { clearTimeout(hist.timer); hist.list = [Buffer.from(preset.body)]; hist.idx = 0; loadedBody = Buffer.from(preset.body); }
-
 let pod = null, preset = null, selection = { set: 0, preset: 0 }, setNames = [], slotNames = new Map(), lastError = null;
+let loadedBody = null;
+const same = (a, b) => a && b && Buffer.compare(a, b) === 0;
+const queue = new EditQueue();
+const hist = new GestureHistory(() => preset?.body, () => emit('history', status()));
+const status = () => ({ dirty: !!preset && !same(preset.body, loadedBody), canUndo: hist.canUndo, canRedo: hist.canRedo });
+const snapshot = () => { hist.push(); emit('history', status()); };
+function resetHistory() { hist.reset(); loadedBody = Buffer.from(preset.body); }
+const sent = new Map();
+const isEcho = key => (sent.get(key) ?? 0) > Date.now();
+const remember = b => sent.set(editKey(b), Date.now() + 600);
+
 const clients = new Set();
 const emit = (ev, data) => clients.forEach(r => r.write(`event: ${ev}\ndata: ${JSON.stringify(data)}\n\n`));
 const view = () => ({ connected: !!pod, dirty: !!preset && !same(preset.body, loadedBody), canUndo: hist.idx > 0, canRedo: hist.idx < hist.list.length - 1, selection, setNames, preset: preset?.toJSON(), chain: preset ? Object.fromEntries(Object.entries(chainOf(preset)).map(([k, v]) => [k, v.map(i => i.id)])) : null });
@@ -37,24 +37,26 @@ async function connect() {
   try { pod = DEMO ? new DemoPod() : Pod.connect(); lastError = null; } catch (e) { pod = null; lastError = e.message; throw e; }
   // alterações feitas no painel do pedal
   pod.on('param', ({ item, id, value }) => {
+    if (isEcho(`param:${item}:${id}`)) return;
     const it = preset?.items.find(i => i.id === item), p = it?.params.find(p => p.id === id);
     if (p) { preset.setParamValue(item, p.index, value); emit('param', { item, id, value }); }
   });
-  pod.on('active', ({ item, active }) => { preset?.setItemActive(item, active); emit('active', { item, active }); });
+  pod.on('active', ({ item, active }) => { if (isEcho(`active:${item}`)) return; preset?.setItemActive(item, active); emit('active', { item, active }); });
   pod.on('unknown', ev => emit('unknown', ev));
   pod.on('setup', ({ id, value, vtype }) => { // ajuste mexido no painel do pedal: serve para descobrir o que cada id faz
+    if (isEcho(`setup:${id}`)) return;
     try { vtype === 1 ? preset?.setSetupFloat(id, value) : preset?.setSetup(id, value); } catch {}
     emit('setup', { id, value, vtype });
   });
   let t = null;
-  pod.on('selection', () => { clearTimeout(t); t = setTimeout(() => refresh().catch(() => {}), 300); });
+  pod.on('selection', () => { clearTimeout(t); t = setTimeout(() => queue.enqueue(() => refresh()).catch(() => {}), 300); });
   await refresh(true);
 }
 async function refresh(first = false) {
   preset = await pod.readCurrent();
   selection = await pod.selection();
   if (first || !setNames.length) setNames = await pod.setNames();
-  resetHistory();
+  sent.clear(); resetHistory();
   emit('state', view());
 }
 async function drop() { try { await pod?.close(); } catch {} pod = null; preset = null; }
@@ -65,19 +67,13 @@ async function mutate(fn) { preset = await pod.readCurrent(); fn(preset); await 
 async function pushAll() { await pod.apply(preset); await wait(200); emit('state', view()); }
 
 const edits = {
-  tempo: async ({ bpm }) => { preset.body.writeFloatLE(bpm, 0xd58); await pod.setup(0x17, Buffer.from(new Float32Array([bpm]).buffer).readUInt32LE(0), 1); },
+  ...parameterEdits(() => preset, () => pod),
   undo: async () => { if (hist.idx > 0) { hist.idx--; preset = new Preset(hist.list[hist.idx]); await pod.apply(preset); emit('state', view()); } },
   redo: async () => { if (hist.idx < hist.list.length - 1) { hist.idx++; preset = new Preset(hist.list[hist.idx]); await pod.apply(preset); emit('state', view()); } },
-  param: async ({ item, index, id, value }) => { preset.setParamValue(item, index, value); await pod.param(item, id, value); },
-  cabParam: async ({ item, index, value }) => { preset.setParamValue(item, index, value); const SETUP = [[0x57, 0x59, 0x5b, 0x5d], [0x58, 0x5a, 0x5c, 0x5e]]; await pod.setup(SETUP[(item - 1) / 2][index], Buffer.from(new Float32Array([value]).buffer).readUInt32LE(0), 1); },
-  active: async ({ item, active }) => { preset.setItemActive(item, active); await pod.active(item, active); },
   model: async ({ item, type }) => { await pod.model(item, type); await wait(300); preset = await pod.readCurrent(); emit('state', view()); },
-  setup: async ({ id, value }) => { preset.setSetup(id, value); await pod.setup(id, value); },
-  setupF: async ({ id, value }) => { preset.setSetupFloat(id, value); await pod.setup(id, Buffer.from(new Float32Array([value]).buffer).readUInt32LE(0), 1); },
   midi: async ({ index, bytes }) => mutate(p => bytes.forEach((v, k) => (p.body[0xd84 + index * 6 + k] = v))),
   fs: async ({ item, fs }) => mutate(p => p.setItemFs(item, fs)),
   ctl: async ({ item, index, ctl, lo, hi }) => mutate(p => { p.setParamCtl(item, index, ctl); if (lo != null) p.setParamRange(item, index, lo, hi); }),
-  range: async ({ item, index, lo, hi }) => mutate(p => p.setParamRange(item, index, lo, hi)),
   name: async ({ name }) => mutate(p => { p.name = name; }),
   chain: async ({ order }) => mutate(p => p.setFxOrder(order)),                   // [{id, lane}] na ordem 0..7
   raw: async ({ offset, value }) => mutate(p => { p.body[offset] = value; }),
@@ -107,7 +103,14 @@ const routes = {
   'GET /api/state': async () => { await connect(); return view(); },
   'POST /api/reconnect': async () => { await drop(); await wait(1500); await connect(); return view(); },
   'POST /api/disconnect': async () => { await drop(); emit('state', view()); return { ok: true }; },
-  'POST /api/edit': async b => { const f = edits[b.op]; if (!f) throw new Error(`unknown operation: ${b.op}`); await f(b); if (b.op !== 'undo' && b.op !== 'redo') snapshot(); else emit('state', view()); return { ok: true }; },
+  'POST /api/edit': async b => {
+    hist.before(b);
+    if (FAST_EDITS.has(b.op)) remember(b);
+    await edits[b.op](b);
+    if (FAST_EDITS.has(b.op)) remember(b);
+    if (b.op !== 'undo' && b.op !== 'redo') hist.after(b);
+    return { ok: true };
+  },
   'POST /api/select': async ({ set, preset: p }) => { await pod.select(set, p); await refresh(); return view(); },
   'POST /api/save': async () => {
     const live = await pod.readCurrent();
@@ -160,15 +163,29 @@ const routes = {
 };
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
-const server = createServer(async (req, res) => {
+export async function handleRequest(req, res) {
   const url = new URL(req.url, 'http://x'), key = `${req.method} ${url.pathname}`;
   try {
     const denied = guard(req); if (denied) return json(res, 403, { error: denied });
     if (key === 'GET /api/events') { res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' }); res.write('\n'); clients.add(res); req.on('close', () => clients.delete(res)); return; }
     if (routes[key]) {
-      const needsPod = !/catalog|reconnect|disconnect|backups|state$/.test(key);
-      if (needsPod) await connect();
-      return json(res, 200, await routes[key](req.method === 'POST' ? await readBody(req) : {}));
+      const body = req.method === 'POST' ? await readBody(req) : {};
+      const editing = key === 'POST /api/edit';
+      if (editing && !edits[body.op]) throw new Error(`unknown operation: ${body.op}`);
+      if (editing && body.gesture != null && !['start', 'move', 'end'].includes(body.gesture)) throw new Error('invalid gesture');
+      const run = async () => {
+        const needsPod = !/catalog|reconnect|disconnect|backups|state$/.test(key);
+        if (needsPod) await connect();
+        return routes[key](body);
+      };
+      const operation = queue.enqueue(run, editing && FAST_EDITS.has(body.op) ? body : null);
+      if (editing && FAST_EDITS.has(body.op)) {
+        // Acknowledge acceptance without waiting for USB. Ordered failures arrive
+        // on the event stream; the client never blocks a knob on a response.
+        operation.catch(error => emit('edit-error', { error: error.message, op: body.op }));
+        return json(res, 200, { ok: true });
+      }
+      return json(res, 200, await operation);
     }
     const f = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
     if (f.includes('..')) return json(res, 400, { error: 'invalid path' });
@@ -179,7 +196,8 @@ const server = createServer(async (req, res) => {
     if (res.headersSent) return res.end();
     json(res, e.code === 'ENOENT' ? 404 : 500, { error: e.message });
   }
-});
+}
+const server = createServer(handleRequest);
 
 // conecta sozinho ao ligar o pedal e solta ao desconectar o cabo
 let watching = null, connecting = false;
@@ -187,8 +205,8 @@ function watch() {
   watching = setInterval(async () => {
     try {
       const here = DEMO || deviceVisible();
-      if (pod && !here) { await drop(); emit('state', view()); }
-      else if (!pod && here && clients.size && !connecting) { connecting = true; try { await connect(); emit('state', view()); } catch {} connecting = false; }
+      if (pod && !here) { await queue.enqueue(async () => { await drop(); emit('state', view()); }); }
+      else if (!pod && here && clients.size && !connecting) { connecting = true; try { await queue.enqueue(async () => { await connect(); emit('state', view()); }); } catch {} connecting = false; }
     } catch {}
   }, 2500);
 }

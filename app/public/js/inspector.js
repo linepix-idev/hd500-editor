@@ -1,12 +1,11 @@
 import { infoButton } from './model-info.js';
 import { gearEl, gearSpec } from './gear-spec.js';
-import { h, api, fail, toast } from './util.js';
-import { S, notify, GROUP_CLASS } from './store.js';
+import { h, api, fail } from './util.js';
+import { bindLiveInput } from './editing.js';
+import { S, notify } from './store.js';
 import { ParamControl, edit, fmt } from './params.js';
 import { pickModel } from './picker.js';
 import { icon, categoryIcon } from './icons.js';
-
-const GROUP_COLOR = g => `var(--g-${({ 'Preamp+EQ': 'preamp', 'Volume/Pan': 'volume', 'FX Loop': 'fx' })[g] ?? (g ?? 'none').toLowerCase()})`;
 
 let inspectedKey = null;
 export function renderInspector(root) {
@@ -16,7 +15,7 @@ export function renderInspector(root) {
   if(root.querySelector('.knob[data-dragging]') && key === inspectedKey) return;
   if(inspectedKey != null && key !== inspectedKey && !matchMedia('(prefers-reduced-motion: reduce)').matches) root.animate([{ opacity: .7, transform: 'translateY(4px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
   inspectedKey = key;
-  const color = it.kind === 'amp' ? 'var(--amp)' : it.kind === 'cab' ? 'var(--cab)' : GROUP_COLOR(it.group);
+  const color = 'var(--accent)';
   const kindName = it.kind === 'amp' ? `Amp ${it.id === 0 ? 'A' : 'B'}` : it.kind === 'cab' ? `Cab ${it.id === 1 ? 'A' : 'B'}` : `Effect ${it.id - 3}`;
   const fsSel = h('select', { 'aria-label': 'Footswitch', onChange: () => edit('fs', { item: it.id, fs: Number(fsSel.value) }).catch(fail) },
     S.cat.fs.map((n, i) => h('option', { value: i }, n === '—' ? 'No footswitch' : n)));
@@ -47,14 +46,16 @@ function DtRow(it) {
       opts.map((o, i) => h('option', { value: i }, o)));
     sel.value = it.dt[key]; return h('label', { class: 'dim' }, `${label} `, sel);
   };
-  return h('div', { class: 'row', style: { marginTop: '14px', gap: '16px' }, title: 'Dynamic Tone (Line 6 DT25/DT50 amplifiers)' },
-    h('b', { style: { fontSize: '12px' } }, 'Dynamic Tone'), mk('Topology', 'topology', ['I', 'II', 'III', 'IV']), mk('Class', 'class', ['A', 'A/B']), mk('Mode', 'mode', ['Tri', 'Pent']));
+  return h('details', { class: 'inset-details' }, h('summary', {}, 'Dynamic Tone'), h('div', { class: 'row' }, mk('Topology', 'topology', ['I', 'II', 'III', 'IV']), mk('Class', 'class', ['A', 'A/B']), mk('Mode', 'mode', ['Tri', 'Pent'])));
 }
 
 function RangeRow(it, p) {
   const out = h('span', { class: 'dim', style: { minWidth: '120px' } });
-  const mk = (which) => { const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${which === 'lo' ? 'heel' : 'toe'}`,
-    onInput: () => { p[which] = Number(i.value); paint(); clearTimeout(i._t); i._t = setTimeout(() => edit('range', { item: it.id, index: p.index, lo: p.lo, hi: p.hi }).catch(fail), 120); } }); return i; };
+  const mk = which => {
+    const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${which === 'lo' ? 'heel' : 'toe'}` });
+    bindLiveInput(i, 'range', () => ({ item: it.id, index: p.index, lo: p.lo, hi: p.hi }), () => { p[which] = Number(i.value); paint(); });
+    return i;
+  };
   const lo = mk('lo'), hi = mk('hi');
   const paint = () => { out.textContent = `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`; };
   paint();

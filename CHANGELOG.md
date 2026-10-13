@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.7
+- Minimal flat gear icons: real enclosure colors, one pedal feature, flat amp faceplates/grilles and at most five knob dots. Neutral content surfaces, quieter nodes and picker, inset settings groups, larger titles and disclosed routing/mixer/DT help.
+- Live editing defaults on. Knobs, mixer, tempo and expression ranges update optimistically during drags, coalesced to about 60 sends/s with one request in flight per parameter and a guaranteed release value. The toolbar Live toggle applies drags on release when disabled; Save still writes flash.
+- Serialized lightweight device edits, pending-move coalescing, gesture-level undo and short echo suppression. No preset reads/applies or whole-state redraws per parameter tick. Added DemoPod regressions and a demo browser live-edit check. Core files remain unchanged.
+
 ## 0.2.6
 - "Based on …" for effect models too (e.g. Screamer → Ibanez Tube Screamer, Script Phase → MXR Phase 90), from [Line 6's public POD HD Model Gallery](https://line6.com/data/6/0a06434c883751e6fd5654eee/application/pdf/POD%20HD%20Series%20Model%20Gallery%20-%20English%20%28%20Rev%20E%20%29.pdf); shown in picker, inspector, tooltips and search.
 

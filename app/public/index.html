@@ -17,6 +17,7 @@
     <button id="next" class="icon" aria-label="Next preset" title="Next preset (→)"></button>
   </nav>
   <div class="actions">
+    <button id="live" class="live-pill" aria-pressed="true" title="Apply edits while dragging"><i></i><span>Live</span></button>
     <button id="undo" class="icon" title="Undo (Ctrl+Z)" aria-label="Undo"></button>
     <button id="redo" class="icon" title="Redo (Ctrl+Y)" aria-label="Redo"></button>
     <button id="revert" class="icon" title="Discards changes and reloads the preset stored in the pedal" aria-label="Discard" hidden></button>
@@ -32,18 +33,17 @@
   <button id="drawerBackdrop" hidden aria-label="Close library"></button>
   <aside id="librarySidebar" aria-label="Preset library">
     <div class="sidebar-head"><h2>Library</h2><button id="libraryMore" class="icon" aria-label="Library actions" title="Library actions"></button><button id="libraryClose" class="icon" aria-label="Close library" title="Close library"></button></div>
-    <label class="set-label" for="setSel">Current set</label><span class="set-row"><select id="setSel" aria-label="Set"></select><button id="renameSetBtn" class="icon" title="Rename set" aria-label="Rename set"></button></span>
+    <span class="set-row"><select id="setSel" aria-label="Set"></select><button id="renameSetBtn" class="icon" title="Rename set" aria-label="Rename set"></button></span>
     <label class="library-search"><span id="searchIcon"></span><input id="librarySearch" type="search" placeholder="Search all presets…" aria-label="Search all presets"></label>
     <div id="libbar" class="bar" hidden role="progressbar" aria-label="Reading preset names" aria-valuemin="0" aria-valuemax="100"><i></i></div>
     <div id="libraryList" class="library-list" aria-label="Presets"></div>
     <div class="sidebar-foot"><span>8 sets · 64 presets</span><span class="key-hint">B</span></div>
   </aside>
   <main>
-    <div class="workspace-heading"><div><p class="eyebrow">Your sound, connected</p><h1>Signal chain</h1></div><button class="conn" id="conn" title="Reconnect to the pedal"><i class="dot"></i><span id="connText">connecting…</span></button></div>
+    <div class="workspace-heading"><div><h1>Signal chain</h1></div><button class="conn" id="conn" title="Reconnect to the pedal"><i class="dot"></i><span id="connText">connecting…</span></button></div>
     <section id="chainWrap" aria-label="Signal chain">
-      <div class="canvas-toolbar"><span class="dim">Select to shape. Drag to connect.</span><div><button id="openMixer" class="pill" title="Mixer: level and pan of paths A and B (M)" aria-label="Open the mixer"></button><button id="colorLegend" class="icon" title="Signal colors" aria-label="Signal colors"></button><button id="chainTrash" class="icon" title="Drag a block here to clear it" aria-label="Clear selected block"></button></div></div>
+      <div class="canvas-toolbar"><div><button id="openMixer" class="pill" title="Mixer: level and pan of paths A and B (M)" aria-label="Open the mixer"></button><button id="colorLegend" class="icon" title="Signal colors" aria-label="Signal colors"></button><button id="chainTrash" class="icon" title="Drag a block here to clear it" aria-label="Clear selected block"></button></div></div>
       <div class="chain-scroll"><div id="chain"><div class="chain-skeleton"></div></div></div>
-      <div class="canvas-footer"><span><i class="signal-dot"></i>Live edit buffer</span><span>Changes are saved when you choose Save.</span></div>
     </section>
     <div class="split">
       <section id="inspector" aria-label="Block editor"></section>
@@ -58,7 +58,6 @@
         <div id="tabBody" role="tabpanel" aria-labelledby="tab-setup"></div>
       </aside>
     </div>
-    <footer class="workspace-footer"><span>POD HD500</span><span>Made for the music.</span></footer>
   </main>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>

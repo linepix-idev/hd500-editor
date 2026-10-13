@@ -1,7 +1,8 @@
 import { infoButton } from './model-info.js';
-import { h, api, fail, throttle, menu } from './util.js';
+import { h, api, fail, menu } from './util.js';
 import { Knob } from './knob.js';
 import { S } from './store.js';
+import { liveEdits, optimistic } from './editing.js';
 
 export const NOTES = ['Whole', '1/2 (dot)', '1/2', '1/2 (3)', '1/4 (dot)', '1/4', '1/4 (3)', '8th (dot)', '8th', '8th (3)', '16 (dot)', '16', '16 (3)', '32 (dot)', '32', '32 (3)', '64 (dot)', '64', '64 (3)'];
 
@@ -21,14 +22,16 @@ export function fmt(p, v) {
 }
 export const edit = (op, args) => api('edit', { op, ...args });
 
-function send(item, p, value) {
+function operation(item, p, value) {
+  if (p.setup != null) return [p.float ? 'setupF' : 'setup', { id: p.setup, value }];
+  return [p.cab ? 'cabParam' : 'param', { item: item.id, index: p.index, id: p.id, value }];
+}
+function send(item, p, value, phase = 'end') {
   p.value = value;
   const current = S.st?.preset?.items.find(it => it.id === item.id)?.params.find(q => q.index === p.index && q.id === p.id && q.setup === p.setup);
-  if(current) current.value = value;
-  throttle(`${item.id}:${p.id}:${p.index}`, () => {
-    if (p.setup != null) return edit(p.float ? 'setupF' : 'setup', { id: p.setup, value }).catch(fail); // ajuste do preset (E.R., microfone)
-    return edit(p.cab ? 'cabParam' : 'param', { item: item.id, index: p.index, id: p.id, value }).catch(fail);
-  });
+  if (current) current.value = value;
+  optimistic();
+  liveEdits[phase](...operation(item, p, value));
 }
 
 function ctlMenu(item, p) {
@@ -52,7 +55,8 @@ export function ParamControl(item, p, color) {
   const knob = Knob({
     label: p.name, value: Math.min(1, p.value), format: v => fmt(p, v), color, badge, range,
     title: `${p.name}${p.setup != null ? '' : p.ctl ? ` — controlled by ${S.cat.ctl[p.ctl]} (right-click to change)` : ' — right-click: assign to an expression pedal'}`,
-    onInput: v => send(item, p, v), onContext: p.setup != null ? null : ctlMenu(item, p),
+    onStart: () => liveEdits.begin(...operation(item, p, p.value)),
+    onInput: v => send(item, p, v, 'move'), onCommit: v => send(item, p, v, 'end'), onContext: p.setup != null ? null : ctlMenu(item, p),
   });
   knob.dataset.pid = p.id; knob.dataset.idx = p.index;
   if (p.kind === 'tempo') { // atraso sincronizado ao tempo: lista de valores de nota

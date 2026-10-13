@@ -393,5 +393,11 @@ export const PT = {
  "Sets the strength of the cabinet resonance.": "Define a intensidade da ressonância da caixa.",
  "Adjusts the low-frequency punch of the cabinet.": "Ajusta o impacto dos graves da caixa.",
  "Passes the signal without this model. Choose another model to add its sound.": "Passa o sinal sem este modelo. Escolha outro modelo para adicionar seu timbre.",
- "Model info — ${name}": "Informações do modelo — ${name}"
+ "Model info — ${name}": "Informações do modelo — ${name}",
+ "Live": "Ao vivo",
+ "Apply edits while dragging": "Aplicar ajustes durante o arraste",
+ "Apply edits on release": "Aplicar ajustes ao soltar",
+ "Input routing help": "Ajuda de roteamento de entrada",
+ "Mixer help": "Ajuda do mixer",
+ "Blue selects. Green is on. Dashed cables mean bypass.": "Azul seleciona. Verde indica ligado. Cabos tracejados indicam bypass."
 };

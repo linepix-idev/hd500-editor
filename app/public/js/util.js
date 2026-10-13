@@ -22,7 +22,10 @@ export function h(tag, attrs = {}, ...kids) {
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
+let apiBarrier = null;
+export const setApiBarrier = fn => { apiBarrier = fn; };
 export async function api(path, body) {
+  if (apiBarrier && (['save','select','reconnect','disconnect'].includes(path) || (path === 'edit' && !['param','cabParam','setup','setupF','tempo','active','range'].includes(body?.op)))) await apiBarrier();
   const r = await fetch('/api/' + path, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1' }, body: JSON.stringify(body) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error || `error ${r.status}`);
@@ -34,14 +37,6 @@ export function toast(msg, isErr = false, ms = 3200) {
   box.append(el); setTimeout(() => el.remove(), ms);
 }
 export const fail = e => { console.error(e); toast(e.message ?? String(e), true, 5000); };
-
-// agrupa chamadas frequentes (knobs): envia no máximo a cada `ms`, sempre com o último valor
-const timers = new Map();
-export function throttle(key, fn, ms = 45) {
-  const t = timers.get(key) ?? { last: 0, timer: null };
-  timers.set(key, t); clearTimeout(t.timer);
-  t.timer = setTimeout(() => { t.last = Date.now(); fn(); }, Math.max(0, ms - (Date.now() - t.last)));
-}
 
 let closeMenu = null;
 export function menu(x, y, entries) {

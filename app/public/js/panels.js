@@ -1,10 +1,11 @@
-import { throttle, h, api, fail, toast, menu, modal, download, pickFile, b64ToBytes, bytesToB64, $ } from './util.js';
+import { h, api, fail, toast, menu, modal, download, pickFile, b64ToBytes, bytesToB64, $ } from './util.js';
 import { S, notify, presetLabel, GROUP_CLASS } from './store.js';
 import { edit, fmt } from './params.js';
 import { pickDestination } from './picker.js';
 import { selectSlot } from './nav.js';
 import { icon } from './icons.js';
 import { tr } from './i18n.js';
+import { bindLiveInput } from './editing.js';
 
 // ---------------------------------------------------------------------------------------- Entradas / preset
 export function renderSetup(root) {
@@ -15,14 +16,15 @@ export function renderSetup(root) {
     const s = h('select', { 'aria-label': label, onChange: () => { su[key] = Number(s.value); edit('setup', { id: setting, value: su[key] }).then(notify).catch(fail); } }, opts.map(([v, n]) => h('option', { value: v }, n)));
     s.value = su[key]; return h('div', { class: 'row' }, h('label', {}, label), s);
   };
-  const bpm = h('input', { type: 'number', min: 30, max: 240, step: 1, value: Math.round(p.tempo), 'aria-label': 'Tempo (BPM)', style: { width: '80px' }, onChange: () => edit('tempo', { bpm: Number(bpm.value) }).catch(fail) });
+  const bpm = h('input', { type: 'number', min: 30, max: 240, step: 1, value: Math.round(p.tempo), 'aria-label': 'Tempo (BPM)', style: { width: '80px' } });
+  bindLiveInput(bpm, 'tempo', () => ({ bpm: Number(bpm.value) }), () => { p.tempo = Number(bpm.value); });
   root.replaceChildren(
     h('div', { class: 'row' }, h('label', {}, 'Preset name'), name),
     h('h3', { style: { fontSize: '13px', margin: '14px 0 2px' } }, 'Input routing'),
     select('Input 1 (path A)', 'input1', S.cat.input1, 0x36),
     select('Input 2 (path B)', 'input2', S.cat.input2, 0x37),
     select('Guitar input impedance', 'inZ', S.cat.inZ, 0x55),
-    h('p', { class: 'dim', style: { fontSize: '12px' } }, 'To use a mic and a guitar together: Input 1 = Guitar and Input 2 = Mic. Each input feeds its own path (A and B) in the signal chain.'),
+    h('details', { class: 'inset-details' }, h('summary', {}, 'Input routing help'), h('p', { class: 'dim' }, 'To use a mic and a guitar together: Input 1 = Guitar and Input 2 = Mic. Each input feeds its own path (A and B) in the signal chain.')),
     h('div', { class: 'row' }, h('label', {}, 'Tempo (BPM)'), bpm));
 }
 
@@ -35,18 +37,17 @@ const fmtPan = v => (Math.abs(v) < 0.005 ? 'Center' : `${v < 0 ? 'L' : 'R'} ${Ma
 const remembered = { A: 0, B: 0 };
 export function renderMixer(root) {
   const p = S.st.preset, m = p.mixer;
-  const send = (id, value) => edit('setupF', { id, value }).catch(fail);
   const path = which => {
     const spec = MIX[which], [lk, pk] = spec.key;
     const dbOut = h('output', { class: 'mx-db' }, fmtDb(m[lk])), panOut = h('output', { class: 'mx-pan' }, fmtPan(m[pk]));
     const fader = h('input', { type: 'range', class: 'mx-fader', min: -60, max: 12, step: 0.5, value: m[lk], 'aria-label': `Path ${which} level`, orient: 'vertical' });
-    fader.oninput = () => { m[lk] = Number(fader.value); dbOut.textContent = fmtDb(m[lk]); mute.setAttribute('aria-pressed', String(m[lk] <= -59.9)); throttle(`mx${spec.level}`, () => send(spec.level, m[lk])); };
+    const commitLevel = bindLiveInput(fader, 'setupF', () => ({ id: spec.level, value: m[lk] }), () => { m[lk] = Number(fader.value); dbOut.textContent = fmtDb(m[lk]); mute.setAttribute('aria-pressed', String(m[lk] <= -59.9)); });
     const pan = h('input', { type: 'range', class: 'mx-panslider', min: -1, max: 1, step: 0.01, value: m[pk], 'aria-label': `Path ${which} pan` });
-    pan.oninput = () => { m[pk] = Number(pan.value); panOut.textContent = fmtPan(m[pk]); throttle(`mx${spec.pan}`, () => send(spec.pan, m[pk])); };
-    pan.ondblclick = () => { pan.value = which === 'A' ? -1 : 1; pan.oninput(); };
+    const commitPan = bindLiveInput(pan, 'setupF', () => ({ id: spec.pan, value: m[pk] }), () => { m[pk] = Number(pan.value); panOut.textContent = fmtPan(m[pk]); });
+    pan.ondblclick = () => { pan.value = which === 'A' ? -1 : 1; commitPan(); };
     const mute = h('button', { class: 'mx-mute', 'aria-pressed': String(m[lk] <= -59.9), title: 'Mute this path', onClick: () => {
       if (m[lk] > -59.9) { remembered[which] = m[lk]; m[lk] = -60; } else m[lk] = remembered[which] || 0;
-      fader.value = m[lk]; fader.oninput();
+      fader.value = m[lk]; commitLevel();
     } }, 'Mute');
     return h('section', { class: `mx-path mx-${which}` },
       h('header', {}, h('b', {}, `Path ${which}`), h('span', { class: 'dim' }, which === 'A' ? 'Input 1' : 'Input 2')),
@@ -60,7 +61,7 @@ export function renderMixer(root) {
   root.replaceChildren(
     h('div', { class: 'mx' }, path('A'), path('B')),
     h('div', { class: 'row mx-trails' }, h('div', {}, h('b', {}, 'Trails'), h('p', { class: 'dim', style: { margin: '2px 0 0', fontSize: '12px' } }, 'Delay and reverb tails keep ringing after the effect is turned off.')), trails),
-    h('p', { class: 'dim', style: { fontSize: '12px' } }, 'Double-click a pan slider to reset it. Levels run from Mute to +12 dB. Changes made on the pedal show up here live.'));
+    h('details', { class: 'inset-details' }, h('summary', {}, 'Mixer help'), h('p', { class: 'dim' }, 'Double-click a pan slider to reset it. Levels run from Mute to +12 dB. Changes made on the pedal show up here live.')));
 }
 
 
@@ -73,7 +74,7 @@ export function renderControllers(root) {
   const range = (it, p) => {
     const out = h('span', { class: 'dim' }, `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`);
     const mk = which => { const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${which === 'lo' ? 'heel' : 'toe'}` });
-      i.oninput = () => { p[which] = Number(i.value); out.textContent = `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`; throttle(`rg${it.id}.${p.index}`, () => edit('range', { item: it.id, index: p.index, lo: p.lo, hi: p.hi }).catch(fail)); }; return i; };
+      bindLiveInput(i, 'range', () => ({ item: it.id, index: p.index, lo: p.lo, hi: p.hi }), () => { p[which] = Number(i.value); out.textContent = `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`; }); return i; };
     return h('div', { class: 'ctl-range' }, h('small', {}, 'heel'), mk('lo'), h('small', {}, 'toe'), mk('hi'), out);
   };
   const list = rows.length ? rows.map(({ it, p }) => h('div', { class: 'ctl-row' },
@@ -289,7 +290,8 @@ export function renderAdvanced(root) {
   const p = S.st.preset, names = loadNames();
   const nameOf = s => names[s.id] ?? s.name ?? '';
   const row = s => {
-    const inp = h('input', { type: 'number', step: s.float ? 'any' : 1, value: s.float ? +s.value.toFixed(4) : s.value, 'aria-label': `setting ${s.id}`, onChange: () => { s.value = Number(inp.value); edit(s.float ? 'setupF' : 'setup', { id: s.id, value: s.value }).catch(fail); } });
+    const inp = h('input', { type: 'number', step: s.float ? 'any' : 1, value: s.float ? +s.value.toFixed(4) : s.value, 'aria-label': `setting ${s.id}` });
+    bindLiveInput(inp, s.float ? 'setupF' : 'setup', () => ({ id: s.id, value: s.value }), () => { s.value = Number(inp.value); });
     const nm = h('input', { type: 'text', value: nameOf(s), placeholder: 'give it a name…', 'aria-label': `name of setting ${s.id}`, style: { width: '130px' }, onChange: () => { names[s.id] = nm.value; saveNames(names); } });
     return h('tr', { dataset: { sid: s.id } }, h('td', {}, '0x' + s.id.toString(16)), h('td', {}, nm), h('td', {}, '0x' + s.offset.toString(16)), h('td', {}, inp));
   };
