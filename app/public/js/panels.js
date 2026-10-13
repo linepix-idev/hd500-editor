@@ -1,6 +1,6 @@
 import { throttle, h, api, fail, toast, menu, modal, download, pickFile, b64ToBytes, bytesToB64, $ } from './util.js';
 import { S, notify, presetLabel, GROUP_CLASS } from './store.js';
-import { edit } from './params.js';
+import { edit, fmt } from './params.js';
 import { pickDestination } from './picker.js';
 import { selectSlot } from './nav.js';
 import { icon } from './icons.js';
@@ -63,14 +63,43 @@ export function renderMixer(root) {
     h('p', { class: 'dim', style: { fontSize: '12px' } }, 'Double-click a pan slider to reset it. Levels run from Mute to +12 dB. Changes made on the pedal show up here live.'));
 }
 
+
+// ---------------------------------------------------------------------------------------- Controladores (pedais de expressão)
+const sleepMs = ms => new Promise(r => setTimeout(r, ms));
+export function renderControllers(root) {
+  const items = S.st.preset.items.filter(i => !i.empty && i.params.some(p => p.setup == null && !p.cab));
+  const rows = items.flatMap(it => it.params.filter(p => p.ctl && p.setup == null && !p.cab).map(p => ({ it, p })));
+  const ctlSel = (cur, onPick) => { const sel = h('select', { 'aria-label': 'Controller' }, S.cat.ctl.map((n, i) => h('option', { value: i }, i === 0 ? 'Off' : n))); sel.value = cur; sel.onchange = () => onPick(Number(sel.value)); return sel; };
+  const range = (it, p) => {
+    const out = h('span', { class: 'dim' }, `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`);
+    const mk = which => { const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${which === 'lo' ? 'heel' : 'toe'}` });
+      i.oninput = () => { p[which] = Number(i.value); out.textContent = `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`; throttle(`rg${it.id}.${p.index}`, () => edit('range', { item: it.id, index: p.index, lo: p.lo, hi: p.hi }).catch(fail)); }; return i; };
+    return h('div', { class: 'ctl-range' }, h('small', {}, 'heel'), mk('lo'), h('small', {}, 'toe'), mk('hi'), out);
+  };
+  const list = rows.length ? rows.map(({ it, p }) => h('div', { class: 'ctl-row' },
+    h('div', { class: 'ctl-name' }, h('b', {}, it.model), h('span', { class: 'dim' }, p.name)),
+    ctlSel(p.ctl, c => edit('ctl', { item: it.id, index: p.index, ctl: c, lo: c ? p.lo : p.value, hi: c ? p.hi : p.value }).catch(fail)), range(it, p)))
+    : [h('p', { class: 'dim' }, 'No parameter is assigned to an expression pedal yet.')];
+  const blockSel = h('select', { 'aria-label': 'Block' }, items.map(i => h('option', { value: i.id }, i.model)));
+  const paramSel = h('select', { 'aria-label': 'Parameter' }); const addCtl = h('select', { 'aria-label': 'Controller' }, S.cat.ctl.slice(1).map((n, i) => h('option', { value: i + 1 }, n)));
+  const fill = () => { const it = items.find(i => i.id === Number(blockSel.value)); paramSel.replaceChildren(...(it?.params ?? []).filter(p => p.setup == null && !p.cab).map(p => h('option', { value: p.index }, p.name))); };
+  blockSel.onchange = fill; fill();
+  const add = h('button', { class: 'primary', onClick: () => { const it = items.find(i => i.id === Number(blockSel.value)), p = it?.params.find(x => x.index === Number(paramSel.value)); if (p) edit('ctl', { item: it.id, index: p.index, ctl: Number(addCtl.value), lo: 0, hi: 1 }).catch(fail); } }, 'Assign');
+  root.replaceChildren(
+    h('p', { class: 'dim', style: { fontSize: '12px', margin: '0 0 10px' } }, 'Assign any parameter to EXP 1 or EXP 2, with its heel and toe values. Right-click a knob for a shortcut. A model change discards its assignments.'),
+    h('div', { class: 'ctl-list' }, list),
+    h('h3', { style: { fontSize: '13px', margin: '14px 0 6px' } }, 'Add an assignment'),
+    h('div', { class: 'row' }, blockSel, paramSel, addCtl, add));
+}
+
 // ---------------------------------------------------------------------------------------- Footswitches
 export function renderFootswitches(root) {
   const its = S.st.preset.items.filter(i => i.kind === 'fx' && !i.empty);
   const tile = (fs) => {
     const assigned = its.filter(i => i.fs === fs), on = assigned.some(i => i.active);
-    const b = h('button', { class: `fsbtn ${on ? 'hot' : ''} ${fs === 9 ? 'exp' : ''}`, dataset: { fs }, 'aria-pressed': String(on), title: 'Click: toggles this footswitch\'s blocks. Drag a block from the chain to assign it.',
-      onClick: () => assigned.forEach(i => { i.active = !on; edit('active', { item: i.id, active: !on }).catch(fail); }) || notify() },
-      icon(fs === 9 ? 'expression' : 'footswitch'), h('b', {}, S.cat.fs[fs]), assigned.length ? assigned.map(i => h('span', { class: `fs-chip ${GROUP_CLASS(i.group)}`, title: i.model }, i.model)) : h('small', {}, 'free'));
+    const b = h('button', { class: `fsbtn ${on ? 'hot' : ''} ${fs === 9 ? 'exp' : ''}`, dataset: { fs }, 'aria-pressed': String(on), title: 'Click: each assigned block toggles. Drag a block from the chain to assign it.',
+      onClick: () => { assigned.forEach(i => { i.active = !i.active; edit('active', { item: i.id, active: i.active }).catch(fail); }); notify(); } },
+      icon(fs === 9 ? 'expression' : 'footswitch'), h('b', {}, S.cat.fs[fs]), assigned.length > 1 ? h('em', { class: 'multi-tag', title: 'Several blocks: each one toggles' }, 'Multi') : null, assigned.length ? assigned.map(i => h('span', { class: `fs-chip ${GROUP_CLASS(i.group)}`, title: i.model }, i.model)) : h('small', {}, 'free'));
     b.addEventListener('dragover', e => { e.preventDefault(); b.classList.add('dragover'); });
     b.addEventListener('dragleave', () => b.classList.remove('dragover'));
     b.addEventListener('drop', e => { e.preventDefault(); b.classList.remove('dragover'); const id = Number(e.dataTransfer.getData('text/plain')); if (id >= 4) edit('fs', { item: id, fs }).catch(fail); });
@@ -87,13 +116,13 @@ export function flashFs(fs) {
 }
 
 // ---------------------------------------------------------------------------------------- Biblioteca
-const L = { set: null, names: new Map(), pending: new Map(), errors: new Map(), versions: new Map(), queue: Promise.resolve(), search: '', generation: 0 };
+const L = { multi: new Set(), multiSet: null, lastMulti: null, set: null, names: new Map(), pending: new Map(), errors: new Map(), versions: new Map(), queue: Promise.resolve(), search: '', generation: 0 };
 let sidebarSignature = '', selectionSet = null;
 function Slot(set, i, name) {
   const cur = set === S.st.selection.set && i === S.st.selection.preset;
-  const b = h('button', { class: `slot ${cur ? 'cur' : ''} ${name == null ? 'skeleton' : ''}`, dataset: { set, preset: i }, 'aria-current': cur ? 'true' : 'false', 'aria-label': `${presetLabel(i)} · ${name ?? tr('Loading…')}`, draggable: true, title: name ?? '', onClick: async () => { await selectSlot(set, i); if (!S.st?.dirty && matchMedia('(max-width: 799px)').matches) closeDrawer(); },
+  const b = h('button', { class: `slot ${cur ? 'cur' : ''} ${name == null ? 'skeleton' : ''} ${L.multiSet === set && L.multi.has(i) ? 'multi' : ''}`, dataset: { set, preset: i }, 'aria-current': cur ? 'true' : 'false', 'aria-label': `${presetLabel(i)} · ${name ?? tr('Loading…')}`, draggable: true, title: name ?? '', onClick: async e => { if (e.shiftKey || e.ctrlKey || e.metaKey) { toggleMulti(set, i, e.shiftKey); return; } L.multi.clear(); await selectSlot(set, i); if (!S.st?.dirty && matchMedia('(max-width: 799px)').matches) closeDrawer(); },
     onDblclick: e => { e.preventDefault(); renameSlot(set, i); }, onContextmenu: e => { e.preventDefault(); slotMenu(e, set, i); } }, h('i', {}, presetLabel(i)), h('span', {}, cur && S.st.dirty ? S.st.preset.name : name ?? (cur ? S.st.preset.name : '—')), cur ? h('span', { class: S.st.dirty ? 'modified-mark' : 'loaded-mark', 'aria-label': S.st.dirty ? 'Unsaved changes' : 'Loaded preset' }, S.st.dirty ? '●' : '') : null);
-  b.addEventListener('dragstart', e => e.dataTransfer.setData('application/x-slot', JSON.stringify({ set, preset: i })));
+  b.addEventListener('dragstart', e => e.dataTransfer.setData('application/x-slot', JSON.stringify({ set, preset: i, multi: L.multiSet === set && L.multi.has(i) ? [...L.multi] : null })));
   b.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('application/x-slot') || e.dataTransfer.types.includes('Files')) { e.preventDefault(); b.classList.add('dragover'); } });
   b.addEventListener('dragleave', () => b.classList.remove('dragover'));
   b.addEventListener('drop', async e => {
@@ -101,10 +130,36 @@ function Slot(set, i, name) {
     const f = e.dataTransfer.files?.[0];
     try {
       if (f) { if (!/\.h5e$/i.test(f.name)) throw new Error('Choose an .h5e preset file.'); if (confirm(`Import “${f.name}” to ${presetLabel(i)}? The destination will be replaced (a backup is kept).`)) await importH5eFile(f, { set, preset: i }); }
-      else { const from = JSON.parse(e.dataTransfer.getData('application/x-slot')); if (confirm(`Copy ${presetLabel(from.preset)} (set ${from.set + 1}) to ${presetLabel(i)} (set ${set + 1})? The destination will be replaced (a backup is kept).`)) { await api('library/copy', { from, to: { set, preset: i } }); toast('Copied.'); invalidate(set); } }
+      else await dropSlot(JSON.parse(e.dataTransfer.getData('application/x-slot')), set, i, e);
     } catch (err) { fail(err); }
   });
   return b;
+}
+// Soltar um preset sobre outro, como no editor oficial: mesmo set = mover (inserir); Shift = trocar; Ctrl/Alt = copiar; outro set = copiar.
+async function dropSlot(from, set, i, e) {
+  const label = p => presetLabel(p);
+  if (from.multi?.length > 1 && from.set !== set) {
+    if (!confirm(`Copy ${from.multi.length} presets from set ${from.set + 1} into set ${set + 1}, same positions? The destinations will be replaced (a backup is kept).`)) return;
+    for (const p of from.multi) await api('library/copy', { from: { set: from.set, preset: p }, to: { set, preset: p } });
+    toast('Copied.'); invalidate(set); return;
+  }
+  if (from.set === set && from.preset === i) return;
+  if (from.set !== set || e.ctrlKey || e.altKey || e.metaKey) {
+    if (!confirm(`Copy ${label(from.preset)} (set ${from.set + 1}) to ${label(i)} (set ${set + 1})? The destination will be replaced (a backup is kept).`)) return;
+    await api('library/copy', { from: { set: from.set, preset: from.preset }, to: { set, preset: i } }); toast('Copied.'); invalidate(set); return;
+  }
+  if (e.shiftKey) {
+    if (!confirm(`Swap ${label(from.preset)} and ${label(i)}?`)) return;
+    await api('library/swap', { a: { set, preset: from.preset }, b: { set, preset: i } }); toast('Swapped.'); invalidate(set); return;
+  }
+  if (!confirm(`Move ${label(from.preset)} to ${label(i)}? The presets in between shift by one position (backups are kept).`)) return;
+  await api('library/move', { set, from: from.preset, to: i }); toast('Moved.'); invalidate(set);
+}
+function toggleMulti(set, i, range) {
+  if (L.multiSet !== set) { L.multi.clear(); L.multiSet = set; }
+  if (range && L.lastMulti != null) { const [a, b] = [Math.min(L.lastMulti, i), Math.max(L.lastMulti, i)]; for (let k = a; k <= b; k++) L.multi.add(k); }
+  else if (L.multi.has(i)) L.multi.delete(i); else L.multi.add(i);
+  L.lastMulti = i; sidebarSignature = ''; renderSidebar();
 }
 export const invalidate = set => { if (set == null) { L.names.clear(); L.errors.clear(); for(let i=0;i<8;i++) L.versions.set(i,(L.versions.get(i)??0)+1); } else { L.names.delete(set); L.errors.delete(set); L.versions.set(set,(L.versions.get(set)??0)+1); } sidebarSignature=''; notify(); if(L.search) queueMicrotask(()=>searchSets(++L.generation)); };
 async function renameSlot(set, i) {

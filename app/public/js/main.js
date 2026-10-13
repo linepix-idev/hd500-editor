@@ -3,11 +3,11 @@ import { h, api, fail, toast, $, modal, menu, download, pickFile, bytesToB64, b6
 import { S, onChange, notify, presetLabel, GROUP_CLASS } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
-import { renderSetup, renderMixer, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown } from './panels.js';
+import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown } from './panels.js';
 import { selectSlot } from './nav.js';
 import { icon, buttonIcon, categoryIcon } from './icons.js';
 
-const TABS = { setup: renderSetup, mixer: renderMixer, fs: renderFootswitches, advanced: renderAdvanced };
+const TABS = { setup: renderSetup, mixer: renderMixer, controllers: renderControllers, fs: renderFootswitches, advanced: renderAdvanced };
 let lastPreset = null, saving = false;
 
 function render() {
@@ -146,7 +146,7 @@ addEventListener('drop', async e => {
 // Local symbols and responsive library controls.
 for(const [id,name] of Object.entries({sidebarToggle:'sidebar',prev:'left',next:'right',undo:'undo',redo:'redo',revert:'reread',fileMenu:'library',language:'globe',help:'help',libraryMore:'more',libraryClose:'close',colorLegend:'colors',chainTrash:'trash'})) buttonIcon($('#'+id),name);
 buttonIcon($('#save'),'save','Save to pedal');$('#searchIcon').append(icon('search'));
-for(const [tab,name] of Object.entries({setup:'input',mixer:'mixer',fs:'footswitch',advanced:'settings'})) $('#tabs [data-tab="'+tab+'"]').prepend(icon(name));
+for(const [tab,name] of Object.entries({setup:'input',mixer:'mixer',controllers:'expression',fs:'footswitch',advanced:'settings'})) $('#tabs [data-tab="'+tab+'"]').prepend(icon(name));
 $('#conn').setAttribute('aria-live','polite');
 function closeSidebar() { document.body.classList.remove('sidebar-open');document.body.classList.add('sidebar-collapsed');$('#drawerBackdrop').hidden=true;$('#sidebarToggle').setAttribute('aria-expanded','false');$('#sidebarToggle').focus(); syncSidebar(); }
 function openSidebar() { document.body.classList.remove('sidebar-collapsed');document.body.classList.add('sidebar-open');$('#drawerBackdrop').hidden=!matchMedia('(max-width: 799px)').matches;$('#sidebarToggle').setAttribute('aria-expanded','true'); syncSidebar(); if(innerWidth<800) $('#setSel').focus(); }

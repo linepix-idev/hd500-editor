@@ -1090,5 +1090,73 @@
 [
 "nome vazio",
 "empty name"
+],
+[
+"Controladores",
+"Controllers"
+],
+[
+"Controlador",
+"Controller"
+],
+[
+"Bloco",
+"Block"
+],
+[
+"Parâmetro",
+"Parameter"
+],
+[
+"Atribuir",
+"Assign"
+],
+[
+"Desligado",
+"Off"
+],
+[
+"Vários blocos: cada um alterna",
+"Several blocks: each one toggles"
+],
+[
+"Clique: cada bloco atribuído alterna.",
+"Click: each assigned block toggles."
+],
+[
+"Atribua qualquer parâmetro ao EXP 1 ou EXP 2, com os valores de calcanhar e ponta. Clique direito num knob é um atalho. Trocar o modelo descarta as atribuições.",
+"Assign any parameter to EXP 1 or EXP 2, with its heel and toe values. Right-click a knob for a shortcut. A model change discards its assignments."
+],
+[
+"Nenhum parâmetro está atribuído a um pedal de expressão ainda.",
+"No parameter is assigned to an expression pedal yet."
+],
+[
+"Adicionar uma atribuição",
+"Add an assignment"
+],
+[
+"Copiar ${from.multi.length} presets do set ${from.set + 1} para o set ${set + 1}, nas mesmas posições? Os destinos serão substituídos (há backup).",
+"Copy ${from.multi.length} presets from set ${from.set + 1} into set ${set + 1}, same positions? The destinations will be replaced (a backup is kept)."
+],
+[
+"Trocar ${label(from.preset)} e ${label(i)}?",
+"Swap ${label(from.preset)} and ${label(i)}?"
+],
+[
+"Mover ${label(from.preset)} para ${label(i)}? Os presets do meio se deslocam uma posição (os backups são mantidos).",
+"Move ${label(from.preset)} to ${label(i)}? The presets in between shift by one position (backups are kept)."
+],
+[
+"Movido.",
+"Moved."
+],
+[
+"Movendo",
+"Moving"
+],
+[
+"Copiar ${label(from.preset)} (set ${from.set + 1}) para ${label(i)} (set ${set + 1})? O destino será substituído (há backup).",
+"Copy ${label(from.preset)} (set ${from.set + 1}) to ${label(i)} (set ${set + 1})? The destination will be replaced (a backup is kept)."
 ]
 ]

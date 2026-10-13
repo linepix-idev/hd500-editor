@@ -269,5 +269,21 @@ export const PT = {
  "Preset renamed.": "Preset renomeado.",
  "Renamed in the edit buffer. Save to pedal to keep it.": "Renomeado no buffer de edição. Salve no pedal para manter.",
  "Rename ${presetLabel(i)} (up to 16 characters)": "Renomear ${presetLabel(i)} (até 16 caracteres)",
- "empty name": "nome vazio"
+ "empty name": "nome vazio",
+ "Controllers": "Controladores",
+ "Controller": "Controlador",
+ "Block": "Bloco",
+ "Parameter": "Parâmetro",
+ "Assign": "Atribuir",
+ "Several blocks: each one toggles": "Vários blocos: cada um alterna",
+ "Click: each assigned block toggles.": "Clique: cada bloco atribuído alterna.",
+ "Assign any parameter to EXP 1 or EXP 2, with its heel and toe values. Right-click a knob for a shortcut. A model change discards its assignments.": "Atribua qualquer parâmetro ao EXP 1 ou EXP 2, com os valores de calcanhar e ponta. Clique direito num knob é um atalho. Trocar o modelo descarta as atribuições.",
+ "No parameter is assigned to an expression pedal yet.": "Nenhum parâmetro está atribuído a um pedal de expressão ainda.",
+ "Add an assignment": "Adicionar uma atribuição",
+ "Copy ${from.multi.length} presets from set ${from.set + 1} into set ${set + 1}, same positions? The destinations will be replaced (a backup is kept).": "Copiar ${from.multi.length} presets do set ${from.set + 1} para o set ${set + 1}, nas mesmas posições? Os destinos serão substituídos (há backup).",
+ "Swap ${label(from.preset)} and ${label(i)}?": "Trocar ${label(from.preset)} e ${label(i)}?",
+ "Move ${label(from.preset)} to ${label(i)}? The presets in between shift by one position (backups are kept).": "Mover ${label(from.preset)} para ${label(i)}? Os presets do meio se deslocam uma posição (os backups são mantidos).",
+ "Moved.": "Movido.",
+ "Moving": "Movendo",
+ "Copy ${label(from.preset)} (set ${from.set + 1}) to ${label(i)} (set ${set + 1})? The destination will be replaced (a backup is kept).": "Copiar ${label(from.preset)} (set ${from.set + 1}) para ${label(i)} (set ${set + 1})? O destino será substituído (há backup)."
 };

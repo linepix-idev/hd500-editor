@@ -20,7 +20,7 @@ export function pickModel(item) {
     }
     chips.replaceChildren(...[null,...groups].map(g=>h('button',{class:g ? `${item.kind} ${GROUP_CLASS(g)}` : '', 'aria-pressed':String(category===g),onClick:()=>{category=g;draw();chips.children[[null,...groups].indexOf(g)]?.focus();}},g?icon(categoryIcon({kind:item.kind,group:g})):icon('colors'),g??'All')));
     grid.replaceChildren(...[...matches].flatMap(([g,ms])=>[
-      h('h4',{class:GROUP_CLASS(g)},g),...ms.map(m=>h('button',{class:`${item.kind} ${GROUP_CLASS(m.group)} ${m.type===item.type?'cur':''}`,onClick:()=>{close();api('edit',{op:'model',item:item.id,type:m.type}).catch(fail);}},gearEl({kind:item.kind,name:m.name,group:m.group,paramCount:m.params?.length}),m.name))
+      h('h4',{class:GROUP_CLASS(g)},g),...ms.map(m=>h('button',{class:`${item.kind} ${GROUP_CLASS(m.group)} ${m.type===item.type?'cur':''}`,onClick:()=>{close();api('edit',{op:'model',item:item.id,type:m.type}).then(()=>autoController(item.id,m.group)).catch(fail);}},gearEl({kind:item.kind,name:m.name,group:m.group,paramCount:m.params?.length}),m.name))
     ]));
     if(!matches.size)grid.append(h('p',{class:'placeholder'},'No models found.'));
   };
@@ -49,3 +49,13 @@ export function pickPreset(onPick, { title = 'Choose preset', set: set0 } = {}) 
   load();
 }
 export function pickDestination(title, cb) { pickPreset((s, p) => cb({ set: s, preset: p }), { title }); }
+
+/** Como no editor oficial: Wah ganha o parâmetro Position em EXP 1; Volume e Pan, em EXP 2. */
+export async function autoController(id, group) {
+  const ctl = group === 'Wah' ? 1 : group === 'Volume/Pan' ? 2 : 0; if (!ctl) return;
+  for (let i = 0; i < 20; i++) {
+    await new Promise(r => setTimeout(r, 150));
+    const it = S.st.preset.items.find(x => x.id === id);
+    if (it?.group === group) { const p = it.params[0]; if (p && p.ctl !== ctl) await api('edit', { op: 'ctl', item: id, index: p.index, ctl, lo: 0, hi: 1 }); return; }
+  }
+}

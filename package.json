@@ -1,6 +1,6 @@
 {
   "name": "hd500-editor",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Free, open editor for the Line 6 POD HD500 (Linux, Windows, macOS)",
   "main": "app/main.cjs",
   "scripts": {

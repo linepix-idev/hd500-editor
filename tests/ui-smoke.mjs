@@ -25,7 +25,7 @@ try {
   await page.click('#libraryMore'); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Escape');
   assert.equal(await page.$('.menu'), null);
   await page.click('#tabs [data-tab="setup"]'); await page.keyboard.press('ArrowRight');
-  assert.equal(await page.$eval('[data-tab="fs"]', e => e.getAttribute('aria-selected')), 'true');
+  assert.equal(await page.$eval('[data-tab="mixer"]', e => e.getAttribute('aria-selected')), 'true');
   for (const theme of ['light', 'dark']) for (const [width, height] of [[1440,900],[1100,800],[390,800]]) {
     await page.setViewport({ width, height }); await page.evaluate(t => document.documentElement.dataset.theme=t, theme); await wait(150);
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Page overflow: ${theme} ${width}`);
