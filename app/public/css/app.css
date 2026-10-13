@@ -2156,3 +2156,24 @@ button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { tran
 #chain.tight .block { width:98px; padding:8px; }
 #chain.tight .path-row { gap:8px; }
 #chain.tight .block > .gear { width:34px; height:34px; }
+
+/* Controllers: one grouped card per assignment (controller picker, heel, toe) */
+.ctl-list { display:flex; flex-direction:column; gap:12px; margin-bottom:8px; }
+.ctl-row.ios-group { margin:0; }
+.ctl-head > label { display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; font-size:15px; }
+.ctl-head > label b { font-weight:600; }
+.ctl-range-row input[type=range] { flex:1; min-width:0; max-width:none; accent-color:var(--accent); padding:0; }
+.ctl-range-row > label { flex:none !important; width:44px; font-size:14px !important; color:var(--dim) !important; }
+.ctl-val { flex:none; min-width:64px; text-align:right; font:500 13px var(--font-text); font-variant-numeric:tabular-nums; color:var(--dim); }
+.ios-group > .row select { font-weight:500; }
+
+/* Footswitch panel: stomp-style keys with an LED, like the pedal's own footswitches */
+.fsgrid { background:transparent; padding:0; gap:10px; }
+.fsbtn { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:4px; min-height:92px; padding:22px 6px 10px; border:0; border-radius:14px; background:var(--panel2); box-shadow:inset 0 -3px 0 color-mix(in srgb,var(--text) 8%,transparent); }
+.fsbtn:not(.exp) > .symbol { display:none; }
+.fsbtn:not(.exp)::before { content:""; position:absolute; top:10px; left:50%; width:8px; height:8px; margin-left:-4px; border-radius:50%; background:color-mix(in srgb,var(--text) 18%,transparent); transition:background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease); }
+.fsbtn.hot::before { background:var(--switch-on); box-shadow:0 0 10px 1px color-mix(in srgb,var(--switch-on) 70%,transparent); }
+.fsbtn b { font:600 14px var(--font-text); }
+.fsbtn:active { transform:translateY(1px) scale(.98); box-shadow:inset 0 -1px 0 color-mix(in srgb,var(--text) 8%,transparent); }
+.fsbtn.exp { flex-direction:row; justify-content:center; min-height:56px; padding:10px; gap:8px; }
+.fsbtn.exp > .symbol { display:block; }

@@ -80,14 +80,17 @@ export function renderControllers(root) {
   const rows = items.flatMap(it => it.params.filter(p => p.ctl && p.setup == null && !p.cab).map(p => ({ it, p })));
   const ctlSel = (cur, onPick) => { const sel = h('select', { 'aria-label': 'Controller' }, S.cat.ctl.map((n, i) => h('option', { value: i }, i === 0 ? 'Off' : n))); sel.value = cur; sel.onchange = () => onPick(Number(sel.value)); return sel; };
   const range = (it, p) => {
-    const out = h('span', { class: 'dim' }, `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`);
-    const mk = which => { const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${tr(which === 'lo' ? 'heel' : 'toe')}` });
-      bindLiveInput(i, 'range', () => ({ item: it.id, index: p.index, lo: p.lo, hi: p.hi }), () => { p[which] = Number(i.value); out.textContent = `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`; }); return i; };
-    return h('div', { class: 'ctl-range' }, h('small', {}, 'heel'), mk('lo'), h('small', {}, 'toe'), mk('hi'), out);
+    const mk = which => {
+      const val = h('output', { class: 'ctl-val' }, fmt(p, p[which]));
+      const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${which === 'lo' ? 'heel' : 'toe'}` });
+      bindLiveInput(i, 'range', () => ({ item: it.id, index: p.index, lo: p.lo, hi: p.hi }), () => { p[which] = Number(i.value); val.textContent = fmt(p, p[which]); });
+      return h('div', { class: 'row ctl-range-row' }, h('label', {}, which === 'lo' ? 'Heel' : 'Toe'), i, val);
+    };
+    return [mk('lo'), mk('hi')];
   };
-  const list = rows.length ? rows.map(({ it, p }) => h('div', { class: 'ctl-row' },
-    h('div', { class: 'ctl-name' }, h('b', {}, it.model), h('span', { class: 'dim' }, p.name)),
-    ctlSel(p.ctl, c => edit('ctl', { item: it.id, index: p.index, ctl: c, lo: c ? p.lo : p.value, hi: c ? p.hi : p.value }).catch(fail)), range(it, p)))
+  const list = rows.length ? rows.map(({ it, p }) => h('div', { class: 'ctl-row ios-group' },
+    h('div', { class: 'row ctl-head' }, h('label', {}, h('b', {}, it.model), h('span', { class: 'dim' }, ` ${p.name}`)),
+      ctlSel(p.ctl, c => edit('ctl', { item: it.id, index: p.index, ctl: c, lo: c ? p.lo : p.value, hi: c ? p.hi : p.value }).catch(fail))), ...range(it, p)))
     : [h('p', { class: 'ios-footer', style: { textAlign: 'center', margin: '8px 16px 8px' } }, 'No parameter is assigned to an expression pedal yet.')];
   const blockSel = h('select', { 'aria-label': 'Block' }, items.map(i => h('option', { value: i.id }, i.model)));
   const paramSel = h('select', { 'aria-label': 'Parameter' }); const addCtl = h('select', { 'aria-label': 'Controller' }, S.cat.ctl.slice(1).map((n, i) => h('option', { value: i + 1 }, n)));
