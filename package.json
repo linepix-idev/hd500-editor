@@ -1,0 +1,109 @@
+{
+  "name": "hd500-editor",
+  "version": "0.1.0",
+  "description": "Free, open editor for the Line 6 POD HD500 (Linux, Windows, macOS)",
+  "main": "app/main.cjs",
+  "scripts": {
+    "start": "node app/server.mjs",
+    "gen-catalog": "python3 tools/gen-catalog.py",
+    "app": "electron .",
+    "dist": "electron-builder",
+    "dist:linux": "electron-builder --linux",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "test": "node --test tests/core.test.mjs tests/security.test.mjs",
+    "test:ui": "node tests/ui-smoke.mjs /tmp",
+    "test:live": "node tests/api-live.mjs && node tests/ui-interact.mjs"
+  },
+  "author": {
+    "name": "Comunidade HD500 Editor",
+    "email": "noreply@hd500-editor.invalid"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "usb": "^2.14.0"
+  },
+  "private": true,
+  "build": {
+    "appId": "org.hd500edit.app",
+    "productName": "HD500 Editor",
+    "copyright": "MIT \u2014 n\u00e3o afiliado \u00e0 Line 6",
+    "files": [
+      "app/**",
+      "core/**",
+      "catalog/**",
+      "package.json",
+      "!**/*.map"
+    ],
+    "asarUnpack": [
+      "node_modules/usb/**"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "npmRebuild": false,
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "AudioVideo",
+      "icon": "build/icon.png",
+      "synopsis": "Editor livre para o Line 6 POD HD500",
+      "extraResources": [
+        {
+          "from": "99-line6-hd500.rules",
+          "to": "99-line6-hd500.rules"
+        }
+      ]
+    },
+    "deb": {
+      "afterInstall": "build/linux/after-install.sh"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.music",
+      "icon": "build/icon.png"
+    }
+  },
+  "devDependencies": {
+    "electron": "^44.7.1",
+    "electron-builder": "^26.15.3",
+    "puppeteer-core": "^25.13.0"
+  },
+  "homepage": "https://github.com/OWNER/hd500-editor#readme",
+  "keywords": [
+    "line6",
+    "pod-hd500",
+    "guitar",
+    "editor",
+    "usb",
+    "reverse-engineering"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/hd500-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OWNER/hd500-editor/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,6 @@
+# Disclaimer
+
+- **Not affiliated.** HD500 Editor is an independent community project. It is not affiliated with, endorsed by or supported by Line 6, Yamaha Guitar Group or Yamaha Corporation. "Line 6", "POD", "POD HD500", "Variax" and amp/effect model names are trademarks of their respective owners and are used here only to identify the hardware and the models it contains.
+- **Interoperability.** The protocol documented in this repository was obtained by observing the behaviour of the user's own hardware and by analysing the last released official editor for the sole purpose of interoperating with a discontinued product the user owns. No Line 6 software, firmware, images or other assets are included in this repository, and none should be contributed.
+- **Use at your own risk.** This software writes to your pedal's memory. It keeps automatic backups, but you are responsible for your data and your equipment. Back up your library (File → Export all) before experimenting, especially with the *Advanced* tab.
+- **No warranty.** See the MIT License.

@@ -1,0 +1,822 @@
+[
+[
+"conectando…",
+"connecting…"
+],
+[
+"POD HD500 conectado",
+"POD HD500 connected"
+],
+[
+"desconectado",
+"disconnected"
+],
+[
+"servidor offline",
+"server offline"
+],
+[
+"Sem conexão com o pedal.",
+"No connection to the pedal."
+],
+[
+"Não consegui falar com o pedal.",
+"Could not talk to the pedal."
+],
+[
+"Tentar de novo",
+"Try again"
+],
+[
+"Preset anterior",
+"Previous preset"
+],
+[
+"Preset anterior (←)",
+"Previous preset (←)"
+],
+[
+"Próximo preset",
+"Next preset"
+],
+[
+"Próximo preset (→)",
+"Next preset (→)"
+],
+[
+"Escolher preset (L)",
+"Choose preset (L)"
+],
+[
+"Escolher preset",
+"Choose preset"
+],
+[
+"Desfazer",
+"Undo"
+],
+[
+"Desfazer (Ctrl+Z)",
+"Undo (Ctrl+Z)"
+],
+[
+"Refazer",
+"Redo"
+],
+[
+"Refazer (Ctrl+Y)",
+"Redo (Ctrl+Y)"
+],
+[
+"Salvar no pedal",
+"Save to pedal"
+],
+[
+"Grava o preset na memória do pedal (Ctrl+S)",
+"Writes the preset to the pedal's memory (Ctrl+S)"
+],
+[
+"Salvando…",
+"Saving…"
+],
+[
+"Descartar",
+"Discard"
+],
+[
+"Descarta as alterações e recarrega o preset gravado no pedal",
+"Discards changes and reloads the preset stored in the pedal"
+],
+[
+"Descartar as alterações e recarregar o preset gravado no pedal?",
+"Discard changes and reload the preset stored in the pedal?"
+],
+[
+"Arquivo",
+"File"
+],
+[
+"Arquivo ▾",
+"File ▾"
+],
+[
+"Alternar tema",
+"Toggle theme"
+],
+[
+"Tema claro/escuro",
+"Light/dark theme"
+],
+[
+"Ajuda",
+"Help"
+],
+[
+"Ajuda e atalhos",
+"Help and shortcuts"
+],
+[
+"Ajuda e atalhos (?)",
+"Help and shortcuts (?)"
+],
+[
+"Cadeia de sinal",
+"Signal chain"
+],
+[
+"Editor do bloco",
+"Block editor"
+],
+[
+"Entradas",
+"Inputs"
+],
+[
+"Biblioteca",
+"Library"
+],
+[
+"Avançado",
+"Advanced"
+],
+[
+"Footswitches",
+"Footswitches"
+],
+[
+"Importar preset (.h5e) para o buffer…",
+"Import preset (.h5e) into the buffer…"
+],
+[
+"Exportar este preset (.h5e)",
+"Export this preset (.h5e)"
+],
+[
+"Reconectar ao pedal",
+"Reconnect to the pedal"
+],
+[
+"Preset carregado no buffer do pedal. Use \"Salvar no pedal\" para gravar.",
+"Preset loaded into the pedal's buffer. Use \"Save to pedal\" to write it."
+],
+[
+"\"${f.name}\" carregado no buffer. Use \"Salvar no pedal\" para gravar.",
+"\"${f.name}\" loaded into the buffer. Use \"Save to pedal\" to write it."
+],
+[
+"Preset gravado no pedal. Backup do anterior em backups/.",
+"Preset saved to the pedal. Previous version backed up in backups/."
+],
+[
+"Há alterações não salvas neste preset. Trocar de preset vai descartá-las. Continuar?",
+"This preset has unsaved changes. Switching presets will discard them. Continue?"
+],
+[
+"Antes (comum)",
+"Before (shared)"
+],
+[
+"Depois (mix)",
+"After (mix)"
+],
+[
+"Caminho A · antes",
+"Path A · before"
+],
+[
+"A · depois",
+"A · after"
+],
+[
+"Caminho B · antes",
+"Path B · before"
+],
+[
+"B · depois",
+"B · after"
+],
+[
+"Caminho B inativo (Input 2 = Mesmo da 1 e amp B vazio)",
+"Path B inactive (Input 2 = Same and amp B empty)"
+],
+[
+"Mesmo da 1",
+"Same as 1"
+],
+[
+"Saídas",
+"Outputs"
+],
+[
+"solte aqui",
+"drop here"
+],
+[
+"Slot de efeito vazio — clique para escolher um modelo",
+"Empty effect slot — click to choose a model"
+],
+[
+"Vazio — clique para escolher",
+"Empty — click to choose"
+],
+[
+"Amp ＋",
+"Amp ＋"
+],
+[
+"Cab ＋",
+"Cab ＋"
+],
+[
+"Liga/desliga (bypass)",
+"Toggle (bypass)"
+],
+[
+"${it.model}: ${it.active ? 'ligado' : 'desligado'}",
+"${it.model}: ${it.active ? 'on' : 'off'}"
+],
+[
+"Efeito ${it.id - 3}",
+"Effect ${it.id - 3}"
+],
+[
+"Sem footswitch",
+"No footswitch"
+],
+[
+"Sem footswitch: ",
+"No footswitch: "
+],
+[
+"Trocar modelo…",
+"Change model…"
+],
+[
+"Escolher modelo…",
+"Choose model…"
+],
+[
+"Copiar bloco",
+"Copy block"
+],
+[
+"Colar “${S.clip.model}”",
+"Paste “${S.clip.model}”"
+],
+[
+"Ligar",
+"Turn on"
+],
+[
+"Desligar",
+"Turn off"
+],
+[
+"Ligado",
+"On"
+],
+[
+"Desligado",
+"Off"
+],
+[
+"Limpar bloco",
+"Clear block"
+],
+[
+"Copiado: ${it.model}",
+"Copied: ${it.model}"
+],
+[
+"Colado: ${c.model}",
+"Pasted: ${c.model}"
+],
+[
+"Nada copiado ainda.",
+"Nothing copied yet."
+],
+[
+"Só dá para colar ${c.kind === 'fx' ? 'efeitos em slots de efeito' : c.kind === 'amp' ? 'amps em slots de amp' : 'cabs em slots de cab'}.",
+"You can only paste ${c.kind === 'fx' ? 'effects into effect slots' : c.kind === 'amp' ? 'amps into amp slots' : 'cabs into cab slots'}."
+],
+[
+"Selecione um bloco na cadeia de sinal.",
+"Select a block in the signal chain."
+],
+[
+"Este slot está vazio. Escolha um modelo para começar.",
+"This slot is empty. Choose a model to start."
+],
+[
+"Vazio",
+"Empty"
+],
+[
+"Sem parâmetros.",
+"No parameters."
+],
+[
+"Controladores (pedal de expressão)",
+"Controllers (expression pedal)"
+],
+[
+"calcanhar",
+"heel"
+],
+[
+"ponta",
+"toe"
+],
+[
+"${p.name} ${which === 'lo' ? 'calcanhar' : 'ponta'}",
+"${p.name} ${which === 'lo' ? 'heel' : 'toe'}"
+],
+[
+"Controlador: nenhum${p.ctl === 0 ? ' ✓' : ''}",
+"Controller: none${p.ctl === 0 ? ' ✓' : ''}"
+],
+[
+"Controlador: ${n}${p.ctl === i + 1 ? ' ✓' : ''}",
+"Controller: ${n}${p.ctl === i + 1 ? ' ✓' : ''}"
+],
+[
+"${p.name}: sincronizar",
+"${p.name}: sync"
+],
+[
+"Livre",
+"Free"
+],
+[
+" — controlado por ${S.cat.ctl[p.ctl]} (clique direito para mudar)",
+" — controlled by ${S.cat.ctl[p.ctl]} (right-click to change)"
+],
+[
+" — clique direito: atribuir a pedal de expressão",
+" — right-click: assign to an expression pedal"
+],
+[
+"Topologia",
+"Topology"
+],
+[
+"Classe",
+"Class"
+],
+[
+"Modo",
+"Mode"
+],
+[
+"Buscar modelo…",
+"Search model…"
+],
+[
+"Buscar modelo",
+"Search model"
+],
+[
+"Modelo — ${item.kind === 'amp' ? 'Amp' : item.kind === 'cab' ? 'Cab' : 'Efeito'}",
+"Model — ${item.kind === 'amp' ? 'Amp' : item.kind === 'cab' ? 'Cab' : 'Effect'}"
+],
+[
+"nomes lidos do pedal",
+"names read from the pedal"
+],
+[
+"Cada footswitch liga/desliga os blocos atribuídos. Pise no pedal e o bloco acende aqui.",
+"Each footswitch toggles its assigned blocks. Step on the pedal and the block lights up here."
+],
+[
+"Clique: aciona os blocos deste footswitch. Arraste um bloco da cadeia para atribuir.",
+"Click: toggles this footswitch's blocks. Drag a block from the chain to assign it."
+],
+[
+"livre",
+"free"
+],
+[
+"Nome do preset",
+"Preset name"
+],
+[
+"Roteamento de entrada",
+"Input routing"
+],
+[
+"Input 1 (caminho A)",
+"Input 1 (path A)"
+],
+[
+"Input 2 (caminho B)",
+"Input 2 (path B)"
+],
+[
+"Impedância da guitarra",
+"Guitar input impedance"
+],
+[
+"Para usar mic e guitarra ao mesmo tempo: Input 1 = Guitar e Input 2 = Mic. Cada entrada alimenta seu próprio caminho (A e B) na cadeia de sinal.",
+"To use a mic and a guitar together: Input 1 = Guitar and Input 2 = Mic. Each input feeds its own path (A and B) in the signal chain."
+],
+[
+"Tempo (BPM)",
+"Tempo (BPM)"
+],
+[
+"Set",
+"Set"
+],
+[
+"Ler nomes",
+"Read names"
+],
+[
+"Reler nomes",
+"Re-read names"
+],
+[
+"Renomear set",
+"Rename set"
+],
+[
+"Novo nome do set (até 16 caracteres)",
+"New set name (up to 16 characters)"
+],
+[
+"Exportar set",
+"Export set"
+],
+[
+"Exportar tudo",
+"Export all"
+],
+[
+"Importar pacote…",
+"Import bundle…"
+],
+[
+"Importar .h5e…",
+"Import .h5e…"
+],
+[
+"Exportar lista (CSV)",
+"Export list (CSV)"
+],
+[
+"Clique para carregar. Clique direito: copiar, trocar, limpar, exportar. Arraste um slot sobre outro para copiar. Antes de qualquer gravação o conteúdo anterior vai para a pasta backups/.",
+"Click to load. Right-click: copy, swap, clear, export. Drag one slot onto another to copy. Before any write the previous content goes to the backups/ folder."
+],
+[
+"Carregar",
+"Load"
+],
+[
+"Copiar para…",
+"Copy to…"
+],
+[
+"Copiar para",
+"Copy to"
+],
+[
+"Trocar com…",
+"Swap with…"
+],
+[
+"Trocar com",
+"Swap with"
+],
+[
+"Exportar .h5e",
+"Export .h5e"
+],
+[
+"Importar .h5e aqui…",
+"Import .h5e here…"
+],
+[
+"Limpar slot",
+"Clear slot"
+],
+[
+"Limpar este slot (vira \"New Tone\")? Há backup.",
+"Clear this slot (becomes \"New Tone\")? A backup is kept."
+],
+[
+"Copiar ${presetLabel(from.preset)} (set ${from.set + 1}) para ${presetLabel(i)} (set ${set + 1})? O destino será substituído (há backup).",
+"Copy ${presetLabel(from.preset)} (set ${from.set + 1}) to ${presetLabel(i)} (set ${set + 1})? The destination will be replaced (a backup is kept)."
+],
+[
+"Copiado.",
+"Copied."
+],
+[
+"Trocados.",
+"Swapped."
+],
+[
+"Preset gravado no slot.",
+"Preset written to the slot."
+],
+[
+"Preset carregado no pedal (buffer de edição). Salve para gravar.",
+"Preset loaded into the pedal (edit buffer). Save to write it."
+],
+[
+"Lendo o set…",
+"Reading the set…"
+],
+[
+"Exportado.",
+"Exported."
+],
+[
+"Lendo os 512 presets (cerca de 1 minuto)…",
+"Reading all 512 presets (about a minute)…"
+],
+[
+"Lendo os nomes de todos os presets…",
+"Reading the names of all presets…"
+],
+[
+"Lista exportada.",
+"List exported."
+],
+[
+"Nome do set",
+"Set name"
+],
+[
+"Preset",
+"Preset"
+],
+[
+"Nome",
+"Name"
+],
+[
+"arquivo inválido",
+"invalid file"
+],
+[
+"Gravar ${n} presets de ${b.sets?.length ?? 0} set(s) no pedal, nos mesmos lugares? Os slots atuais vão para a pasta backups/.",
+"Write ${n} presets from ${b.sets?.length ?? 0} set(s) to the pedal, in the same places? The current slots go to the backups/ folder."
+],
+[
+"Restaurar também os nomes dos sets?",
+"Also restore the set names?"
+],
+[
+"${r.written} presets gravados.",
+"${r.written} presets written."
+],
+[
+"Aprender ajuste",
+"Learn setting"
+],
+[
+"Mexa em qualquer ajuste de preset no painel do pedal (Mixer, Entradas, Setup…) e ele aparece aqui, com o id. Dê um nome na tabela abaixo.",
+"Move any preset setting on the pedal's panel (Mixer, Inputs, Setup…) and it shows up here with its id. Give it a name in the table below."
+],
+[
+"Exportar nomes",
+"Export names"
+],
+[
+"Ajustes do preset",
+"Preset settings"
+],
+[
+"nome",
+"name"
+],
+[
+"valor",
+"value"
+],
+[
+"dar nome…",
+"give it a name…"
+],
+[
+"sem nome",
+"unnamed"
+],
+[
+"Ajustes globais do pedal",
+"Global pedal settings"
+],
+[
+"Valem para o pedal todo, não para o preset. Só o 0x2 (afinação) tem significado confirmado; mexa nos demais por sua conta e risco.",
+"These apply to the whole pedal, not the preset. Only 0x2 (tuning) has a confirmed meaning; change the others at your own risk."
+],
+[
+"Ler ajustes globais do pedal",
+"Read global pedal settings"
+],
+[
+"afinação de referência (Hz)",
+"reference pitch (Hz)"
+],
+[
+"preset atual",
+"current preset"
+],
+[
+"set atual",
+"current set"
+],
+[
+"Enviado.",
+"Sent."
+],
+[
+"Atribuições MIDI (experimental)",
+"MIDI assignments (experimental)"
+],
+[
+"14 registros de 6 bytes por preset: FS/EXP → mensagem MIDI. O significado de cada byte ainda está sendo mapeado; as alterações são aplicadas ao vivo.",
+"14 records of 6 bytes per preset: FS/EXP → MIDI message. The meaning of each byte is still being mapped; changes are applied live."
+],
+[
+"Corpo do preset (4096 bytes)",
+"Preset body (4096 bytes)"
+],
+[
+"Ajuda",
+"Help"
+],
+[
+"HD500 Editor é um editor livre para o Line 6 POD HD500, feito por engenharia reversa do protocolo USB. Não é afiliado à Line 6.",
+"HD500 Editor is a free editor for the Line 6 POD HD500, built by reverse-engineering the USB protocol. It is not affiliated with Line 6."
+],
+[
+"Salvar no pedal",
+"Save to pedal"
+],
+[
+"Preset anterior / próximo",
+"Previous / next preset"
+],
+[
+"Lista de presets",
+"Preset list"
+],
+[
+"Arrastar bloco",
+"Drag a block"
+],
+[
+"Reordena e move entre as faixas (antes/depois, caminhos A e B)",
+"Reorders and moves between lanes (before/after, paths A and B)"
+],
+[
+"Clique direito no knob",
+"Right-click a knob"
+],
+[
+"Atribuir a EXP 1 / EXP 2",
+"Assign to EXP 1 / EXP 2"
+],
+[
+"Duplo clique no knob",
+"Double-click a knob"
+],
+[
+"Digitar valor",
+"Type a value"
+],
+[
+"Shift + arrastar",
+"Shift + drag"
+],
+[
+"Ajuste fino",
+"Fine adjustment"
+],
+[
+"Desfazer / refazer",
+"Undo / redo"
+],
+[
+"As alterações vão para o buffer de edição do pedal; \"Salvar no pedal\" grava no slot atual e guarda um backup do conteúdo anterior em backups/.",
+"Changes go to the pedal's edit buffer; \"Save to pedal\" writes to the current slot and keeps a backup of the previous content in backups/."
+],
+[
+"Descobriu o que um ajuste faz? Veja a aba Avançado → Aprender ajuste e compartilhe no GitHub.",
+"Found out what a setting does? See the Advanced tab → Learn setting and share it on GitHub."
+],
+[
+"Fechar",
+"Close"
+],
+[
+"Nome do preset (até 16 caracteres)",
+"Preset name (up to 16 characters)"
+],
+[
+"Dynamic Tone (amplificadores DT25/DT50 da Line 6)",
+"Dynamic Tone (Line 6 DT25/DT50 amplifiers)"
+],
+[
+"Preset gravado no pedal.",
+"Preset saved to the pedal."
+],
+[
+"Sem permissão para acessar o pedal. Instale a regra udev do projeto (veja o README) e replugue o cabo USB.",
+"No permission to access the pedal. Install the project's udev rule (see the README) and re-plug the USB cable."
+],
+[
+"Sem permissão para acessar o pedal. Feche outros programas que usem o POD HD500 (ex.: o editor oficial).",
+"No permission to access the pedal. Close other programs using the POD HD500 (e.g. the official editor)."
+],
+[
+"O pedal está em uso por outro programa. Feche o editor oficial da Line 6 e tente de novo.",
+"The pedal is in use by another program. Close the official Line 6 editor and try again."
+],
+[
+"No Windows o pedal precisa usar o driver WinUSB nesta interface (use o Zadig; veja o README).",
+"On Windows the pedal must use the WinUSB driver on this interface (use Zadig; see the README)."
+],
+[
+"POD HD500 não encontrado (cabo USB? regra udev? outro programa usando o pedal?)",
+"POD HD500 not found (USB cable? udev rule? another program using the pedal?)"
+],
+[
+"o pedal não respondeu a tempo",
+"the pedal did not answer in time"
+],
+[
+"o pedal recusou ${what} (status ${M.word(ack, 0)})",
+"the pedal refused ${what} (status ${M.word(ack, 0)})"
+],
+[
+"a gravação do preset",
+"the preset write"
+],
+[
+"o preset",
+"the preset"
+],
+[
+"o nome do set",
+"the set name"
+],
+[
+"ajuste ${id} desconhecido",
+"unknown setting ${id}"
+],
+[
+"corpo de preset deve ter 4096 bytes (recebi ${body.length})",
+"preset body must be 4096 bytes (got ${body.length})"
+],
+[
+"operação desconhecida: ${b.op}",
+"unknown operation: ${b.op}"
+],
+[
+"arquivo não é um pacote do HD500 Editor",
+"file is not an HD500 Editor bundle"
+],
+[
+"arquivo não é um preset .h5e válido",
+"file is not a valid .h5e preset"
+],
+[
+"caminho inválido",
+"invalid path"
+],
+[
+"erro ${r.status}",
+"error ${r.status}"
+],
+[
+"ajuste ${s.id}",
+"setting ${s.id}"
+],
+[
+"nome do ajuste ${s.id}",
+"name of setting ${s.id}"
+],
+[
+"host não permitido",
+"host not allowed"
+],
+[
+"origem não permitida",
+"origin not allowed"
+],
+[
+"cabeçalho X-HD500-Editor ausente",
+"missing X-HD500-Editor header"
+],
+[
+"corpo da requisição grande demais",
+"request body too large"
+],
+[
+"JSON inválido",
+"invalid JSON"
+]
+]

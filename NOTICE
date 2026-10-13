@@ -1,0 +1,9 @@
+HD500 Editor
+Copyright (c) 2026 HD500 Editor contributors — MIT License.
+
+Third-party material
+--------------------
+* catalog/catalog.json — model and parameter tables derived from lpedit-lib by Nicolas Schwartz
+  (https://github.com/StarAurryon/lpedit-lib), LGPL-3.0. Converted and extended by tools/gen-catalog.py.
+  Its protocol research (POD HD500X) was the starting point of this project.
+* Electron, node-usb (usb), puppeteer-core and their dependencies — see their respective licenses.

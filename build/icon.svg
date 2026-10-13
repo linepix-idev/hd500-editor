@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d222b"/><stop offset="1" stop-color="#0e1013"/></linearGradient></defs>
+<rect width="512" height="512" rx="110" fill="url(#g)"/>
+<circle cx="256" cy="262" r="150" fill="none" stroke="#2c323d" stroke-width="44"/>
+<path d="M141 335a150 150 0 1 1 230 0" fill="none" stroke="#ff7a2f" stroke-width="44" stroke-linecap="round"/>
+<path d="M256 262l66-104" stroke="#e8ebf0" stroke-width="34" stroke-linecap="round"/>
+<circle cx="256" cy="262" r="24" fill="#e8ebf0"/>
+<text x="256" y="452" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-weight="800" font-size="56" fill="#8b94a4" letter-spacing="6">HD500</text></svg>

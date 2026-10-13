@@ -1,0 +1,73 @@
+# HD500 Editor
+
+**A free, open editor for the Line 6 POD HD500** — now that the official software is no longer maintained, the community can keep this pedal alive.
+Runs on Linux, Windows and macOS, talks to the pedal directly over USB, and goes beyond the original editor.
+
+🇧🇷 [Leia em português](README.pt-BR.md)
+
+![HD500 Editor](docs/img/editor.png)
+
+## What you can do
+
+- **Signal chain view** (Helix-style): drag effects between *before/after the amp* and path **A / B**, see which input feeds which path.
+- **Edit everything live**: every amp, cab and effect model (61 amps · 18 cabs · 115 effects), all parameters, bypass, footswitch assignment, expression-pedal (EXP 1/2) assignment with heel/toe range.
+- **Input routing**: Guitar, Mic, Aux, Variax and combinations on Input 1 / Input 2, guitar impedance, tempo, Dynamic Tone (topology/class/mode).
+- **Footswitch panel**: a virtual footswitch strip that mirrors the pedal in real time — step on FS5 and the block lights up on screen.
+- **Library manager** for all 8 sets × 64 presets: rename sets, copy, swap, clear, drag-and-drop between slots, **export/import the whole library**, import/export official **`.h5e`** presets, automatic **backups** before every write.
+- **Undo / redo**, unsaved-changes tracking, light and dark themes.
+- **Advanced**: every preset setting by id, raw preset bytes, MIDI-assignment records, global pedal settings, and a *Learn* mode that shows which setting you just touched on the pedal — help us name the unknown ones!
+
+## Status
+
+| | Linux | Windows | macOS |
+|---|---|---|---|
+| Tested on hardware | ✅ | ❌ not yet | ❌ not yet |
+| Notes | udev rule (included) | needs a WinUSB driver for the pedal's control interface (Zadig) | expected to work through libusb |
+
+Everything marked ✅ was verified against a real POD HD500 (firmware 2.x). Please open an issue with your results on other systems or firmware versions.
+
+## Install
+
+**Linux** — download the `.AppImage` or `.deb` from the Releases page. The `.deb` installs the udev rule for you. For the AppImage (or running from source) install the rule once:
+
+```sh
+sudo cp 99-line6-hd500.rules /etc/udev/rules.d/ && sudo udevadm control --reload
+# then unplug and plug the pedal again
+```
+
+**Windows** — the Line 6 driver owns the pedal's control interface. Use [Zadig](https://zadig.akeo.ie) to bind the *"POD HD500 (Interface 1)"* to **WinUSB**. (This disables the pedal's USB audio on that interface; keep the official driver if you need audio and use a second profile.) *Untested — feedback welcome.*
+
+**From source** (Node.js ≥ 22):
+
+```sh
+git clone https://github.com/OWNER/hd500-editor.git && cd hd500-editor
+npm install
+npm run app        # desktop window (Electron)
+npm start          # or: web UI at http://127.0.0.1:5230
+HD500_DEMO=1 npm start   # no pedal? try it with a simulated one
+```
+
+## Safety
+
+- Edits only touch the pedal's **edit buffer**; nothing is written until you press **Save to pedal**.
+- Before any write to the pedal's memory the previous content of the slot is saved in `backups/`. `node tools/restore.mjs <file.bin> <set> <preset>` writes a backup back.
+- Switching presets discards unsaved edits — the editor asks first.
+- Not affiliated with Line 6 / Yamaha Guitar Group. See [DISCLAIMER](DISCLAIMER.md).
+
+## How it works
+
+The HD500 is not a USB-MIDI device. It exposes a vendor-specific bulk endpoint pair carrying 64-byte packets with a small framing layer and 4 KB preset images. The protocol was reverse-engineered by analysing the last official editor (v2.27) and verified on hardware:
+
+- [`docs/protocol.md`](docs/protocol.md) — transport, framing, commands
+- [`docs/preset-format.md`](docs/preset-format.md) — the 4096-byte preset body and the `.h5e` file format
+- [`docs/reverse-engineering.md`](docs/reverse-engineering.md) — how we did it, and how to continue
+
+Prior public work by the *lpedit* project (POD HD500X) was a valuable starting point — see [NOTICE](NOTICE).
+
+## Contributing
+
+There is plenty to discover: names for the remaining preset settings, the MIDI-assignment records, L6 Link, Variax and the global settings. See [CONTRIBUTING.md](CONTRIBUTING.md) — a pedal and curiosity are all you need.
+
+## License
+
+MIT (see [LICENSE](LICENSE)). Model/parameter tables in `catalog/` derive from LGPL-3.0 data (see `catalog/NOTICE`).

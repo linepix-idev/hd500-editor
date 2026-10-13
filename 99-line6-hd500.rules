@@ -1,0 +1,2 @@
+# Acesso sem root ao POD HD500 (Line 6) para o editor
+SUBSYSTEM=="usb", ATTR{idVendor}=="0e41", ATTR{idProduct}=="414d", MODE="0666", TAG+="uaccess"

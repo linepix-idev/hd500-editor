@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HD500 Editor</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header id="top">
+  <div class="brand">HD500<span>EDITOR</span></div>
+  <div class="conn" id="conn"><i class="dot"></i><span id="connText">connecting…</span></div>
+  <nav class="presetnav" aria-label="Preset">
+    <select id="setSel" aria-label="Set"></select>
+    <button id="prev" class="icon" aria-label="Previous preset" title="Previous preset (←)">◀</button>
+    <button id="presetName" class="presetname" title="Choose preset (L)"><span id="pnum">1A</span><b id="pname">—</b><em id="dirty" hidden>●</em></button>
+    <button id="next" class="icon" aria-label="Next preset" title="Next preset (→)">▶</button>
+  </nav>
+  <div class="actions">
+    <button id="fileMenu" title="File">File ▾</button>
+    <button id="theme" class="icon" title="Light/dark theme" aria-label="Toggle theme">◐</button>
+    <button id="help" class="icon" title="Help and shortcuts (?)" aria-label="Help">?</button>
+    <button id="undo" class="icon" title="Undo (Ctrl+Z)" aria-label="Undo">↶</button>
+    <button id="redo" class="icon" title="Redo (Ctrl+Y)" aria-label="Redo">↷</button>
+    <button id="revert" title="Discards changes and reloads the preset stored in the pedal" hidden>Discard</button>
+    <button id="save" class="primary" title="Writes the preset to the pedal's memory (Ctrl+S)">Save to pedal</button>
+  </div>
+</header>
+
+<main>
+  <section id="chainWrap" aria-label="Signal chain"><div id="chain"></div></section>
+  <div class="split">
+    <section id="inspector" aria-label="Block editor"></section>
+    <aside id="side">
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-tab="setup" aria-selected="true">Inputs</button>
+        <button role="tab" data-tab="fs">Footswitches</button>
+        <button role="tab" data-tab="library">Library</button>
+        <button role="tab" data-tab="advanced">Advanced</button>
+      </div>
+      <div id="tabBody"></div>
+    </aside>
+  </div>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="modal" hidden></div>
+<input type="file" id="filePick" hidden>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

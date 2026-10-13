@@ -1,0 +1,2 @@
+catalog.json é derivado das tabelas de StarAurryon/lpedit-lib (LGPL-3.0, https://github.com/StarAurryon/lpedit-lib),
+convertidas por tools/gen-catalog.py. Originalmente levantadas para o POD HD500X; validar contra o HD500.
