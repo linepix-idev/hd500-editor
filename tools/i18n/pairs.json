@@ -1062,5 +1062,33 @@
 [
 "Abrir o mixer",
 "Open the mixer"
+],
+[
+"Renomear…",
+"Rename…"
+],
+[
+"Renomear set",
+"Rename set"
+],
+[
+"Set renomeado.",
+"Set renamed."
+],
+[
+"Preset renomeado.",
+"Preset renamed."
+],
+[
+"Renomeado no buffer de edição. Salve no pedal para manter.",
+"Renamed in the edit buffer. Save to pedal to keep it."
+],
+[
+"Renomear ${presetLabel(i)} (até 16 caracteres)",
+"Rename ${presetLabel(i)} (up to 16 characters)"
+],
+[
+"nome vazio",
+"empty name"
 ]
 ]

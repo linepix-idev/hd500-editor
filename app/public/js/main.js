@@ -173,3 +173,8 @@ $('#librarySidebar').addEventListener('keydown',e=>{
 const openMixer = () => { S.tab = 'mixer'; renderSide(); document.querySelector('#side')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); };
 { const b = $('#openMixer'); b.append(icon('mixer'), document.createTextNode('Mixer')); b.onclick = openMixer; }
 addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === 'm' && !e.target.matches('input, textarea, select, [contenteditable]')) openMixer(); });
+
+// lápis visíveis: renomear o preset atual e o set atual
+{ const a = $('#renameBtn'), b = $('#renameSetBtn'); a.append(icon('edit')); b.append(icon('edit'));
+  a.onclick = () => renamePreset();
+  b.onclick = async () => { const set = S.st.selection.set, n = prompt('New set name (up to 16 characters)', S.st.setNames[set]); if (n != null && n.trim()) { try { await api('library/rename-set', { set, name: n.trim() }); toast('Set renamed.'); } catch (e) { fail(e); } } }; }

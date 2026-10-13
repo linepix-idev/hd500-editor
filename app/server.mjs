@@ -123,6 +123,12 @@ const routes = {
     const sets = []; for (let i = 0; i < SETS; i++) sets.push({ name: setNames[i] ?? (await pod.setName(i)), presets: await pod.slotNames(i, (d, t) => emit('progress', { what: 'Lendo nomes', done: i * t + d, total: SETS * t })) });
     return { sets };
   },
+  // renomeia um preset de qualquer slot (o corpo do preset guarda o nome). O slot carregado é renomeado só no buffer: salve para gravar.
+  'POST /api/library/rename-slot': async ({ set, preset: p, name }) => {
+    const n = String(name ?? '').trim().slice(0, 16); if (!n) throw new Error('empty name');
+    if (set === selection.set && p === selection.preset) { await edits.name({ name: n }); snapshot(); return { current: true }; }
+    const sl = await pod.readSlot(set, p); BACKUPS.save(set, p, sl); sl.name = n; await pod.writeSlot(set, p, sl); return { current: false };
+  },
   'POST /api/library/rename-set': async ({ set, name }) => { await pod.renameSet(set, name); setNames = await pod.setNames(); emit('state', view()); return setNames; },
   'POST /api/library/export': async ({ sets }) => Lib.exportBundle(pod, sets, progress('Exportando')),
   'POST /api/library/import': async ({ bundle, map, renameSets }) => ({ written: await Lib.importBundle(pod, bundle, { map, renameSets, backups: BACKUPS, onProgress: progress('Gravando') }) }),

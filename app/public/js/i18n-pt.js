@@ -263,5 +263,11 @@ export const PT = {
  "Delay and reverb tails keep ringing after the effect is turned off.": "As caudas de delay e reverb continuam soando depois que o efeito é desligado.",
  "Double-click a pan slider to reset it. Levels run from Mute to +12 dB. Changes made on the pedal show up here live.": "Clique duas vezes no pan para zerar. Os níveis vão de Mute a +12 dB. O que você muda no pedal aparece aqui ao vivo.",
  "Mixer: level and pan of paths A and B (M)": "Mixer: nível e pan dos caminhos A e B (M)",
- "Open the mixer": "Abrir o mixer"
+ "Open the mixer": "Abrir o mixer",
+ "Rename…": "Renomear…",
+ "Set renamed.": "Set renomeado.",
+ "Preset renamed.": "Preset renomeado.",
+ "Renamed in the edit buffer. Save to pedal to keep it.": "Renomeado no buffer de edição. Salve no pedal para manter.",
+ "Rename ${presetLabel(i)} (up to 16 characters)": "Renomear ${presetLabel(i)} (até 16 caracteres)",
+ "empty name": "nome vazio"
 };

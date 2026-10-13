@@ -13,7 +13,7 @@
   <div class="brand">HD500<span>Editor</span></div>
   <nav class="presetnav" aria-label="Preset">
     <button id="prev" class="icon" aria-label="Previous preset" title="Previous preset (←)"></button>
-    <div class="presetname"><span id="pnum">1A</span><button id="presetName" title="Rename preset" aria-label="Rename preset"><b id="pname">—</b></button><em id="dirty" title="Unsaved changes" hidden>●</em></div>
+    <div class="presetname"><span id="pnum">1A</span><button id="presetName" title="Rename preset" aria-label="Rename preset"><b id="pname">—</b></button><button id="renameBtn" class="icon" title="Rename preset" aria-label="Rename preset"></button><em id="dirty" title="Unsaved changes" hidden>●</em></div>
     <button id="next" class="icon" aria-label="Next preset" title="Next preset (→)"></button>
   </nav>
   <div class="actions">
@@ -32,7 +32,7 @@
   <button id="drawerBackdrop" hidden aria-label="Close library"></button>
   <aside id="librarySidebar" aria-label="Preset library">
     <div class="sidebar-head"><h2>Library</h2><button id="libraryMore" class="icon" aria-label="Library actions" title="Library actions"></button><button id="libraryClose" class="icon" aria-label="Close library" title="Close library"></button></div>
-    <label class="set-label" for="setSel">Current set</label><select id="setSel" aria-label="Set"></select>
+    <label class="set-label" for="setSel">Current set</label><span class="set-row"><select id="setSel" aria-label="Set"></select><button id="renameSetBtn" class="icon" title="Rename set" aria-label="Rename set"></button></span>
     <label class="library-search"><span id="searchIcon"></span><input id="librarySearch" type="search" placeholder="Search all presets…" aria-label="Search all presets"></label>
     <div id="libbar" class="bar" hidden role="progressbar" aria-label="Reading preset names" aria-valuemin="0" aria-valuemax="100"><i></i></div>
     <div id="libraryList" class="library-list" aria-label="Presets"></div>

@@ -18,6 +18,7 @@ const paths = {
   volume: 'M3 7h4l4-4v14l-4-4H3V7 M15 7v6 M18 5v10', wah: 'M2 14q8 0 8-8t8 0', loop: 'M4 5h12l-3-3 M16 5v6 M16 15H4l3 3 M4 15V9',
   trash: 'M3 5h14 M7 5V2h6v3 M5 5l1 13h8l1-13 M8 8v7 M12 8v7',
   copy: 'M7 7h10v11H7V7 M4 14H2V2h11v2', paste: 'M7 4H4v14h12V4h-3 M7 2h6v4H7V2',
+  edit: 'M3 17l1-4 9-9 3 3-9 9-4 1 M12 5l3 3',
   mixer: 'M5 2v16 M10 2v16 M15 2v16 M3 7h4 M8 13h4 M13 5h4',
   settings: 'M10 2l2 3 3-1 1 3 3 2-3 2-1 4-3-1-2 3-2-3-3 1-1-4-3-2 3-2 1-3 3 1 2-3 M13 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0',
   help: 'M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0 M7 7a3 3 0 0 1 6 0c0 2-3 2-3 4 M10 14h.1',

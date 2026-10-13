@@ -1800,3 +1800,7 @@ kbd {
 
 .canvas-toolbar .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 99px; font-size: 12px; margin-right: 6px; }
 .canvas-toolbar .pill svg { width: 16px; height: 16px; }
+
+.set-row { display: flex; gap: 6px; align-items: center; } .set-row select { flex: 1; min-width: 0; }
+#renameBtn, #renameSetBtn { padding: 4px 7px; opacity: .75; } #renameBtn:hover, #renameSetBtn:hover { opacity: 1; }
+#renameBtn svg, #renameSetBtn svg { width: 16px; height: 16px; }

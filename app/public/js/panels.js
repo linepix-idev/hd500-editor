@@ -92,7 +92,7 @@ let sidebarSignature = '', selectionSet = null;
 function Slot(set, i, name) {
   const cur = set === S.st.selection.set && i === S.st.selection.preset;
   const b = h('button', { class: `slot ${cur ? 'cur' : ''} ${name == null ? 'skeleton' : ''}`, dataset: { set, preset: i }, 'aria-current': cur ? 'true' : 'false', 'aria-label': `${presetLabel(i)} · ${name ?? tr('Loading…')}`, draggable: true, title: name ?? '', onClick: async () => { await selectSlot(set, i); if (!S.st?.dirty && matchMedia('(max-width: 799px)').matches) closeDrawer(); },
-    onContextmenu: e => { e.preventDefault(); slotMenu(e, set, i); } }, h('i', {}, presetLabel(i)), h('span', {}, cur && S.st.dirty ? S.st.preset.name : name ?? (cur ? S.st.preset.name : '—')), cur ? h('span', { class: S.st.dirty ? 'modified-mark' : 'loaded-mark', 'aria-label': S.st.dirty ? 'Unsaved changes' : 'Loaded preset' }, S.st.dirty ? '●' : '') : null);
+    onDblclick: e => { e.preventDefault(); renameSlot(set, i); }, onContextmenu: e => { e.preventDefault(); slotMenu(e, set, i); } }, h('i', {}, presetLabel(i)), h('span', {}, cur && S.st.dirty ? S.st.preset.name : name ?? (cur ? S.st.preset.name : '—')), cur ? h('span', { class: S.st.dirty ? 'modified-mark' : 'loaded-mark', 'aria-label': S.st.dirty ? 'Unsaved changes' : 'Loaded preset' }, S.st.dirty ? '●' : '') : null);
   b.addEventListener('dragstart', e => e.dataTransfer.setData('application/x-slot', JSON.stringify({ set, preset: i })));
   b.addEventListener('dragover', e => { if (e.dataTransfer.types.includes('application/x-slot') || e.dataTransfer.types.includes('Files')) { e.preventDefault(); b.classList.add('dragover'); } });
   b.addEventListener('dragleave', () => b.classList.remove('dragover'));
@@ -107,10 +107,16 @@ function Slot(set, i, name) {
   return b;
 }
 export const invalidate = set => { if (set == null) { L.names.clear(); L.errors.clear(); for(let i=0;i<8;i++) L.versions.set(i,(L.versions.get(i)??0)+1); } else { L.names.delete(set); L.errors.delete(set); L.versions.set(set,(L.versions.get(set)??0)+1); } sidebarSignature=''; notify(); if(L.search) queueMicrotask(()=>searchSets(++L.generation)); };
+async function renameSlot(set, i) {
+  const cur = L.names.get(set)?.[i] ?? (set === S.st.selection.set && i === S.st.selection.preset ? S.st.preset.name : '');
+  const n = prompt(`Rename ${presetLabel(i)} (up to 16 characters)`, cur); if (n == null || !n.trim() || n.trim() === cur) return;
+  try { const r = await api('library/rename-slot', { set, preset: i, name: n.trim() }); toast(r.current ? 'Renamed in the edit buffer. Save to pedal to keep it.' : 'Preset renamed.'); invalidate(set); } catch (x) { fail(x); }
+}
 function slotMenu(e, set, i) {
   const at = { set, preset: i };
   menu(e.clientX, e.clientY, [
     ['Load', () => selectSlot(set, i)],
+    ['Rename…', () => renameSlot(set, i)],
     ['Copy to…', () => pickDestination('Copy to', async to => { try { await api('library/copy', { from: at, to }); toast('Copied.'); invalidate(to.set); } catch (x) { fail(x); } })],
     ['Swap with…', () => pickDestination('Swap with', async b => { try { await api('library/swap', { a: at, b }); toast('Swapped.'); invalidate(set); invalidate(b.set); } catch (x) { fail(x); } })],
     ['Export .h5e', async () => { try { const j = await api('library/export-h5e', at); download(`${j.name || 'preset'}.h5e`, b64ToBytes(j.data)); } catch (x) { fail(x); } }],
