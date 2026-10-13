@@ -8,7 +8,7 @@ const p = await b.newPage(); const errs = []; p.on('pageerror', e => errs.push(e
 await p.evaluateOnNewDocument(() => localStorage.setItem('hd500.lang', 'en'));
 await p.goto(base, { waitUntil: 'networkidle2' }); await p.waitForSelector('.block');
 let ok = true; const check = (n, c) => { console.log(c ? '✔' : '✖', n); ok &&= c; };
-await p.click('[data-tab="mixer"]'); await p.waitForSelector('.mx-fader');
+await p.click('#openMixer'); await p.waitForSelector('.mx-fader');
 if (process.env.SHOT) await p.screenshot({ path: process.env.SHOT });
 await p.evaluate(() => document.querySelector('.mx-A .mx-fader').focus());
 for (let i = 0; i < 6; i++) await p.keyboard.press('ArrowDown');       // −3 dB (6 × 0,5)

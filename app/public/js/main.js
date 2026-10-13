@@ -168,3 +168,8 @@ $('#librarySidebar').addEventListener('keydown',e=>{
     else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}
   }
 });
+
+// atalho para o Mixer: abre a aba e leva o painel para a tela (ele fica abaixo da cadeia em telas baixas)
+const openMixer = () => { S.tab = 'mixer'; renderSide(); document.querySelector('#side')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); };
+{ const b = $('#openMixer'); b.append(icon('mixer'), document.createTextNode('Mixer')); b.onclick = openMixer; }
+addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === 'm' && !e.target.matches('input, textarea, select, [contenteditable]')) openMixer(); });

@@ -1797,3 +1797,6 @@ kbd {
 .switch { width: 46px; height: 28px; border-radius: 99px; padding: 2px; background: var(--panel3); border: .5px solid var(--line); display: flex; align-items: center; flex: none; }
 .switch i { width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.4); transition: transform .18s; display: block; }
 .switch[aria-checked="true"] { background: var(--good, #46d18b); justify-content: flex-end; }
+
+.canvas-toolbar .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 99px; font-size: 12px; margin-right: 6px; }
+.canvas-toolbar .pill svg { width: 16px; height: 16px; }

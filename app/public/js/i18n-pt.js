@@ -261,5 +261,7 @@ export const PT = {
  "Pan": "Pan",
  "Trails": "Caudas",
  "Delay and reverb tails keep ringing after the effect is turned off.": "As caudas de delay e reverb continuam soando depois que o efeito é desligado.",
- "Double-click a pan slider to reset it. Levels run from Mute to +12 dB. Changes made on the pedal show up here live.": "Clique duas vezes no pan para zerar. Os níveis vão de Mute a +12 dB. O que você muda no pedal aparece aqui ao vivo."
+ "Double-click a pan slider to reset it. Levels run from Mute to +12 dB. Changes made on the pedal show up here live.": "Clique duas vezes no pan para zerar. Os níveis vão de Mute a +12 dB. O que você muda no pedal aparece aqui ao vivo.",
+ "Mixer: level and pan of paths A and B (M)": "Mixer: nível e pan dos caminhos A e B (M)",
+ "Open the mixer": "Abrir o mixer"
 };
