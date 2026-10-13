@@ -394,9 +394,9 @@ export const PT = {
  "Adjusts the low-frequency punch of the cabinet.": "Ajusta o impacto dos graves da caixa.",
  "Passes the signal without this model. Choose another model to add its sound.": "Passa o sinal sem este modelo. Escolha outro modelo para adicionar seu timbre.",
  "Model info — ${name}": "Informações do modelo — ${name}",
- "Live": "Ao vivo",
- "Apply edits while dragging": "Aplicar ajustes durante o arraste",
- "Apply edits on release": "Aplicar ajustes ao soltar",
+ "Live edit": "Edição ao vivo",
+ "Edits go to the pedal while you drag. Save still writes to its memory.": "Os ajustes vão para o pedal enquanto você arrasta. Salvar continua gravando na memória.",
+ "Edits go to the pedal when you release the control.": "Os ajustes vão para o pedal quando você solta o controle.",
  "Input routing help": "Ajuda de roteamento de entrada",
  "Mixer help": "Ajuda do mixer",
  "Blue selects. Green is on. Dashed cables mean bypass.": "Azul seleciona. Verde indica ligado. Cabos tracejados indicam bypass."
