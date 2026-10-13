@@ -10,7 +10,7 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('#libraryList .slot').length === 64 && !document.querySelector('#libraryList .skeleton'));
   assert.equal(await page.$$eval('#libraryList .bank-title', n => n.length), 16);
   await shot('t1-home');
-  for (const tab of ['fs', 'advanced', 'setup']) { await page.click(`[data-tab="${tab}"]`); await wait(150); await shot('t2-' + tab); }
+  for (const tab of ['fs', 'setup']) { await page.click(`[data-tab="${tab}"]`); await wait(150); await shot('t2-' + tab); }
   await page.click('.block[data-item="4"] .nm'); await shot('t3-select');
   await page.click('#inspector .model-title'); await page.waitForSelector('.models .model-choice'); await shot('t4-picker');
   assert.equal(await page.$eval('.dlg', e => e.getAttribute('aria-modal')), 'true');

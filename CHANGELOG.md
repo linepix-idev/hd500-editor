@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.2.9
+- Cleaner UI: the Advanced tab (raw bytes, MIDI bytes, setting learner) moved to File ▸ Developer tools; footers removed; side-panel tab bar has four items.
+- Motion pass: one easing and three durations, springy hover/press, sheets and tabs slide in, wires fade in; reduced-motion respected; cheaper scrolling for the preset list.
 - Mixer: Pan is now a bipolar knob (arc grows to the side the sound moves to; double-click centres it).
 - Pedal settings (global, outside the preset) moved to their own sheet (toolbar button) with a guided "Find a setting" tool: snapshot, change one setting on the pedal, compare, name it, export the names.
 - Chain blocks show clear footswitch (FS) and expression-pedal (EXP) tags; the footswitch panel is ordered FS1–FS4 over FS5–FS8 like the official editor.

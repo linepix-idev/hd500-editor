@@ -296,10 +296,13 @@ export function initSidebar() {
 const NAMES_KEY = 'hd500.settingNames';
 const loadNames = () => { try { return JSON.parse(localStorage.getItem(NAMES_KEY) ?? '{}'); } catch { return {}; } };
 const saveNames = n => { try { localStorage.setItem(NAMES_KEY, JSON.stringify(n)); } catch {} };
+let devRoot = null;
+export function openDevTools() { const body = h('div', { class: 'devtools' }); modal('Developer tools', body); devRoot = body; renderAdvanced(body); }
+const repaintDev = () => { if (devRoot?.isConnected) renderAdvanced(devRoot); };
 export const learned = [];   // últimos ajustes mexidos no painel do pedal
 export const unknownLog = [];
-export function learnUnknown(ev) { unknownLog.unshift(ev); unknownLog.length = Math.min(unknownLog.length, 8); if (S.tab === 'advanced') renderAdvanced($('#tabBody')); }
-export function learnSetup(ev) { learned.unshift({ ...ev, at: Date.now() }); learned.length = Math.min(learned.length, 12); if (S.tab === 'advanced') renderAdvanced($('#tabBody')); }
+export function learnUnknown(ev) { unknownLog.unshift(ev); unknownLog.length = Math.min(unknownLog.length, 8); repaintDev(); }
+export function learnSetup(ev) { learned.unshift({ ...ev, at: Date.now() }); learned.length = Math.min(learned.length, 12); repaintDev(); }
 
 export function renderAdvanced(root) {
   const p = S.st.preset, names = loadNames();

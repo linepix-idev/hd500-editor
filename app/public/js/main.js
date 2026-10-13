@@ -5,14 +5,14 @@ import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, 
 import { S, onChange, notify, presetLabel } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
-import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, tapHandler } from './panels.js';
+import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, tapHandler, openDevTools } from './panels.js';
 import { selectSlot } from './nav.js';
 import { icon, buttonIcon } from './icons.js';
 
 initTooltips();
 new ResizeObserver(() => document.documentElement.style.setProperty('--toolbar-height', `${$('#top').getBoundingClientRect().height}px`)).observe($('#top'));
 
-const TABS = { setup: renderSetup, mixer: renderMixer, controllers: renderControllers, fs: renderFootswitches, advanced: renderAdvanced };
+const TABS = { setup: renderSetup, mixer: renderMixer, controllers: renderControllers, fs: renderFootswitches };
 let lastPreset = null, saving = false;
 
 function render() {
@@ -107,7 +107,7 @@ const save = async () => {
 };
 $('#save').onclick = save;
 $('#tabs').addEventListener('keydown',e=>{ if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;const tabs=[...$('#tabs').children],at=tabs.indexOf(e.target.closest('button'));const index=e.key==='Home'?0:e.key==='End'?2:(at+(e.key==='ArrowRight'?1:2))%3;e.preventDefault();e.stopPropagation();S.tab=tabs[index].dataset.tab;renderSide();tabs[index].focus();});
-$('#tabs').addEventListener('click', e => { const t = e.target.closest('[data-tab]'); if (t) { S.tab = t.dataset.tab; renderSide(); } });
+$('#tabs').addEventListener('click', e => { const t = e.target.closest('[data-tab]'); if (t && t.dataset.tab !== S.tab) { S.tab = t.dataset.tab; renderSide(); const b = $('#tabBody'); b.classList.remove('enter'); void b.offsetWidth; b.classList.add('enter'); } });
 $('#conn').onclick = () => { if (!S.st?.connected || !$('#conn').classList.contains('on')) reconnect(); };
 
 addEventListener('keydown', e => {
@@ -138,6 +138,7 @@ $('#fileMenu').onclick = e => { const r = e.currentTarget.getBoundingClientRect(
   ['Import preset (.h5e) into the buffer…', importH5e],
   ['Export this preset (.h5e)', async () => { try { const j = await api('library/export-h5e', {}); download(`${j.name || 'preset'}.h5e`, b64ToBytes(j.data)); } catch (x) { fail(x); } }],
   ['Reconnect to the pedal', reconnect],
+  ['Developer tools…', openDevTools],
   ['Help and shortcuts', showHelp],
   ...Object.entries(langs).filter(([k]) => k !== lang).map(([k, name]) => [name, () => setLang(k)]),
 ]); };
@@ -165,7 +166,7 @@ addEventListener('drop', async e => {
 // Local symbols and responsive library controls.
 for(const [id,name] of Object.entries({sidebarToggle:'sidebar',prev:'left',next:'right',undo:'undo',redo:'redo',revert:'reread',fileMenu:'library',pedalSettings:'settings',language:'globe',help:'help',libraryMore:'more',libraryClose:'close',colorLegend:'colors',chainTrash:'trash'})) buttonIcon($('#'+id),name);
 buttonIcon($('#save'),'save','Save to pedal');$('#searchIcon').append(icon('search'));
-for(const [tab,name] of Object.entries({setup:'input',mixer:'mixer',controllers:'expression',fs:'footswitch',advanced:'settings'})) $('#tabs [data-tab="'+tab+'"]').prepend(icon(name));
+for(const [tab,name] of Object.entries({setup:'input',mixer:'mixer',controllers:'expression',fs:'footswitch'})) $('#tabs [data-tab="'+tab+'"]').prepend(icon(name));
 $('#conn').setAttribute('aria-live','polite');
 function closeSidebar() { document.body.classList.remove('sidebar-open');document.body.classList.add('sidebar-collapsed');$('#drawerBackdrop').hidden=true;$('#sidebarToggle').setAttribute('aria-expanded','false');$('#sidebarToggle').focus(); syncSidebar(); }
 function openSidebar() { document.body.classList.remove('sidebar-collapsed');document.body.classList.add('sidebar-open');$('#drawerBackdrop').hidden=!matchMedia('(max-width: 799px)').matches;$('#sidebarToggle').setAttribute('aria-expanded','true'); syncSidebar(); if(innerWidth<800) $('#setSel').focus(); }

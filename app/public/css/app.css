@@ -2029,7 +2029,7 @@ main { gap:28px; padding:32px; }
 #tabBody .mx-path, #tabBody .mx-trails, #tabBody .mx-grid { margin-bottom:8px; }
 
 /* Side-panel tab bar: iOS tab-bar layout (icon over label, equal columns, tinted selection) */
-#tabs.tabs { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; padding:4px; margin:0 0 24px; overflow:visible; border:0; border-radius:14px; background:var(--panel2); }
+#tabs.tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; padding:4px; margin:0 0 24px; overflow:visible; border:0; border-radius:14px; background:var(--panel2); }
 #tabs.tabs button { flex:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-width:0; min-height:58px; padding:8px 0 7px; overflow:hidden; text-overflow:ellipsis; border:0; border-radius:10px; background:transparent; color:var(--dim); font:500 10.5px/1.15 var(--font-text); letter-spacing:0; white-space:nowrap; box-shadow:none; }
 #tabs.tabs .symbol { display:block; width:22px; height:22px; stroke-width:1.5; }
 #tabs.tabs button:hover { color:var(--text); background:color-mix(in srgb,var(--text) 6%,transparent); }
@@ -2081,3 +2081,26 @@ main { gap:28px; padding:32px; }
 
 @keyframes rowflash { from { background:color-mix(in srgb,var(--accent) 35%,transparent); } to { background:transparent; } }
 .flash-row { animation:rowflash 1.4s ease-out; }
+
+/* ---- Motion: short, springy, quiet. One easing, three durations. ---- */
+:root { --ease:cubic-bezier(.22,.8,.24,1); --dur-1:120ms; --dur-2:200ms; --dur-3:320ms; }
+button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { transition:background-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), box-shadow var(--dur-2) var(--ease), transform var(--dur-1) var(--ease), opacity var(--dur-2) var(--ease); }
+.block:hover:not(.sel):not(.drag-origin) { transform:translateY(-1px); }
+.block:active { transform:scale(.985); }
+.slot:active, .fsbtn:active, button:not(.switch):not(.led):active { transform:scale(.97); }
+.io-tile { transition:transform var(--dur-2) var(--ease), filter var(--dur-1); }
+.mix-node:hover .io-tile { transform:translateY(-1px) scale(1.03); }
+@keyframes sheetIn { from { opacity:0; transform:translateY(12px) scale(.985); } to { opacity:1; transform:none; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes riseIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+#modal:not([hidden]) { animation:fadeIn var(--dur-2) var(--ease); }
+#modal .dlg { animation:sheetIn var(--dur-3) var(--ease); }
+#tabBody.enter > * { animation:riseIn var(--dur-3) var(--ease) both; }
+#tabBody.enter > *:nth-child(2) { animation-delay:30ms; } #tabBody.enter > *:nth-child(3) { animation-delay:60ms; } #tabBody.enter > *:nth-child(4) { animation-delay:90ms; } #tabBody.enter > *:nth-child(n+5) { animation-delay:120ms; }
+#toast > div { animation:riseIn var(--dur-2) var(--ease); }
+.wires path { animation:fadeIn var(--dur-3) var(--ease); }
+#inspector > * { animation:riseIn var(--dur-2) var(--ease) both; }
+/* cheaper scrolling for the long library list */
+.library-list > .slot { content-visibility:auto; contain-intrinsic-size:auto 40px; }
+.chain-scroll, #librarySidebar, #side, #inspector { contain:layout paint; }
+@media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:.001ms !important; animation-delay:0s !important; transition-duration:.001ms !important; } }
