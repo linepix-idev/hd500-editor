@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.8
+- Restored the detailed original gear icons (amps, cabs, pedals); bundled Inter (SIL OFL) as the SF Pro stand-in on Linux/Windows — macOS uses the real SF Pro; smaller on/off switches inside chain blocks.
+
 ## 0.2.7
 - Minimal flat gear icons: real enclosure colors, one pedal feature, flat amp faceplates/grilles and at most five knob dots. Neutral content surfaces, quieter nodes and picker, inset settings groups, larger titles and disclosed routing/mixer/DT help.
 - Live editing defaults on. Knobs, mixer, tempo and expression ranges update optimistically during drags, coalesced to about 60 sends/s with one request in flight per parameter and a guaranteed release value. The toolbar Live toggle applies drags on release when disabled; Save still writes flash.
