@@ -177,6 +177,7 @@ export function renderChain(root) {
       h('div',{class:'input-source',dataset:{source:2}},ioTile(sourceIcon(inName(setup.input2===0?setup.input1:setup.input2))),h('b',{},'Input 2'),h('span',{class:'source'},inName(setup.input2)))),
     Lane('pre','Before · shared',c.pre),
     h('div',{class:'paths'},row('A',0,1,'aPre','aPost'),row('B',2,3,'bPre','bPost')),
+    h('button',{class:'io mix-node',id:'chainMixer',type:'button',title:'Mixer: level and pan of paths A and B (M)','aria-label':'Open the mixer',onClick:()=>document.dispatchEvent(new Event('open-mixer'))},h('span',{class:'io-tile io-mixer'},icon('mixer')),h('b',{},'Mixer'),h('span',{},'A + B')),
     Lane('post','After · mix',c.post),h('div',{class:'io',id:'chainOutput'},ioTile('output'),h('b',{},'Output'),h('span',{},'Stereo')));
   resizeObserver?.disconnect(); resizeObserver=new ResizeObserver(()=>drawWires()); resizeObserver.observe(root);
   requestAnimationFrame(drawWires);
@@ -197,8 +198,8 @@ function drawWires() {
 
   };
   const sequence=nodes=>nodes.forEach((n,i)=>i&&join(nodes[i-1],n));
-  const before=lane('pre'),after=lane('post');sequence([root.querySelector('[data-source="1"]'),...before]);join(root.querySelector('[data-source="2"]'),before[0]);sequence([...after,root.querySelector('#chainOutput')]);
-  for(const [pre,amp,cab,post]of[['aPre',0,1,'aPost'],['bPre',2,3,'bPost']]) sequence([before.at(-1),...lane(pre),node(amp),node(cab),...lane(post),after[0]]);
+  const before=lane('pre'),after=lane('post');sequence([root.querySelector('[data-source="1"]'),...before]);join(root.querySelector('[data-source="2"]'),before[0]);const mix=root.querySelector('#chainMixer');join(mix,after[0]);sequence([...after,root.querySelector('#chainOutput')]);
+  for(const [pre,amp,cab,post]of[['aPre',0,1,'aPost'],['bPre',2,3,'bPost']]) sequence([before.at(-1),...lane(pre),node(amp),node(cab),...lane(post),mix]);
 }
 export function flashItem(id) {
   const el=document.querySelector(`.block[data-item="${id}"]`);if(!el)return;
