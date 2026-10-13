@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1
+- Mixer panel (levels, pans, Trails) with live feedback from the pedal; mixer/Trails settings documented.
+- 31 extra amp models and 4 cabs from the model packs added to the catalog.
+- Original illustrations of amps, cabs, microphones and pedals per model.
+- Robustness: truncated pedal messages are discarded and queries retried.
+
+## 0.2.0
+- Liquid Glass UI: library sidebar, node graph with pointer drag-and-drop, local icon set, light/dark.
+
 ## 0.1.0 — first public release
 - Signal-chain editor with paths A/B, drag-and-drop, live editing of all amp/cab/effect models and parameters.
 - Footswitch and expression-pedal assignments, input routing, Dynamic Tone, cab microphone/E.R.

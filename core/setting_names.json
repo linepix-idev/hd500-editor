@@ -24,5 +24,6 @@
   "44": "Mixer — Path A level (dB, -60 = mute … +12)",
   "45": "Mixer — Path B level (dB, -60 = mute … +12)",
   "46": "Mixer — Path A pan (-1 … +1)",
-  "47": "Mixer — Path B pan (-1 … +1)"
+  "47": "Mixer — Path B pan (-1 … +1)",
+  "56": "Trails (1 = on, 0 = off): delay/reverb tails keep ringing after the effect is turned off"
 }

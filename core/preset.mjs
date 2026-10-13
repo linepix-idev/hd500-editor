@@ -96,7 +96,7 @@ export class Preset {
   toJSON() {
     const items = this.items;
     const f = id => this.body.readFloatLE(SETUP.get(id).off);
-    return { name: this.name, tempo: this.tempo, mixer: { levelA: f(MIXER.levelA), levelB: f(MIXER.levelB), panA: f(MIXER.panA), panB: f(MIXER.panB) }, items, body: this.body.toString('base64'),
+    return { name: this.name, tempo: this.tempo, trails: this.setup(0x38) === 1, mixer: { levelA: f(MIXER.levelA), levelB: f(MIXER.levelB), panA: f(MIXER.panA), panB: f(MIXER.panB) }, items, body: this.body.toString('base64'),
       setup: { input1: this.setup(0x36), input2: this.setup(0x37), inZ: this.setup(0x55) },
       settings: [...SETUP.values()].map(s => ({ id: s.id, name: SETUP_NAMES[s.id] ?? null, offset: s.off, size: s.size, float: s.size === 4, value: s.size === 4 ? this.body.readFloatLE(s.off) : this.setup(s.id) })) };
   }

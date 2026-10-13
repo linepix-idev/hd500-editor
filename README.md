@@ -10,7 +10,8 @@ Runs on Linux, Windows and macOS, talks to the pedal directly over USB, and goes
 ## What you can do
 
 - **Glass signal graph**: drag effects between *before/after the amp* and path **A / B**, see which input feeds which path.
-- **Edit everything live**: every amp, cab and effect model (61 amps · 18 cabs · 115 effects), all parameters, bypass, footswitch assignment, expression-pedal (EXP 1/2) assignment with heel/toe range.
+- **Edit everything live**: every amp, cab and effect model (92 amps incl. the optional model packs · 22 cabs · 115 effects, each with its own illustration), all parameters, bypass, footswitch assignment, expression-pedal (EXP 1/2) assignment with heel/toe range.
+- **Mixer panel**: level (Mute … +12 dB) and pan of paths A and B with live faders, plus the Trails switch — mirrored in real time when you turn the knobs on the pedal.
 - **Input routing**: Guitar, Mic, Aux, Variax and combinations on Input 1 / Input 2, guitar impedance, tempo, Dynamic Tone (topology/class/mode).
 - **Footswitch panel**: a virtual footswitch strip that mirrors the pedal in real time — step on FS5 and the block lights up on screen.
 - **Preset sidebar** for all 8 sets × 64 presets, with bank groups and search across sets: rename sets, copy, swap, clear, drag-and-drop between slots, **export/import the whole library**, import/export official **`.h5e`** presets, automatic **backups** before every write.

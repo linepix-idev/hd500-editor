@@ -1,4 +1,4 @@
-import { h, api, fail, toast, menu, modal, download, pickFile, b64ToBytes, bytesToB64, $ } from './util.js';
+import { throttle, h, api, fail, toast, menu, modal, download, pickFile, b64ToBytes, bytesToB64, $ } from './util.js';
 import { S, notify, presetLabel, GROUP_CLASS } from './store.js';
 import { edit } from './params.js';
 import { pickDestination } from './picker.js';
@@ -24,6 +24,43 @@ export function renderSetup(root) {
     select('Guitar input impedance', 'inZ', S.cat.inZ, 0x55),
     h('p', { class: 'dim', style: { fontSize: '12px' } }, 'To use a mic and a guitar together: Input 1 = Guitar and Input 2 = Mic. Each input feeds its own path (A and B) in the signal chain.'),
     h('div', { class: 'row' }, h('label', {}, 'Tempo (BPM)'), bpm));
+}
+
+
+// ---------------------------------------------------------------------------------------- Mixer
+// Níveis (dB, −60 = mudo … +12) e pans (−1 … +1) dos caminhos A e B + Trails. Ajustes 0x2c–0x2f e 0x38 do preset.
+const MIX = { A: { level: 0x2c, pan: 0x2e, key: ['levelA', 'panA'] }, B: { level: 0x2d, pan: 0x2f, key: ['levelB', 'panB'] } };
+const fmtDb = v => (v <= -59.9 ? 'Mute' : `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`);
+const fmtPan = v => (Math.abs(v) < 0.005 ? 'Center' : `${v < 0 ? 'L' : 'R'} ${Math.round(Math.abs(v) * 100)}`);
+const remembered = { A: 0, B: 0 };
+export function renderMixer(root) {
+  const p = S.st.preset, m = p.mixer;
+  const send = (id, value) => edit('setupF', { id, value }).catch(fail);
+  const path = which => {
+    const spec = MIX[which], [lk, pk] = spec.key;
+    const dbOut = h('output', { class: 'mx-db' }, fmtDb(m[lk])), panOut = h('output', { class: 'mx-pan' }, fmtPan(m[pk]));
+    const fader = h('input', { type: 'range', class: 'mx-fader', min: -60, max: 12, step: 0.5, value: m[lk], 'aria-label': `Path ${which} level`, orient: 'vertical' });
+    fader.oninput = () => { m[lk] = Number(fader.value); dbOut.textContent = fmtDb(m[lk]); mute.setAttribute('aria-pressed', String(m[lk] <= -59.9)); throttle(`mx${spec.level}`, () => send(spec.level, m[lk])); };
+    const pan = h('input', { type: 'range', class: 'mx-panslider', min: -1, max: 1, step: 0.01, value: m[pk], 'aria-label': `Path ${which} pan` });
+    pan.oninput = () => { m[pk] = Number(pan.value); panOut.textContent = fmtPan(m[pk]); throttle(`mx${spec.pan}`, () => send(spec.pan, m[pk])); };
+    pan.ondblclick = () => { pan.value = which === 'A' ? -1 : 1; pan.oninput(); };
+    const mute = h('button', { class: 'mx-mute', 'aria-pressed': String(m[lk] <= -59.9), title: 'Mute this path', onClick: () => {
+      if (m[lk] > -59.9) { remembered[which] = m[lk]; m[lk] = -60; } else m[lk] = remembered[which] || 0;
+      fader.value = m[lk]; fader.oninput();
+    } }, 'Mute');
+    return h('section', { class: `mx-path mx-${which}` },
+      h('header', {}, h('b', {}, `Path ${which}`), h('span', { class: 'dim' }, which === 'A' ? 'Input 1' : 'Input 2')),
+      h('div', { class: 'mx-faderwrap' }, h('div', { class: 'mx-scale', 'aria-hidden': 'true' }, [[12, '+12'], [0, '0'], [-12, '−12'], [-24, '−24'], [-36, '−36'], [-48, '−48'], [-60, 'Mute']].map(([v, t]) => h('i', { style: { top: `${(12 - v) / 72 * 100}%` } }, t))), fader),
+      dbOut, mute,
+      h('label', { class: 'mx-panlabel' }, h('span', {}, 'Pan'), pan, panOut));
+  };
+  const trails = h('button', { class: 'switch', role: 'switch', 'aria-checked': String(p.trails), 'aria-label': 'Trails', onClick: () => {
+    p.trails = !p.trails; trails.setAttribute('aria-checked', String(p.trails)); edit('setup', { id: 0x38, value: p.trails ? 1 : 0 }).catch(fail);
+  } }, h('i'));
+  root.replaceChildren(
+    h('div', { class: 'mx' }, path('A'), path('B')),
+    h('div', { class: 'row mx-trails' }, h('div', {}, h('b', {}, 'Trails'), h('p', { class: 'dim', style: { margin: '2px 0 0', fontSize: '12px' } }, 'Delay and reverb tails keep ringing after the effect is turned off.')), trails),
+    h('p', { class: 'dim', style: { fontSize: '12px' } }, 'Double-click a pan slider to reset it. Levels run from Mute to +12 dB. Changes made on the pedal show up here live.'));
 }
 
 // ---------------------------------------------------------------------------------------- Footswitches

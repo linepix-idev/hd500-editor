@@ -8,7 +8,8 @@ Funciona em Linux, Windows e macOS, fala com o pedal direto por USB e vai além 
 ## O que dá para fazer
 
 - **Cadeia de sinal** estilo Helix: arraste efeitos entre *antes/depois do amp* e os caminhos **A / B**; veja qual entrada alimenta qual caminho.
-- **Edição ao vivo de tudo**: todos os modelos de amp, cab e efeito (61 · 18 · 115), todos os parâmetros, bypass, footswitch de cada bloco e pedal de expressão (EXP 1/2) com faixa calcanhar/ponta.
+- **Edição ao vivo de tudo**: todos os modelos de amp, cab e efeito (92 amps com os pacotes de modelos · 22 cabs · 115 efeitos, cada um com sua ilustração), todos os parâmetros, bypass, footswitch de cada bloco e pedal de expressão (EXP 1/2) com faixa calcanhar/ponta.
+- **Painel do Mixer**: nível (Mute … +12 dB) e pan dos caminhos A e B com faders ao vivo, mais o Trails — espelhado em tempo real quando você gira os knobs no pedal.
 - **Roteamento de entrada**: Guitar, Mic, Aux, Variax e combinações nas Inputs 1 e 2, impedância, tempo e Dynamic Tone.
 - **Painel de footswitches** virtual, espelhando o pedal em tempo real: pisou no FS5, o bloco acende na tela.
 - **Gerenciador da biblioteca** (8 sets × 64 presets): renomear sets, copiar, trocar, limpar, arrastar entre slots, **exportar/importar a biblioteca inteira**, importar/exportar presets **`.h5e`** do editor oficial e **backup** automático antes de cada gravação.

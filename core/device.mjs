@@ -24,7 +24,8 @@ export class Pod extends EventEmitter {
       case M.CMD.SETUP: { const vtype = M.word(m, 1); this.emit('setup', { id: M.word(m, 2), vtype, value: vtype === 1 ? m.readFloatLE(20) : M.word(m, 3) }); break; }
       case M.CMD.ALERT: case M.CMD.PRESET_SELECTED: case M.CMD.SET_SELECTED: this.emit('selection'); break;
       case M.CMD.PRESET_LOAD: break; // chega como resposta a consultas; quem pediu já a recebe pelo request()
-      case M.CMD.PRESET_SET_ACK: case M.CMD.STATUS_RESP: case M.CMD.SET_LOAD: case M.CMD.SET_NAME_ACK: break; // respostas a pedidos nossos
+      case M.CMD.STATUS_RESP: this.emit('status', { id: M.word(m, 1), value: M.word(m, 2) }); break; // resposta a pedido nosso, ou aviso do pedal
+      case M.CMD.PRESET_SET_ACK: case M.CMD.SET_LOAD: case M.CMD.SET_NAME_ACK: break; // respostas a pedidos nossos
       default: { // mensagem que o editor ainda não entende: útil para descobrir recursos novos
         const words = []; for (let o = 8; o + 4 <= Math.min(m.length, 40); o += 4) words.push(m.readUInt32LE(o));
         this.emit('unknown', { cmd: M.cmdOf(m), words, length: m.length });

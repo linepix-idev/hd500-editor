@@ -140,10 +140,6 @@
 "Advanced"
 ],
 [
-"Footswitches",
-"Footswitches"
-],
-[
 "Importar preset (.h5e) para o buffer…",
 "Import preset (.h5e) into the buffer…"
 ],
@@ -218,14 +214,6 @@
 [
 "Vazio — clique para escolher",
 "Empty — click to choose"
-],
-[
-"Amp ＋",
-"Amp ＋"
-],
-[
-"Cab ＋",
-"Cab ＋"
 ],
 [
 "Liga/desliga (bypass)",
@@ -420,14 +408,6 @@
 "To use a mic and a guitar together: Input 1 = Guitar and Input 2 = Mic. Each input feeds its own path (A and B) in the signal chain."
 ],
 [
-"Tempo (BPM)",
-"Tempo (BPM)"
-],
-[
-"Set",
-"Set"
-],
-[
 "Ler nomes",
 "Read names"
 ],
@@ -546,10 +526,6 @@
 [
 "Nome do set",
 "Set name"
-],
-[
-"Preset",
-"Preset"
 ],
 [
 "Nome",
@@ -1036,10 +1012,6 @@
 "${label} (0 to 100%)"
 ],
 [
-"8 sets · 64 presets",
-"8 sets · 64 presets"
-],
-[
 "Carregando…",
 "Loading…"
 ],
@@ -1050,5 +1022,37 @@
 [
 "Banco",
 "Bank"
+],
+[
+"Mixer",
+"Mixer"
+],
+[
+"Silenciar",
+"Mute"
+],
+[
+"Silenciar este caminho",
+"Mute this path"
+],
+[
+"Centro",
+"Center"
+],
+[
+"Pan",
+"Pan"
+],
+[
+"Caudas",
+"Trails"
+],
+[
+"As caudas de delay e reverb continuam soando depois que o efeito é desligado.",
+"Delay and reverb tails keep ringing after the effect is turned off."
+],
+[
+"Clique duas vezes no pan para zerar. Os níveis vão de Mute a +12 dB. O que você muda no pedal aparece aqui ao vivo.",
+"Double-click a pan slider to reset it. Levels run from Mute to +12 dB. Changes made on the pedal show up here live."
 ]
 ]
