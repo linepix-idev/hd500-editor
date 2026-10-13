@@ -5,6 +5,8 @@ export const catalog = JSON.parse(readFileSync(new URL('../catalog/catalog.json'
 // equipamento real em que cada modelo de amp se baseia (lista oficial da Line 6; nominativo, sem afiliação)
 const ORIGINS = JSON.parse(readFileSync(new URL('../catalog/amp-origins.json', import.meta.url)));
 for (const a of catalog.amps) if (ORIGINS[a.name]) a.basedOn = ORIGINS[a.name];
+const FX_ORIGINS = JSON.parse(readFileSync(new URL('../catalog/fx-origins.json', import.meta.url)));
+for (const e of catalog.pedals) if (FX_ORIGINS[e.name]) e.basedOn = FX_ORIGINS[e.name];
 const ALL = [...catalog.amps, ...catalog.cabs, ...catalog.pedals];
 const byType = new Map(ALL.map(e => [e.type, e]));
 

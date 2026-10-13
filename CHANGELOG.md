@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.6
+- "Based on …" for effect models too (e.g. Screamer → Ibanez Tube Screamer, Script Phase → MXR Phase 90), from Line 6's public POD HD Model Gallery; shown in picker, inspector, tooltips and search.
+
 ## 0.2.5
 - "Based on …" for every amp model (e.g. Mandarin 80 → Orange OR80), shown in the model picker, the inspector and tooltips; the model search also matches the original name (try "twin" or "orange").
 - Controllers panel, multi-block footswitches, automatic EXP assignment for Wah/Volume, move/swap/copy of presets and multi-select in the library, rename from anywhere.
