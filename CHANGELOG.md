@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.2.9
+- Mixer: Pan is now a bipolar knob (arc grows to the side the sound moves to; double-click centres it).
+- Pedal settings (global, outside the preset) moved to their own sheet (toolbar button) with a guided "Find a setting" tool: snapshot, change one setting on the pedal, compare, name it, export the names.
 - Chain blocks show clear footswitch (FS) and expression-pedal (EXP) tags; the footswitch panel is ordered FS1–FS4 over FS5–FS8 like the official editor.
 - Tap tempo: a Tap button (or the T key) in the Inputs tab sets the preset tempo from your taps (average of the last intervals) and sends it to the pedal live; tempo changed on the pedal updates the editor.
 - Cleaner gear icon for the Advanced tab.

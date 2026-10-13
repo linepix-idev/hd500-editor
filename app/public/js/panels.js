@@ -299,7 +299,6 @@ const saveNames = n => { try { localStorage.setItem(NAMES_KEY, JSON.stringify(n)
 export const learned = [];   // últimos ajustes mexidos no painel do pedal
 export const unknownLog = [];
 export function learnUnknown(ev) { unknownLog.unshift(ev); unknownLog.length = Math.min(unknownLog.length, 8); if (S.tab === 'advanced') renderAdvanced($('#tabBody')); }
-let globalsCache = null;
 export function learnSetup(ev) { learned.unshift({ ...ev, at: Date.now() }); learned.length = Math.min(learned.length, 12); if (S.tab === 'advanced') renderAdvanced($('#tabBody')); }
 
 export function renderAdvanced(root) {
@@ -326,14 +325,11 @@ export function renderAdvanced(root) {
     })));
 
   const unk = unknownLog.length ? h('div', { class: 'dim', style: { fontSize: '12px', fontFamily: 'ui-monospace, monospace', margin: '6px 0' } }, unknownLog.map(u => h('div', {}, `cmd 0x${u.cmd.toString(16)} · ${u.length} B · ${u.words.map(w => w.toString(16)).join(' ')}`))) : null;
-  const glob = h('div', {}, globalsCache ? h('table', { class: 'table' }, h('tbody', {}, globalsCache.map(g => { const inp = h('input', { type: 'number', value: g.value, 'aria-label': `global ${g.id}`, onChange: () => api('globals', { id: g.id, value: Number(inp.value) }).then(() => toast('Sent.')).catch(fail) }); return h('tr', {}, h('td', {}, '0x' + g.id.toString(16)), h('td', { class: 'dim' }, g.id === 2 ? 'reference pitch (Hz)' : g.id === 8 ? 'current preset' : g.id === 9 ? 'current set' : ''), h('td', {}, inp)); }))) : h('button', { onClick: async () => { try { globalsCache = await api('globals'); renderAdvanced(root); } catch (e) { fail(e); } } }, 'Read global pedal settings'));
   root.replaceChildren(
     h('h3', { style: { fontSize: '13px', margin: '0 0 6px' } }, 'Learn setting'), learn, unk,
     h('div', { class: 'row' }, h('button', { onClick: () => download('hd500-nomes-de-ajustes.json', JSON.stringify(names, null, 2), 'application/json') }, 'Export names')),
     h('h3', { style: { fontSize: '13px', margin: '12px 0 6px' } }, 'Preset settings'),
     h('div', { style: { maxHeight: '230px', overflow: 'auto' } }, h('table', { class: 'table' }, h('thead', {}, h('tr', {}, ['id', 'name', 'offset', 'value'].map(t => h('th', {}, t)))), h('tbody', {}, [...known, ...other].map(row)))),
-    h('h3', { style: { fontSize: '13px', margin: '12px 0 6px' } }, 'Global pedal settings'),
-    h('p', { class: 'dim', style: { fontSize: '12px', margin: '0 0 6px' } }, 'These apply to the whole pedal, not the preset. Only 0x2 (tuning) has a confirmed meaning; change the others at your own risk.'), glob,
     h('h3', { style: { fontSize: '13px', margin: '12px 0 6px' } }, 'MIDI assignments (experimental)'),
     h('p', { class: 'dim', style: { fontSize: '12px', margin: '0 0 6px' } }, '14 records of 6 bytes per preset: FS/EXP → MIDI message. The meaning of each byte is still being mapped; changes are applied live.'),
     h('div', { style: { maxHeight: '240px', overflow: 'auto' } }, midi),

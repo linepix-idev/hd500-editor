@@ -58,6 +58,7 @@ export class DemoPod extends EventEmitter {
   async active(item, on) { this.buffer.setItemActive(item, on); }
   async model(item, type) { const m = [...catalog.amps, ...catalog.cabs, ...catalog.pedals].find(x => x.type === type); if (m) setModel(this.buffer, item, m); }
   async setup(id, v, vtype) { try { vtype === 1 ? this.buffer.setSetupFloat(id, Buffer.from(new Uint32Array([v]).buffer).readFloatLE(0)) : this.buffer.setSetup(id, v); } catch {} }
-  async globals() { return [{ id: 2, value: 440 }]; }
-  async setGlobal() {}
+  #globals = new Map([[2, 440], [11, 32], [13, 1]]);
+  async globals() { return [...this.#globals].map(([id, value]) => ({ id, value })); }
+  async setGlobal(id, value) { this.#globals.set(id, value); }
 }

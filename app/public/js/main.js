@@ -1,3 +1,4 @@
+import { openGlobals } from './global.js';
 import { liveEdits } from './editing.js';
 import { lang, langs, setLang, tr } from './i18n.js';
 import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, bytesToB64, b64ToBytes } from './util.js';
@@ -162,7 +163,7 @@ addEventListener('drop', async e => {
 });
 
 // Local symbols and responsive library controls.
-for(const [id,name] of Object.entries({sidebarToggle:'sidebar',prev:'left',next:'right',undo:'undo',redo:'redo',revert:'reread',fileMenu:'library',language:'globe',help:'help',libraryMore:'more',libraryClose:'close',colorLegend:'colors',chainTrash:'trash'})) buttonIcon($('#'+id),name);
+for(const [id,name] of Object.entries({sidebarToggle:'sidebar',prev:'left',next:'right',undo:'undo',redo:'redo',revert:'reread',fileMenu:'library',pedalSettings:'settings',language:'globe',help:'help',libraryMore:'more',libraryClose:'close',colorLegend:'colors',chainTrash:'trash'})) buttonIcon($('#'+id),name);
 buttonIcon($('#save'),'save','Save to pedal');$('#searchIcon').append(icon('search'));
 for(const [tab,name] of Object.entries({setup:'input',mixer:'mixer',controllers:'expression',fs:'footswitch',advanced:'settings'})) $('#tabs [data-tab="'+tab+'"]').prepend(icon(name));
 $('#conn').setAttribute('aria-live','polite');
@@ -172,6 +173,7 @@ function toggleSidebar() { const expanded=innerWidth>=1200?!document.body.classL
 function syncSidebar() { const mobile=innerWidth<800,open=document.body.classList.contains('sidebar-open');$('#librarySidebar').inert=mobile&&!open; $('main').inert=mobile&&open;$('#drawerBackdrop').hidden=!mobile||!open;$('#sidebarToggle').setAttribute('aria-expanded',String(innerWidth>=1200?!document.body.classList.contains('sidebar-collapsed'):open)); }
 $('#libraryClose').onclick=closeSidebar;$('#sidebarToggle').onclick=toggleSidebar;$('#drawerBackdrop').onclick=closeSidebar;addEventListener('resize',syncSidebar);syncSidebar();
 $('#chainTrash').onclick=()=>clearBlock();
+$('#pedalSettings').onclick = () => openGlobals();
 $('#language').onclick=e=>{const r=e.currentTarget.getBoundingClientRect();menu(r.left,r.bottom+4,Object.entries(langs).map(([key,name])=>[name,()=>setLang(key)]));};
 $('#colorLegend').onclick=()=>{
   modal('Signal colors', [h('div', { class: 'legend-grid' },
