@@ -19,13 +19,14 @@ export function renderSetup(root) {
   const bpm = h('input', { type: 'number', min: 30, max: 240, step: 1, value: Math.round(p.tempo), 'aria-label': 'Tempo (BPM)', style: { width: '80px' } });
   bindLiveInput(bpm, 'tempo', () => ({ bpm: Number(bpm.value) }), () => { p.tempo = Number(bpm.value); });
   root.replaceChildren(
-    h('div', { class: 'row' }, h('label', {}, 'Preset name'), name),
-    h('h3', { style: { fontSize: '13px', margin: '14px 0 2px' } }, 'Input routing'),
-    select('Input 1 (path A)', 'input1', S.cat.input1, 0x36),
-    select('Input 2 (path B)', 'input2', S.cat.input2, 0x37),
-    select('Guitar input impedance', 'inZ', S.cat.inZ, 0x55),
+    h('div', { class: 'ios-group' }, h('div', { class: 'row' }, h('label', {}, 'Preset name'), name)),
+    h('h3', { class: 'ios-header' }, 'Input routing'),
+    h('div', { class: 'ios-group' },
+      select('Input 1 (path A)', 'input1', S.cat.input1, 0x36),
+      select('Input 2 (path B)', 'input2', S.cat.input2, 0x37),
+      select('Guitar input impedance', 'inZ', S.cat.inZ, 0x55)),
     h('details', { class: 'inset-details' }, h('summary', {}, 'Input routing help'), h('p', { class: 'dim' }, 'To use a mic and a guitar together: Input 1 = Guitar and Input 2 = Mic. Each input feeds its own path (A and B) in the signal chain.')),
-    h('div', { class: 'row' }, h('label', {}, 'Tempo (BPM)'), bpm));
+    h('div', { class: 'ios-group' }, h('div', { class: 'row' }, h('label', {}, 'Tempo (BPM)'), bpm)));
 }
 
 
@@ -80,17 +81,18 @@ export function renderControllers(root) {
   const list = rows.length ? rows.map(({ it, p }) => h('div', { class: 'ctl-row' },
     h('div', { class: 'ctl-name' }, h('b', {}, it.model), h('span', { class: 'dim' }, p.name)),
     ctlSel(p.ctl, c => edit('ctl', { item: it.id, index: p.index, ctl: c, lo: c ? p.lo : p.value, hi: c ? p.hi : p.value }).catch(fail)), range(it, p)))
-    : [h('p', { class: 'dim' }, 'No parameter is assigned to an expression pedal yet.')];
+    : [h('p', { class: 'ios-footer', style: { textAlign: 'center', margin: '8px 16px 8px' } }, 'No parameter is assigned to an expression pedal yet.')];
   const blockSel = h('select', { 'aria-label': 'Block' }, items.map(i => h('option', { value: i.id }, i.model)));
   const paramSel = h('select', { 'aria-label': 'Parameter' }); const addCtl = h('select', { 'aria-label': 'Controller' }, S.cat.ctl.slice(1).map((n, i) => h('option', { value: i + 1 }, n)));
   const fill = () => { const it = items.find(i => i.id === Number(blockSel.value)); paramSel.replaceChildren(...(it?.params ?? []).filter(p => p.setup == null && !p.cab).map(p => h('option', { value: p.index }, p.name))); };
   blockSel.onchange = fill; fill();
   const add = h('button', { class: 'primary', onClick: () => { const it = items.find(i => i.id === Number(blockSel.value)), p = it?.params.find(x => x.index === Number(paramSel.value)); if (p) edit('ctl', { item: it.id, index: p.index, ctl: Number(addCtl.value), lo: 0, hi: 1 }).catch(fail); } }, 'Assign');
   root.replaceChildren(
-    h('p', { class: 'dim', style: { fontSize: '12px', margin: '0 0 10px' } }, 'Assign any parameter to EXP 1 or EXP 2, with its heel and toe values. Right-click a knob for a shortcut. A model change discards its assignments.'),
+    h('p', { class: 'ios-footer' }, 'Assign any parameter to EXP 1 or EXP 2, with its heel and toe values. Right-click a knob for a shortcut. A model change discards its assignments.'),
     h('div', { class: 'ctl-list' }, list),
-    h('h3', { style: { fontSize: '13px', margin: '14px 0 6px' } }, 'Add an assignment'),
-    h('div', { class: 'row' }, blockSel, paramSel, addCtl, add));
+    h('h3', { class: 'ios-header' }, 'Add an assignment'),
+    h('div', { class: 'ios-group' }, h('div', { class: 'row' }, h('label', {}, 'Block'), blockSel), h('div', { class: 'row' }, h('label', {}, 'Parameter'), paramSel), h('div', { class: 'row' }, h('label', {}, 'Controller'), addCtl)),
+    h('div', { class: 'ios-action' }, add));
 }
 
 // ---------------------------------------------------------------------------------------- Footswitches
