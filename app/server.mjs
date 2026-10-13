@@ -1,6 +1,6 @@
 // Servidor local do editor: fala com o pedal por USB e serve a interface web (http://127.0.0.1:5230).
 import { createServer } from 'http';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { pathToFileURL } from 'url';
 import { Pod, SETS, PRESETS_PER_SET } from '../core/device.mjs';
 import { deviceVisible } from '../core/transport.mjs';
@@ -177,6 +177,11 @@ const routes = {
     BACKUPS.save(to.set, to.preset, await pod.readSlot(to.set, to.preset));
     await pod.writeSlot(to.set, to.preset, p); await reloadIfCurrent(to); return { ok: true };
   },
+  // First-connection checks (no pedal access needed): what is missing, per platform.
+  'GET /api/diagnose': async () => ({
+    platform: process.platform, visible: DEMO || deviceVisible(), lastError,
+    udev: process.platform === 'linux' ? ['/etc/udev/rules.d/99-line6-hd500.rules', '/lib/udev/rules.d/99-line6-hd500.rules', '/usr/lib/udev/rules.d/99-line6-hd500.rules'].some(f => existsSync(f)) : null,
+  }),
   'GET /api/backups': async () => BACKUPS.list(),
   'GET /api/backups/detailed': async () => BACKUPS.detailed(),
   // restore = write the backup into its original slot (the slot's current content is backed up first)
@@ -205,7 +210,7 @@ export async function handleRequest(req, res) {
       if (editing && !edits[body.op]) throw new Error(`unknown operation: ${body.op}`);
       if (editing && body.gesture != null && !['start', 'move', 'end'].includes(body.gesture)) throw new Error('invalid gesture');
       const run = async () => {
-        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|state$/.test(key);
+        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|state$/.test(key);
         if (needsPod) await connect();
         return routes[key](body);
       };

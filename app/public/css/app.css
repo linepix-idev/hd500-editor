@@ -2202,3 +2202,15 @@ body.comparing #presetName b::after { content:" · saved"; font-weight:500; colo
   .setlist-grid { grid-template-columns:repeat(3,1fr); }
   .setlist-item, .setlist-bank h4, .setlist-sub { color:#000 !important; border-color:#bbb !important; }
 }
+
+.connect-help { max-width:520px; margin:24px auto; padding:0 8px; }
+.connect-help h2 { margin:0 0 4px; font-size:24px; }
+.cstep { min-height:56px !important; align-items:flex-start !important; padding-top:10px !important; padding-bottom:10px !important; }
+.cstep > label { display:flex; flex-direction:column; gap:2px; font-size:15px; }
+.cstep small { font-size:13px; line-height:1.35; }
+.cstep-mark { flex:none; width:22px; height:22px; margin-top:1px; display:grid; place-items:center; border-radius:50%; font-size:14px; color:var(--dim); }
+.cstep.ok .cstep-mark { background:var(--switch-on); color:#fff; } .cstep.bad .cstep-mark { background:var(--ios-red); color:#fff; }
+.cstep-mark .symbol { width:13px; height:13px; stroke-width:2.2; }
+.cmd { font:12px ui-monospace,monospace; overflow-wrap:anywhere; flex:1; color:var(--text); }
+.connect-error { color:var(--ios-red); }
+#chain > .connect-help { grid-column:1 / -1; width:100%; }

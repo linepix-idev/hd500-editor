@@ -1894,5 +1894,57 @@
 [
 "Ponta",
 "Toe"
+],
+[
+"Conecte seu POD HD500",
+"Connect your POD HD500"
+],
+[
+"O editor conecta sozinho assim que o pedal estiver pronto.",
+"The editor connects by itself as soon as the pedal is ready."
+],
+[
+"POD HD500 encontrado no USB",
+"POD HD500 found on USB"
+],
+[
+"Ligue o pedal ao computador com o cabo USB e acenda-o.",
+"Plug the pedal into the computer with the USB cable and switch it on."
+],
+[
+"Permissão USB (regra udev)",
+"USB permission (udev rule)"
+],
+[
+"Instale a regra uma vez e depois desconecte e reconecte o pedal.",
+"Install the rule once, then unplug and plug the pedal again."
+],
+[
+"Driver WinUSB na interface de controle",
+"WinUSB driver on the control interface"
+],
+[
+"Associe “POD HD500 (Interface 1)” ao WinUSB com o Zadig (veja o README).",
+"Bind “POD HD500 (Interface 1)” to WinUSB with Zadig (see the README)."
+],
+[
+"Nada para instalar",
+"Nothing to install"
+],
+[
+"Se ainda falhar, feche outros programas que usam o pedal.",
+"If it still fails, close other programs that use the pedal."
+],
+[
+"Nenhum outro programa usando o pedal",
+"No other program using the pedal"
+],
+[
+"Feche o editor oficial da Line 6 ou qualquer outra ferramenta MIDI/USB.",
+"Close the official Line 6 editor or any other MIDI/USB tool."
+],
+[
+"Copiar",
+"Copy"
 ]
 ]

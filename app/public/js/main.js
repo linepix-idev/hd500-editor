@@ -1,6 +1,7 @@
 import { openGlobals } from './global.js';
 import { openBackups } from './backups.js';
 import { openSetlist } from './setlist.js';
+import { connectHelp } from './connect-help.js';
 import { tapTempo, initTempoPill } from './tempo.js';
 import { liveEdits } from './editing.js';
 import { lang, langs, setLang, tr } from './i18n.js';
@@ -64,7 +65,7 @@ async function init() {
   try { S.cat = await api('catalog'); await load(await api('state')); } catch (e) {
     for(const id of ['save','undo','redo','prev','next','fileMenu','chainTrash']) $('#'+id).disabled=true;
     $('#connText').textContent = 'disconnected';
-    $('#chain').replaceChildren(h('div', { class: 'placeholder' }, h('b', {}, 'Could not talk to the pedal.'), h('br'), e.message, h('br'), h('br'), h('button', { onClick: reconnect }, 'Try again')));
+    $('#chain').replaceChildren(await connectHelp(e.message, reconnect));
   }
   const es = new EventSource('/api/events');
   es.onerror=()=>{ $('#conn').classList.remove('on'); $('#connText').textContent='server offline'; };

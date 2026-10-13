@@ -469,5 +469,18 @@ export const PT = {
  "CSV": "CSV",
  "Still reading the set…": "Ainda lendo o set…",
  "Heel": "Calcanhar",
- "Toe": "Ponta"
+ "Toe": "Ponta",
+ "Connect your POD HD500": "Conecte seu POD HD500",
+ "The editor connects by itself as soon as the pedal is ready.": "O editor conecta sozinho assim que o pedal estiver pronto.",
+ "POD HD500 found on USB": "POD HD500 encontrado no USB",
+ "Plug the pedal into the computer with the USB cable and switch it on.": "Ligue o pedal ao computador com o cabo USB e acenda-o.",
+ "USB permission (udev rule)": "Permissão USB (regra udev)",
+ "Install the rule once, then unplug and plug the pedal again.": "Instale a regra uma vez e depois desconecte e reconecte o pedal.",
+ "WinUSB driver on the control interface": "Driver WinUSB na interface de controle",
+ "Bind “POD HD500 (Interface 1)” to WinUSB with Zadig (see the README).": "Associe “POD HD500 (Interface 1)” ao WinUSB com o Zadig (veja o README).",
+ "Nothing to install": "Nada para instalar",
+ "If it still fails, close other programs that use the pedal.": "Se ainda falhar, feche outros programas que usam o pedal.",
+ "No other program using the pedal": "Nenhum outro programa usando o pedal",
+ "Close the official Line 6 editor or any other MIDI/USB tool.": "Feche o editor oficial da Line 6 ou qualquer outra ferramenta MIDI/USB.",
+ "Copy": "Copiar"
 };
