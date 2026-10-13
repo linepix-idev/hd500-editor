@@ -13,7 +13,11 @@ import { parameterEdits } from './parameter-edits.mjs';
 import { editKey } from './public/js/live-edits.js';
 
 const PORT = Number(process.env.PORT ?? 5230);
-const BACKUPS = new Lib.Backups(new URL('../backups', import.meta.url).pathname);
+// Backups live in the repo when run from source; the packaged app is read-only (asar), so it uses the user data dir.
+const BACKUP_DIR = process.env.HD500_BACKUPS ?? (import.meta.url.includes('.asar')
+  ? `${process.env.XDG_DATA_HOME ?? `${process.env.HOME ?? process.env.USERPROFILE}/.local/share`}/hd500-editor/backups`
+  : new URL('../backups', import.meta.url).pathname);
+const BACKUPS = new Lib.Backups(BACKUP_DIR);
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 let pod = null, preset = null, selection = { set: 0, preset: 0 }, setNames = [], slotNames = new Map(), lastError = null;

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.9
+- Fix: Save failed with ENOTDIR in the packaged app (backups were written inside the read-only app bundle). Backups now go to ~/.local/share/hd500-editor/backups (override with HD500_BACKUPS).
+
 ## 0.2.8
 - Restored the detailed original gear icons (amps, cabs, pedals); bundled Inter (SIL OFL) as the SF Pro stand-in on Linux/Windows — macOS uses the real SF Pro; smaller on/off switches inside chain blocks.
 
