@@ -125,6 +125,8 @@ const routes = {
     const live = await pod.readCurrent();
     BACKUPS.save(selection.set, selection.preset, await pod.readSlot(selection.set, selection.preset));
     await pod.writeSlot(selection.set, selection.preset, live);
+    // The pedal keeps its "edited" asterisk until the preset is loaded again from memory, so reload the slot we just wrote.
+    await pod.select(selection.set, selection.preset); await wait(150);
     await refresh(); return view();
   },
   // --- biblioteca ---
