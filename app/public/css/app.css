@@ -1775,15 +1775,15 @@ kbd {
 /* Shared on/off geometry: a centered track, a full-height thumb and equal end insets.
    The transparent button supplies the 44px touch target without enlarging the artwork. */
 .switch, .block .led {
-  --track-width:51px;
-  --track-height:31px;
-  --thumb-size:27px;
+  --track-width:36px;
+  --track-height:22px;
+  --thumb-size:18px;
   --thumb-inset:2px;
   --switch-color:var(--switch-off);
   position:relative;
-  width:52px;
+  width:44px;
   height:44px;
-  min-width:52px;
+  min-width:44px;
   min-height:44px;
   padding:0;
   border:0;
@@ -1825,15 +1825,15 @@ kbd {
 .switch:hover, .block .led:hover { background:var(--panel3); }
 .switch:active, .block .led:active { transform:none; background:color-mix(in srgb,var(--panel3),var(--text) 10%); }
 .block .led {
-  --track-width:40px;
-  --track-height:24px;
-  --thumb-size:20px;
+  --track-width:30px;
+  --track-height:18px;
+  --thumb-size:14px;
   --thumb-inset:2px;
   position:absolute;
   right:0;
   top:0;
-  width:48px;
-  min-width:48px;
+  width:40px;
+  min-width:40px;
   background:transparent !important;
 }
 button, select, input:not([type=range]):not([type=hidden]) { min-height:44px; }
