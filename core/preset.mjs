@@ -2,6 +2,9 @@
 import { readFileSync } from 'fs';
 
 export const catalog = JSON.parse(readFileSync(new URL('../catalog/catalog.json', import.meta.url)));
+// equipamento real em que cada modelo de amp se baseia (lista oficial da Line 6; nominativo, sem afiliação)
+const ORIGINS = JSON.parse(readFileSync(new URL('../catalog/amp-origins.json', import.meta.url)));
+for (const a of catalog.amps) if (ORIGINS[a.name]) a.basedOn = ORIGINS[a.name];
 const ALL = [...catalog.amps, ...catalog.cabs, ...catalog.pedals];
 const byType = new Map(ALL.map(e => [e.type, e]));
 
@@ -57,7 +60,7 @@ export class Preset {
   // --- itens ---
   item(id) {
     const o = itemOffset(id), b = this.body, type = b.readUInt32LE(o), kind = itemKind(id), model = byType.get(type);
-    const item = { id, kind, type, model: model?.name ?? `0x${type.toString(16)}`, group: model?.group ?? null,
+    const item = { id, kind, type, model: model?.name ?? `0x${type.toString(16)}`, basedOn: model?.basedOn ?? null, group: model?.group ?? null,
       empty: kind === 'fx' ? type === NO_FX : type === NO_AMP,
       active: b[o + 8] === 1, pos: b.readUInt16LE(o + 4), lane: b[o + 6], fs: b[o + 12], params: [] };
     for (let k = 0; k < MAX_PARAMS; k++) {

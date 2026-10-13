@@ -9,3 +9,5 @@ Third-party material
 * Electron, node-usb (usb), puppeteer-core and their dependencies — see their respective licenses.
 
 * app/public/js/gear.js, catalog/gear-styles.json — original vector illustrations of amps, cabs, microphones and pedals, drawn from real-world gear archetypes; no Line 6 artwork is used.
+
+* catalog/amp-origins.json — which real-world amplifier each POD HD500 amp model is based on, transcribed from Line 6's published model list (names are trademarks of their owners).

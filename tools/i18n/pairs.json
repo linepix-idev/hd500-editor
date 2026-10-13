@@ -1158,5 +1158,13 @@
 [
 "Copiar ${label(from.preset)} (set ${from.set + 1}) para ${label(i)} (set ${set + 1})? O destino será substituído (há backup).",
 "Copy ${label(from.preset)} (set ${from.set + 1}) to ${label(i)} (set ${set + 1})? The destination will be replaced (a backup is kept)."
+],
+[
+"Baseado em ${it.basedOn}",
+"Based on ${it.basedOn}"
+],
+[
+"${it.model} — baseado em ${it.basedOn}. Selecione o bloco. Arraste para mover. Alt + setas para reordenar.",
+"${it.model} — based on ${it.basedOn}. Select block. Drag to move. Alt + arrows to reorder."
 ]
 ]

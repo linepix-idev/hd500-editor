@@ -285,5 +285,7 @@ export const PT = {
  "Move ${label(from.preset)} to ${label(i)}? The presets in between shift by one position (backups are kept).": "Mover ${label(from.preset)} para ${label(i)}? Os presets do meio se deslocam uma posição (os backups são mantidos).",
  "Moved.": "Movido.",
  "Moving": "Movendo",
- "Copy ${label(from.preset)} (set ${from.set + 1}) to ${label(i)} (set ${set + 1})? The destination will be replaced (a backup is kept).": "Copiar ${label(from.preset)} (set ${from.set + 1}) para ${label(i)} (set ${set + 1})? O destino será substituído (há backup)."
+ "Copy ${label(from.preset)} (set ${from.set + 1}) to ${label(i)} (set ${set + 1})? The destination will be replaced (a backup is kept).": "Copiar ${label(from.preset)} (set ${from.set + 1}) para ${label(i)} (set ${set + 1})? O destino será substituído (há backup).",
+ "Based on ${it.basedOn}": "Baseado em ${it.basedOn}",
+ "${it.model} — based on ${it.basedOn}. Select block. Drag to move. Alt + arrows to reorder.": "${it.model} — baseado em ${it.basedOn}. Selecione o bloco. Arraste para mover. Alt + setas para reordenar."
 };

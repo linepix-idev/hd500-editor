@@ -47,7 +47,7 @@ function Block(it) {
   const el = h('div', {
     class: `block ${it.kind} ${GROUP_CLASS(it.group)} ${it.empty ? 'emptyslot' : ''} ${it.active ? '' : 'off'} ${S.sel === it.id ? 'sel' : ''}`,
     dataset: { item: it.id }, tabindex: 0, role: 'group', 'aria-label': it.empty ? 'Empty slot' : it.model,
-    title: it.empty ? 'Empty — click to choose' : 'Select block. Drag to move. Alt + arrows to reorder.',
+    title: it.empty ? 'Empty — click to choose' : `${it.basedOn ? `${it.model} — based on ${it.basedOn}. ` : ''}Select block. Drag to move. Alt + arrows to reorder.`,
     onClick: () => { if (performance.now() < suppressClickUntil) return; S.sel = it.id; notify(); },
     onDblclick: () => pickModel(current()), onContextmenu: e => blockMenu(e, current()),
     onKeydown: e => {

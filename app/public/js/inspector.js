@@ -24,7 +24,8 @@ export function renderInspector(root) {
   const head = h('div', { class: 'insp-head', style: { '--c': color } },
     h('span', { class: 'category-tile' }, it.empty ? icon(categoryIcon(it)) : gearEl(gearSpec(it))),
     h('div', { class: 'insp-title' }, h('span', { class: 'chip' }, kindName),
-      h('button', { class: 'model-title', title: 'Change model…', 'aria-label': 'Change model…', onClick: () => pickModel(it) }, it.empty ? 'Choose model…' : it.model, icon('down'))),
+      h('button', { class: 'model-title', title: 'Change model…', 'aria-label': 'Change model…', onClick: () => pickModel(it) }, it.empty ? 'Choose model…' : it.model, icon('down')),
+      it.basedOn ? h('small', { class: 'based-on' }, `Based on ${it.basedOn}`) : null),
     it.kind === 'fx' && !it.empty ? h('label', { class: 'fs-assign', title: 'Footswitch' }, icon('footswitch'), fsSel) : null,
     !it.empty ? h('button', { class: 'switch', role: 'switch', 'aria-label': 'Block enabled', 'aria-checked': String(it.active), title: 'Toggle (bypass)', onClick: () => { it.active = !it.active; notify(); api('edit', { op: 'active', item: it.id, active: it.active }).catch(fail); } }) : null);
 

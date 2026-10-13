@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.5
+- "Based on …" for every amp model (e.g. Mandarin 80 → Orange OR80), shown in the model picker, the inspector and tooltips; the model search also matches the original name (try "twin" or "orange").
+- Controllers panel, multi-block footswitches, automatic EXP assignment for Wah/Volume, move/swap/copy of presets and multi-select in the library, rename from anywhere.
+
 ## 0.2.1
 - Mixer panel (levels, pans, Trails) with live feedback from the pedal; mixer/Trails settings documented.
 - 31 extra amp models and 4 cabs from the model packs added to the catalog.

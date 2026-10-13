@@ -15,12 +15,12 @@ export function pickModel(item) {
     for (const m of list) {
       const group=m.group ?? (item.kind==='amp'?'Amps':'Cabs');
       if(category && group!==category) continue;
-      if(term && !m.name.toLowerCase().includes(term) && !group.toLowerCase().includes(term)) continue;
+      if(term && !m.name.toLowerCase().includes(term) && !(m.basedOn??'').toLowerCase().includes(term) && !group.toLowerCase().includes(term)) continue;
       (matches.get(group) ?? matches.set(group,[]).get(group)).push(m);
     }
     chips.replaceChildren(...[null,...groups].map(g=>h('button',{class:g ? `${item.kind} ${GROUP_CLASS(g)}` : '', 'aria-pressed':String(category===g),onClick:()=>{category=g;draw();chips.children[[null,...groups].indexOf(g)]?.focus();}},g?icon(categoryIcon({kind:item.kind,group:g})):icon('colors'),g??'All')));
     grid.replaceChildren(...[...matches].flatMap(([g,ms])=>[
-      h('h4',{class:GROUP_CLASS(g)},g),...ms.map(m=>h('button',{class:`${item.kind} ${GROUP_CLASS(m.group)} ${m.type===item.type?'cur':''}`,onClick:()=>{close();api('edit',{op:'model',item:item.id,type:m.type}).then(()=>autoController(item.id,m.group)).catch(fail);}},gearEl({kind:item.kind,name:m.name,group:m.group,paramCount:m.params?.length}),m.name))
+      h('h4',{class:GROUP_CLASS(g)},g),...ms.map(m=>h('button',{class:`${item.kind} ${GROUP_CLASS(m.group)} ${m.type===item.type?'cur':''}`,onClick:()=>{close();api('edit',{op:'model',item:item.id,type:m.type}).then(()=>autoController(item.id,m.group)).catch(fail);}},gearEl({kind:item.kind,name:m.name,group:m.group,paramCount:m.params?.length}),h('span',{class:'model-text'},m.name,m.basedOn?h('small',{class:'based-on'},m.basedOn):null)))
     ]));
     if(!matches.size)grid.append(h('p',{class:'placeholder'},'No models found.'));
   };
