@@ -81,7 +81,7 @@ async function init() {
 async function reconnect() { try { if(!S.cat) S.cat=await api('catalog'); await load(await api('reconnect', {})); } catch (e) { fail(e); } }
 
 // ---- topo
-$('#live').onclick = () => { liveEdits.setLive(!liveEdits.live); $('#live').setAttribute('aria-pressed', String(liveEdits.live)); $('#live').title = liveEdits.live ? 'Edits go to the pedal while you drag. Save still writes to its memory.' : 'Edits go to the pedal when you release the control.'; };
+$('#live').onclick = () => { liveEdits.setLive(!liveEdits.live); $('#live').setAttribute('aria-checked', String(liveEdits.live)); $('#live').title = liveEdits.live ? 'Edits go to the pedal while you drag. Save still writes to its memory.' : 'Edits go to the pedal when you release the control.'; };
 initSidebar();
 const step = d => { if(S.st?.connected) return selectSlot(undefined, (S.st.selection.preset + d + S.cat.presets) % S.cat.presets); };
 $('#prev').onclick = () => step(-1); $('#next').onclick = () => step(1);

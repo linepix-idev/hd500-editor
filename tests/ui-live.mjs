@@ -17,7 +17,7 @@ try {
   assert(await page.evaluate(()=>window.liveKnob.isConnected),'drag does not replace the knob');
   await page.mouse.up();await wait(150);await api('edit',{op:'undo'});await wait(150);
   assert.equal((await api('state')).preset.items.find(it=>it.id===4).params[0].value,before,'one undo restores whole drag');
-  await page.click('#live');assert.equal(await page.$eval('#live',e=>e.getAttribute('aria-pressed')),'false');
+  await page.click('#live');assert.equal(await page.$eval('#live',e=>e.getAttribute('aria-checked')),'false');
   const p2=await page.$eval(selector,e=>{const r=e.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};});
   await page.mouse.move(p2.x,p2.y);await page.mouse.down();await page.mouse.move(p2.x,p2.y-36,{steps:20});await wait(100);
   assert.equal((await api('state')).preset.items.find(it=>it.id===4).params[0].value,before,'Live off waits for release');

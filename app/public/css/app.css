@@ -2033,3 +2033,6 @@ main { gap:28px; padding:32px; }
 #tabs.tabs button[aria-selected=true] .symbol { color:var(--accent); }
 #tabs.tabs button:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
 @media (max-width:420px) { #tabs.tabs button { font-size:10.5px; } }
+
+.live-toggle { display:inline-flex; align-items:center; gap:2px; }
+.live-toggle label { font:500 13px var(--font-text); color:var(--dim); cursor:pointer; white-space:nowrap; }

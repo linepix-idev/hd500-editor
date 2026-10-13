@@ -17,7 +17,7 @@
     <button id="next" class="icon" aria-label="Next preset" title="Next preset (→)"></button>
   </nav>
   <div class="actions">
-    <button id="live" class="live-pill" aria-pressed="true" title="Edits go to the pedal while you drag. Save still writes to its memory."><i></i><span>Live edit</span></button>
+    <span class="live-toggle"><label for="live">Live edit</label><button id="live" class="switch" role="switch" aria-checked="true" aria-label="Live edit" title="Edits go to the pedal while you drag. Save still writes to its memory."></button></span>
     <button id="undo" class="icon" title="Undo (Ctrl+Z)" aria-label="Undo"></button>
     <button id="redo" class="icon" title="Redo (Ctrl+Y)" aria-label="Redo"></button>
     <button id="revert" class="icon" title="Discards changes and reloads the preset stored in the pedal" aria-label="Discard" hidden></button>
