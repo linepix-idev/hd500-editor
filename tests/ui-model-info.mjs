@@ -9,6 +9,10 @@ try {
   await page.click('.block[data-item="5"] .nm');
   await page.click('#inspector .model-info-button'); await page.waitForSelector('.model-info');
   assert.match(await page.$eval('.model-info', e=>e.textContent), /Maestro EP-3 Echoplex/);
+  assert.match(await page.$eval('.origin-details', e=>e.textContent), /MakerMaestroUnitEP-3 Echoplex/);
+  assert.match(await page.$eval('.origin-notes', e=>e.textContent), /transistors rather than tubes/);
+  assert.match(await page.$eval('.origin-sources', e=>e.textContent), /Sources.*catalog\/fx-origins\.json:\d+.*pod-hd-model-gallery\.txt:755/);
+  assert.match(await page.$eval('.origin-facts', e=>e.textContent), /EP-3 used transistors instead of tubes/);
   assert.match(await page.$eval('.parameter-guide', e=>e.textContent), /Mix/);
   await page.screenshot({path:`${out}/model-info-effect.png`});
   await page.keyboard.press('Escape');
@@ -78,6 +82,8 @@ try {
   await page.waitForSelector('.block[data-item="5"]');await page.click('.block[data-item="5"] .nm');
   await page.click('#inspector .model-info-button');await page.waitForSelector('.parameter-guide');
   assert.match(await page.$eval('.model-info',e=>e.textContent),/O que os parâmetros fazem/);
+  assert.match(await page.$eval('.origin-details',e=>e.textContent),/FabricanteMaestroEquipamentoEP-3 Echoplex/);
+  assert.match(await page.$eval('.origin-sources',e=>e.textContent),/Fontes/);
   assert.deepEqual((await api('state')).preset,before,'Info navigation never edits the preset');
   assert.deepEqual(errors,[]);console.log('Model info, origins, translated descriptions, zoom, switches and responsive labels passed.');
 } finally {await browser.close();}

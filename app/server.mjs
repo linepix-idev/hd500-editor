@@ -169,6 +169,8 @@ const routes = {
   },
   'GET /api/backups': async () => BACKUPS.list(),
   'GET /api/globals': async () => pod.globals(),
+  // read-only probe of a wider id range (finding where the pedal keeps settings we have not located yet)
+  'POST /api/globals/probe': async ({ from = 0, to = 0x3f }) => pod.globals(Array.from({ length: Math.max(0, Math.min(to, 0xff) - from + 1) }, (_, i) => from + i)),
   'POST /api/globals': async ({ id, value }) => { await pod.setGlobal(id, value); return { ok: true }; },
 };
 

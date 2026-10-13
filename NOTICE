@@ -12,4 +12,5 @@ Third-party material
 
 * catalog/amp-origins.json — which real-world amplifier each POD HD500 amp model is based on, transcribed from Line 6's published model list (names are trademarks of their owners).
 * catalog/fx-origins.json — which real-world pedal or rack unit each effect model is based on, transcribed from Line 6's published "POD HD Model Gallery" (names are trademarks of their owners; see DISCLAIMER.md).
+* catalog/fx-origins.details.json — short effect and gear facts drawn from Line 6's public "POD HD Model Gallery" and the existing catalog origin lists. Each fact cites a local source and line. Unknown details remain null; manufacturer and product trademarks belong to their respective owners.
 * app/public/fonts — Inter (SIL OFL 1.1), used where Apple's SF Pro is not installed.

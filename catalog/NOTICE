@@ -1,2 +1,6 @@
 catalog.json é derivado das tabelas de StarAurryon/lpedit-lib (LGPL-3.0, https://github.com/StarAurryon/lpedit-lib),
 convertidas por tools/gen-catalog.py. Originalmente levantadas para o POD HD500X; validar contra o HD500.
+
+fx-origins.details.json contém fatos curtos da galeria pública "POD HD Model Gallery" da Line 6
+e das listas de origens existentes, com referência ao arquivo e à linha de cada fato.
+Informações não documentadas ficam nulas. As marcas pertencem aos respectivos proprietários.

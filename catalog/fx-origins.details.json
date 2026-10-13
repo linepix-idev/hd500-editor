@@ -105,10 +105,10 @@
     "maker": null,
     "unit": null,
     "kind": "dynamics",
-    "notes": "Eliminates hiss from noisy pickups.",
+    "notes": "Used to eliminate the hiss from noisy pickups.",
     "facts": [
       {
-        "text": "Eliminates hiss from noisy pickups.",
+        "text": "Used to eliminate the hiss from noisy pickups.",
         "source": "tools/sources/pod-hd-model-gallery.txt:997"
       }
     ],
@@ -247,10 +247,10 @@
     "maker": null,
     "unit": null,
     "kind": "delay",
-    "notes": "Two separate channels of delay.",
+    "notes": "This effect has two separate delay channels.",
     "facts": [
       {
-        "text": "Two separate channels of delay.",
+        "text": "This effect has two separate delay channels.",
         "source": "tools/sources/pod-hd-model-gallery.txt:787"
       }
     ],
@@ -280,7 +280,7 @@
         "source": "catalog/fx-origins.json:24"
       },
       {
-        "text": "Echo volume is turned down while you play.",
+        "text": "The volume of the echoes is turned down while playing.",
         "source": "tools/sources/pod-hd-model-gallery.txt:791"
       }
     ],
@@ -331,7 +331,7 @@
         "source": "catalog/fx-origins.json:64"
       },
       {
-        "text": "Leaves the dry signal uncolored.",
+        "text": "Passes your guitar’s dry signal through uncolored.",
         "source": "tools/sources/pod-hd-model-gallery.txt:755"
       }
     ],
@@ -365,7 +365,7 @@
         "source": "catalog/fx-origins.json:55"
       },
       {
-        "text": "Leaves the dry signal uncolored.",
+        "text": "Passes your guitar’s dry signal through uncolored.",
         "source": "tools/sources/pod-hd-model-gallery.txt:755"
       },
       {
@@ -392,10 +392,10 @@
     "maker": null,
     "unit": null,
     "kind": "delay",
-    "notes": "Leaves the dry signal uncolored.",
+    "notes": "Passes your guitar’s dry signal through uncolored.",
     "facts": [
       {
-        "text": "Leaves the dry signal uncolored.",
+        "text": "Passes your guitar’s dry signal through uncolored.",
         "source": "tools/sources/pod-hd-model-gallery.txt:780"
       }
     ],
@@ -429,7 +429,7 @@
         "source": "tools/sources/pod-hd-model-gallery.txt:799"
       },
       {
-        "text": "Leaves the dry signal uncolored.",
+        "text": "Passes your guitar’s dry signal through uncolored.",
         "source": "tools/sources/pod-hd-model-gallery.txt:802"
       }
     ],
@@ -469,10 +469,10 @@
     "maker": null,
     "unit": null,
     "kind": "modulation",
-    "notes": "Inspired by MXR Phase 90.",
+    "notes": "Phase 90 model features additional parameters.",
     "facts": [
       {
-        "text": "Inspired by MXR Phase 90.",
+        "text": "Phase 90 model features additional parameters.",
         "source": "tools/sources/pod-hd-model-gallery.txt:820"
       }
     ],
@@ -643,8 +643,8 @@
         "source": "catalog/fx-origins.json:42"
       },
       {
-        "text": "Rise time control speeds up to the last setting.",
-        "source": "tools/sources/pod-hd-model-gallery.txt:861"
+        "text": "Popular for its rise time control.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:860"
       }
     ],
     "original": false
@@ -653,8 +653,13 @@
     "maker": null,
     "unit": null,
     "kind": "modulation",
-    "notes": null,
-    "facts": [],
+    "notes": "The gallery describes nontraditional guitar sounds.",
+    "facts": [
+      {
+        "text": "The gallery describes nontraditional guitar sounds.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:882"
+      }
+    ],
     "original": null
   },
   "Panner": {
@@ -811,11 +816,11 @@
     "maker": null,
     "unit": null,
     "kind": "reverb",
-    "notes": "Simulates a classic echo chamber used in early recording studios.",
+    "notes": "Simulates the properties of a classic echo chamber.",
     "facts": [
       {
-        "text": "Simulates a classic echo chamber used in early recording studios.",
-        "source": "tools/sources/pod-hd-model-gallery.txt:1171"
+        "text": "Simulates the properties of a classic echo chamber.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1170"
       }
     ],
     "original": null
@@ -876,10 +881,10 @@
     "maker": null,
     "unit": null,
     "kind": "reverb",
-    "notes": "Cavernous echo chamber.",
+    "notes": "Surreal cavernous echo chamber.",
     "facts": [
       {
-        "text": "Cavernous echo chamber.",
+        "text": "Surreal cavernous echo chamber.",
         "source": "tools/sources/pod-hd-model-gallery.txt:1191"
       }
     ],
@@ -943,7 +948,7 @@
         "source": "catalog/fx-origins.json:32"
       },
       {
-        "text": "Combines fuzz and phaser effects.",
+        "text": "It’s a fuzz and a phaser.",
         "source": "tools/sources/pod-hd-model-gallery.txt:919"
       }
     ],
@@ -1216,7 +1221,7 @@
         "source": "catalog/fx-origins.json:16"
       },
       {
-        "text": "V847 succeeds the Clyde McCoy wah.",
+        "text": "A successor to the original Clyde McCoy wah.",
         "source": "tools/sources/pod-hd-model-gallery.txt:1111"
       }
     ],
@@ -1334,7 +1339,7 @@
         "source": "catalog/fx-origins.json:41"
       },
       {
-        "text": "The gallery recommends an expression pedal.",
+        "text": "You’ll want an expression pedal hooked up.",
         "source": "tools/sources/pod-hd-model-gallery.txt:1147"
       }
     ],
@@ -1351,7 +1356,7 @@
         "source": "catalog/fx-origins.json:49"
       },
       {
-        "text": "Diatonic harmonizer.",
+        "text": "This is a diatonic harmonizer.",
         "source": "tools/sources/pod-hd-model-gallery.txt:1144"
       }
     ],
@@ -1419,7 +1424,7 @@
         "source": "catalog/fx-origins.json:48"
       },
       {
-        "text": "Sequences eight parked-wah filters.",
+        "text": "8 parked-wah filters set at varying positions.",
         "source": "tools/sources/pod-hd-model-gallery.txt:1059"
       }
     ],
@@ -1640,7 +1645,7 @@
         "source": "catalog/fx-origins.json:51"
       },
       {
-        "text": "Features constant Q.",
+        "text": "Featuring a constant Q.",
         "source": "tools/sources/pod-hd-model-gallery.txt:998"
       },
       {

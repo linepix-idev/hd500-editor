@@ -63,7 +63,7 @@ export class Pod extends EventEmitter {
   renameSet(set, name) { return this.#ack(M.renameSet(set, name), M.CMD.SET_NAME_ACK, 'the set name'); }
 
   // --- ajustes globais do pedal (fora dos presets): ids de status 0..0x25. Só 2 (afinação) e os de seleção têm significado conhecido.
-  globals(ids = [0, 1, 2, ...Array.from({ length: 0x25 - 0xb + 1 }, (_, i) => 0xb + i)]) {
+  globals(ids = [0, 1, 2, 8, 9, ...Array.from({ length: 0x29 - 0xb + 1 }, (_, i) => 0xb + i)]) {
     return ids.reduce((p, id) => p.then(async out => { try { out.push({ id, value: await this.status(id) }); } catch {} return out; }), Promise.resolve([]));
   }
   setGlobal(id, value) { return this.dev.send(M.frame(M.CMD.STATUS_SET, [0, id, value])); }

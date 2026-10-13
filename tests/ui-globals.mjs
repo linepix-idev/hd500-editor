@@ -8,7 +8,7 @@ try {
   await page.click('#pedalSettings'); await page.waitForSelector('.globals .ios-group');
   const tuner = await page.$eval('input[aria-label="Tuner reference"]', e => e.value);
   assert.ok(Number(tuner) >= 400, `tuner ${tuner}`);
-  await page.click('.globals [aria-label="Watch the pedal"]'); await wait(300);
+  await wait(700);
   await api('globals', { id: 2, value: 442 }); await wait(1500);
   const text = await page.$eval('.globals', e => e.textContent);
   assert.match(text, /0x02: 440 → 442/);

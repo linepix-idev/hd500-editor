@@ -13,12 +13,13 @@ export async function openGlobals() {
   modal('Pedal settings', body);
   try { rows = await api('globals'); } catch (e) { body.replaceChildren(h('p', { class: 'ios-footer' }, e.message)); return; }
   const label = g => KNOWN[g.id]?.name ?? names[g.id] ?? `Setting ${hex(g.id)}`;
+  const inputs = new Map();
   const field = g => {
     const k = KNOWN[g.id], inp = h('input', { type: 'number', value: g.value, min: k?.min, max: k?.max, 'aria-label': label(g),
       onChange: () => api('globals', { id: g.id, value: Number(inp.value) }).then(() => { g.value = Number(inp.value); toast('Sent to the pedal.'); }).catch(fail) });
-    return inp;
+    inputs.set(g.id, inp); return inp;
   };
-  const row = g => h('div', { class: 'row' }, h('label', {}, label(g), KNOWN[g.id]?.unit ? h('small', { class: 'dim' }, ` ${KNOWN[g.id].unit}`) : null), field(g));
+  const row = g => h('div', { class: 'row', dataset: { gid: g.id } }, h('label', {}, label(g), KNOWN[g.id]?.unit ? h('small', { class: 'dim' }, ` ${KNOWN[g.id].unit}`) : null), field(g));
   const named = rows.filter(g => KNOWN[g.id] || names[g.id]), unnamed = rows.filter(g => !KNOWN[g.id] && !names[g.id]);
   // Live watch: poll the pedal and report every value that changes while you turn knobs / walk its menus.
   const finder = h('div', {}), changes = new Map(); let last = new Map(rows.map(g => [g.id, g.value])), timer = null, watching = false;
@@ -29,17 +30,22 @@ export async function openGlobals() {
     h('p', { class: 'ios-footer' }, watching ? 'Watching. Change a setting on the pedal (Global / Setup / Utilities) and it appears here; then say what it is.' : 'Turn on, then change one setting at a time on the pedal.'),
     changes.size ? h('div', { class: 'ios-group' }, listChanges().map(c => { const nm = h('input', { type: 'text', placeholder: 'What is it?', value: names[c.id] ?? '', 'aria-label': `Name of ${hex(c.id)}`, onChange: () => { names[c.id] = nm.value; save(names); } });
       return h('div', { class: 'row' }, h('label', {}, `${hex(c.id)}: ${c.first} → ${c.now}`), nm); })) : null);
+  let busy = false;
   const tick = async () => {
     if (!body.isConnected) return stop();
+    if (busy) return; busy = true;
     try {
       const now = await api('globals'); let moved = false;
       for (const g of now) { const was = last.get(g.id); if (was !== undefined && was !== g.value) { const c = changes.get(g.id); changes.set(g.id, { id: g.id, first: c?.first ?? was, now: g.value, at: Date.now() }); moved = true; } last.set(g.id, g.value); }
+      for (const g of now) { const el = inputs.get(g.id); if (el && document.activeElement !== el) el.value = g.value; }
+      for (const c of changes.values()) if (Date.now() - c.at < 1500) { const r = body.querySelector(`[data-gid="${c.id}"]`); if (r) { r.classList.remove('flash-row'); void r.offsetWidth; r.classList.add('flash-row'); } }
       if (moved) paintFinder();
-    } catch {}
+    } catch {} finally { busy = false; }
   };
-  const start = () => { watching = true; timer = setInterval(tick, 700); paintFinder(); };
+  const start = () => { if (watching) return; watching = true; timer = setInterval(tick, 500); paintFinder(); };
   const stop = () => { watching = false; clearInterval(timer); if (body.isConnected) paintFinder(); };
   paintFinder();
+  setTimeout(start, 0);
   body.replaceChildren(
     h('p', { class: 'ios-footer' }, 'These settings belong to the pedal itself, not to the preset. Only the tuner reference is identified so far; help map the rest below.'),
     named.length ? h('div', { class: 'ios-group' }, named.map(row)) : null,

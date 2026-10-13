@@ -402,5 +402,11 @@ export const PT = {
  "Blue selects. Green is on. Dashed cables mean bypass.": "Azul seleciona. Verde indica ligado. Cabos tracejados indicam bypass.",
  "Tap the tempo (T)": "Toque no ritmo (T)",
  "Tap tempo": "Tap tempo",
- "Tap": "Tap"
+ "Tap": "Tap",
+ "Maker": "Fabricante",
+ "Unit": "Equipamento",
+ "Not specified": "Não especificado",
+ "Line 6 original": "Original da Line 6",
+ "Documented facts": "Fatos documentados",
+ "Sources": "Fontes"
 };
