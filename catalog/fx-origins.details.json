@@ -1,0 +1,1709 @@
+{
+  "None": {
+    "maker": null,
+    "unit": null,
+    "kind": "none",
+    "notes": null,
+    "facts": [],
+    "original": null
+  },
+  "Red Comp": {
+    "maker": "MXR",
+    "unit": "Dyna Comp",
+    "kind": "dynamics",
+    "notes": "The model draws on MXR Dyna Comp.",
+    "facts": [
+      {
+        "text": "Red Comp origin: MXR Dyna Comp.",
+        "source": "catalog/fx-origins.json:43"
+      }
+    ],
+    "original": false
+  },
+  "Blue Comp": {
+    "maker": "Boss",
+    "unit": "CS-1 Compression Sustainer",
+    "kind": "dynamics",
+    "notes": "The model draws on Boss CS-1 Compression Sustainer.",
+    "facts": [
+      {
+        "text": "Blue Comp origin: Boss CS-1 Compression Sustainer.",
+        "source": "catalog/fx-origins.json:12"
+      },
+      {
+        "text": "Compression Sustainer with the treble switch off.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:954"
+      }
+    ],
+    "original": false
+  },
+  "Blue Comp Treble": {
+    "maker": "Boss",
+    "unit": "CS-1 Compression Sustainer",
+    "kind": "dynamics",
+    "notes": "The model draws on Boss CS-1 Compression Sustainer.",
+    "facts": [
+      {
+        "text": "Blue Comp Treble origin: Boss CS-1 Compression Sustainer.",
+        "source": "catalog/fx-origins.json:13"
+      },
+      {
+        "text": "Compression Sustainer with the treble switch on.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:954"
+      }
+    ],
+    "original": false
+  },
+  "Tube Comp": {
+    "maker": "Teletronix",
+    "unit": "LA-2A studio compressor",
+    "kind": "dynamics",
+    "notes": "The model draws on Teletronix LA-2A studio compressor.",
+    "facts": [
+      {
+        "text": "Tube Comp origin: Teletronix LA-2A studio compressor.",
+        "source": "catalog/fx-origins.json:61"
+      }
+    ],
+    "original": false
+  },
+  "Vetta Comp": {
+    "maker": null,
+    "unit": null,
+    "kind": "dynamics",
+    "notes": "Compressor taken from the Line 6 Vetta II amplifier, with a fixed 2.35:1 ratio.",
+    "facts": [
+      {
+        "text": "Taken from Line 6 Vetta II guitar amplifier.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:962"
+      },
+      {
+        "text": "Fixed ratio of 2.35:1.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:970"
+      }
+    ],
+    "original": null
+  },
+  "Vetta Juice": {
+    "maker": null,
+    "unit": null,
+    "kind": "dynamics",
+    "notes": "A Line 6 original for Vetta II, with up to 30 dB of gain at Level.",
+    "facts": [
+      {
+        "text": "A Line 6 original created for Vetta II guitar amplifier.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:964"
+      },
+      {
+        "text": "30dB of available gain at Level.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:971"
+      }
+    ],
+    "original": true
+  },
+  "Noise Gate": {
+    "maker": null,
+    "unit": null,
+    "kind": "dynamics",
+    "notes": "Eliminates hiss from noisy pickups.",
+    "facts": [
+      {
+        "text": "Eliminates hiss from noisy pickups.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:997"
+      }
+    ],
+    "original": null
+  },
+  "Boost Comp": {
+    "maker": "MXR",
+    "unit": "Micro Amp",
+    "kind": "dynamics",
+    "notes": "The model draws on MXR Micro Amp.",
+    "facts": [
+      {
+        "text": "Boost Comp origin: MXR Micro Amp.",
+        "source": "catalog/fx-origins.json:14"
+      }
+    ],
+    "original": false
+  },
+  "Hard Gate": {
+    "maker": null,
+    "unit": null,
+    "kind": "dynamics",
+    "notes": "More controls than Noise Gate.",
+    "facts": [
+      {
+        "text": "More controls than Noise Gate.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1038"
+      }
+    ],
+    "original": null
+  },
+  "Digital Delay": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Digital delay with bass and treble tone controls.",
+    "facts": [
+      {
+        "text": "Digital delay with bass and treble tone controls.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:778"
+      }
+    ],
+    "original": null
+  },
+  "Digital Delay W/Mod": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Adds chorus to digital delays.",
+    "facts": [
+      {
+        "text": "Adds chorus to digital delays.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:779"
+      }
+    ],
+    "original": null
+  },
+  "Stereo Delay": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "One side can be a fast echo; the other a slow delay.",
+    "facts": [
+      {
+        "text": "One side can be a fast echo; the other a slow delay.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:789"
+      }
+    ],
+    "original": null
+  },
+  "Analog Echo": {
+    "maker": "Boss",
+    "unit": "DM2 Analog Delay",
+    "kind": "delay",
+    "notes": "The gallery describes warm, distorted repeats from a bucket brigade delay.",
+    "facts": [
+      {
+        "text": "Analog Echo origin: Boss DM2 Analog Delay.",
+        "source": "catalog/fx-origins.json:6"
+      },
+      {
+        "text": "Bucket brigade delay produces warm, distorted repeats.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:765"
+      }
+    ],
+    "original": false
+  },
+  "Analog W/Mod": {
+    "maker": "Electro-Harmonix",
+    "unit": "Deluxe Memory Man",
+    "kind": "delay",
+    "notes": "An analog delay combined with chorus.",
+    "facts": [
+      {
+        "text": "Analog W/Mod origin: Electro-Harmonix Deluxe Memory Man.",
+        "source": "catalog/fx-origins.json:8"
+      },
+      {
+        "text": "Analog delay with chorus.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:765"
+      }
+    ],
+    "original": false
+  },
+  "Multi-Head": {
+    "maker": "Roland",
+    "unit": "RE-101 Space Echo",
+    "kind": "delay",
+    "notes": "The model draws on Roland RE-101 Space Echo.",
+    "facts": [
+      {
+        "text": "Multi-Head origin: Roland RE-101 Space Echo.",
+        "source": "catalog/fx-origins.json:35"
+      },
+      {
+        "text": "Emulates multiple playback heads.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:764"
+      }
+    ],
+    "original": false
+  },
+  "Low Res Delay": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Early digital delay units had 8-bit resolution.",
+    "facts": [
+      {
+        "text": "Early digital delay units had 8-bit resolution.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:778"
+      }
+    ],
+    "original": null
+  },
+  "Ping Pong": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Two separate channels of delay.",
+    "facts": [
+      {
+        "text": "Two separate channels of delay.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:787"
+      }
+    ],
+    "original": null
+  },
+  "Reverse": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Plays the input backwards, delayed by the selected time.",
+    "facts": [
+      {
+        "text": "Plays the input backwards, delayed by the selected time.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:791"
+      }
+    ],
+    "original": null
+  },
+  "Dynamic Delay": {
+    "maker": "T.C. Electronic",
+    "unit": "2290 Dynamic Digital Delay",
+    "kind": "delay",
+    "notes": "The model draws on T.C. Electronic 2290 Dynamic Digital Delay.",
+    "facts": [
+      {
+        "text": "Dynamic Delay origin: T.C. Electronic 2290 Dynamic Digital Delay.",
+        "source": "catalog/fx-origins.json:24"
+      },
+      {
+        "text": "Echo volume is turned down while you play.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:791"
+      }
+    ],
+    "original": false
+  },
+  "Auto-Volume Echo": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Volume fade-in swell plus echo.",
+    "facts": [
+      {
+        "text": "Volume fade-in swell plus echo.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:800"
+      },
+      {
+        "text": "Echo includes wow and flutter modulation.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:804"
+      }
+    ],
+    "original": null
+  },
+  "Tube Echo": {
+    "maker": "Maestro",
+    "unit": "EP-1",
+    "kind": "delay",
+    "notes": "The model draws on Maestro EP-1.",
+    "facts": [
+      {
+        "text": "Tube Echo origin: Maestro EP-1.",
+        "source": "catalog/fx-origins.json:63"
+      },
+      {
+        "text": "Combines tubes and tape for delay.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:755"
+      }
+    ],
+    "original": false
+  },
+  "Tube Echo Dry": {
+    "maker": "Maestro",
+    "unit": "EP-1 (dry signal untouched)",
+    "kind": "delay",
+    "notes": "The model draws on Maestro EP-1 (dry signal untouched).",
+    "facts": [
+      {
+        "text": "Tube Echo Dry origin: Maestro EP-1 (dry signal untouched).",
+        "source": "catalog/fx-origins.json:64"
+      },
+      {
+        "text": "Leaves the dry signal uncolored.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:755"
+      }
+    ],
+    "original": false
+  },
+  "Tape Echo": {
+    "maker": "Maestro",
+    "unit": "EP-3 Echoplex",
+    "kind": "delay",
+    "notes": "The EP-3 uses transistors rather than tubes in its sound electronics.",
+    "facts": [
+      {
+        "text": "Tape Echo origin: Maestro EP-3 Echoplex.",
+        "source": "catalog/fx-origins.json:54"
+      },
+      {
+        "text": "EP-3 used transistors instead of tubes.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:755"
+      }
+    ],
+    "original": false
+  },
+  "Tape Echo Dry": {
+    "maker": "Maestro",
+    "unit": "EP-3 Echoplex (dry signal untouched)",
+    "kind": "delay",
+    "notes": "EP-3 tape echo model with the dry guitar signal left uncolored.",
+    "facts": [
+      {
+        "text": "Tape Echo Dry origin: Maestro EP-3 Echoplex (dry signal untouched).",
+        "source": "catalog/fx-origins.json:55"
+      },
+      {
+        "text": "Leaves the dry signal uncolored.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:755"
+      },
+      {
+        "text": "EP-3 used transistors instead of tubes.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:755"
+      }
+    ],
+    "original": false
+  },
+  "Sweep Echo": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Adds a sweeping effect to Tube Echo repeats.",
+    "facts": [
+      {
+        "text": "Adds a sweeping effect to Tube Echo repeats.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:762"
+      }
+    ],
+    "original": null
+  },
+  "Sweep Echo Dry": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Leaves the dry signal uncolored.",
+    "facts": [
+      {
+        "text": "Leaves the dry signal uncolored.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:780"
+      }
+    ],
+    "original": null
+  },
+  "Echo Platter": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Based on the Binson EchoRec.",
+    "facts": [
+      {
+        "text": "Based on the Binson EchoRec.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:799"
+      },
+      {
+        "text": "EchoRec used a magnetic platter to record and play back.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:802"
+      }
+    ],
+    "original": false
+  },
+  "Echo Platter Dry": {
+    "maker": null,
+    "unit": null,
+    "kind": "delay",
+    "notes": "Based on the Binson EchoRec.",
+    "facts": [
+      {
+        "text": "Based on the Binson EchoRec.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:799"
+      },
+      {
+        "text": "Leaves the dry signal uncolored.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:802"
+      }
+    ],
+    "original": false
+  },
+  "Opto Tremolo": {
+    "maker": null,
+    "unit": null,
+    "kind": "modulation",
+    "notes": "Based on optical tremolo in blackface Fender amps.",
+    "facts": [
+      {
+        "text": "Based on optical tremolo in blackface Fender amps.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:819"
+      }
+    ],
+    "original": false
+  },
+  "Bias Tremolo": {
+    "maker": null,
+    "unit": null,
+    "kind": "modulation",
+    "notes": "Tremolo produced by varying power amp tube bias.",
+    "facts": [
+      {
+        "text": "Bias Tremolo origin: 1960 Vox AC-15 tremolo.",
+        "source": "catalog/fx-origins.json:11"
+      },
+      {
+        "text": "Tremolo varies the bias of the power amp tubes.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:822"
+      }
+    ],
+    "original": false
+  },
+  "Phaser": {
+    "maker": null,
+    "unit": null,
+    "kind": "modulation",
+    "notes": "Inspired by MXR Phase 90.",
+    "facts": [
+      {
+        "text": "Inspired by MXR Phase 90.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:820"
+      }
+    ],
+    "original": false
+  },
+  "Dual Phaser": {
+    "maker": "Mu-Tron",
+    "unit": "Bi-Phase",
+    "kind": "modulation",
+    "notes": "The model draws on Mu-Tron Bi-Phase.",
+    "facts": [
+      {
+        "text": "Dual Phaser origin: Mu-Tron Bi-Phase.",
+        "source": "catalog/fx-origins.json:23"
+      }
+    ],
+    "original": false
+  },
+  "Panned Phaser": {
+    "maker": "Ibanez",
+    "unit": "Flying Pan",
+    "kind": "modulation",
+    "notes": "A four-stage phaser combined with a panner.",
+    "facts": [
+      {
+        "text": "Panned Phaser origin: Ibanez Flying Pan.",
+        "source": "catalog/fx-origins.json:39"
+      },
+      {
+        "text": "Four-stage phase shifter with a built-in panner.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:830"
+      }
+    ],
+    "original": false
+  },
+  "U-Vibe": {
+    "maker": null,
+    "unit": null,
+    "kind": "modulation",
+    "notes": "The model draws on Uni-Vibe.",
+    "facts": [
+      {
+        "text": "U-Vibe origin: Uni-Vibe.",
+        "source": "catalog/fx-origins.json:65"
+      }
+    ],
+    "original": false
+  },
+  "Rotary Drum": {
+    "maker": "Fender",
+    "unit": "Vibratone",
+    "kind": "modulation",
+    "notes": "The gallery identifies Fender Vibratone; the adjacent Drum & Horn model uses Leslie 145.",
+    "facts": [
+      {
+        "text": "Rotary Drum origin: Fender Vibratone.",
+        "source": "catalog/fx-origins.json:44"
+      },
+      {
+        "text": "Based on the Fender Vibratone rotating speaker effect.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:868"
+      }
+    ],
+    "original": false
+  },
+  "Rotary Drum/Hrn": {
+    "maker": "Leslie",
+    "unit": "145",
+    "kind": "modulation",
+    "notes": "A model of the Leslie 145 tube-driven rotating speaker cabinet.",
+    "facts": [
+      {
+        "text": "Rotary Drum/Hrn origin: Leslie 145.",
+        "source": "catalog/fx-origins.json:45"
+      },
+      {
+        "text": "Leslie 145 is a tube-driven rotating speaker cabinet.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:870"
+      }
+    ],
+    "original": false
+  },
+  "Analog Flanger": {
+    "maker": "MXR",
+    "unit": "Flanger",
+    "kind": "modulation",
+    "notes": "The model draws on MXR Flanger.",
+    "facts": [
+      {
+        "text": "Analog Flanger origin: MXR Flanger.",
+        "source": "catalog/fx-origins.json:7"
+      }
+    ],
+    "original": false
+  },
+  "Jet Flanger": {
+    "maker": "A/DA",
+    "unit": "Flanger",
+    "kind": "modulation",
+    "notes": "The model draws on A/DA Flanger.",
+    "facts": [
+      {
+        "text": "Jet Flanger origin: A/DA Flanger.",
+        "source": "catalog/fx-origins.json:31"
+      },
+      {
+        "text": "More dramatic than Analog Flanger, with a different wave shape.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:844"
+      }
+    ],
+    "original": false
+  },
+  "Analog Chorus": {
+    "maker": "Boss",
+    "unit": "CE-1 Chorus Ensemble",
+    "kind": "modulation",
+    "notes": "The model draws on Boss CE-1 Chorus Ensemble.",
+    "facts": [
+      {
+        "text": "Analog Chorus origin: Boss CE-1 Chorus Ensemble.",
+        "source": "catalog/fx-origins.json:5"
+      },
+      {
+        "text": "CE-1 Chorus Ensemble is a stompbox chorus.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:858"
+      }
+    ],
+    "original": false
+  },
+  "Dimension": {
+    "maker": "Roland",
+    "unit": "Dimension D",
+    "kind": "modulation",
+    "notes": "The model draws on Roland Dimension D.",
+    "facts": [
+      {
+        "text": "Dimension origin: Roland Dimension D.",
+        "source": "catalog/fx-origins.json:22"
+      },
+      {
+        "text": "Dimension D is a stereo chorus unit.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:870"
+      }
+    ],
+    "original": false
+  },
+  "Tri Chorus": {
+    "maker": "Song Bird / DyTronics",
+    "unit": "Tri-Stereo Chorus",
+    "kind": "modulation",
+    "notes": "The model draws on Song Bird / DyTronics Tri-Stereo Chorus.",
+    "facts": [
+      {
+        "text": "Tri Chorus origin: Song Bird / DyTronics Tri-Stereo Chorus.",
+        "source": "catalog/fx-origins.json:58"
+      }
+    ],
+    "original": false
+  },
+  "Pitch Vibrato": {
+    "maker": "Boss",
+    "unit": "VB-2",
+    "kind": "modulation",
+    "notes": "The model draws on Boss VB-2.",
+    "facts": [
+      {
+        "text": "Pitch Vibrato origin: Boss VB-2.",
+        "source": "catalog/fx-origins.json:42"
+      },
+      {
+        "text": "Rise time control speeds up to the last setting.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:861"
+      }
+    ],
+    "original": false
+  },
+  "Ring Modulator": {
+    "maker": null,
+    "unit": null,
+    "kind": "modulation",
+    "notes": null,
+    "facts": [],
+    "original": null
+  },
+  "Panner": {
+    "maker": null,
+    "unit": null,
+    "kind": "modulation",
+    "notes": "Pans between left and right channels.",
+    "facts": [
+      {
+        "text": "Pans between left and right channels.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:869"
+      }
+    ],
+    "original": null
+  },
+  "Barberpole Phaser": {
+    "maker": null,
+    "unit": null,
+    "kind": "modulation",
+    "notes": "Phaser can sound like it is always going up or down.",
+    "facts": [
+      {
+        "text": "Phaser can sound like it is always going up or down.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:832"
+      }
+    ],
+    "original": null
+  },
+  "Frequency Shifter": {
+    "maker": null,
+    "unit": null,
+    "kind": "modulation",
+    "notes": "Selects up or down shifted frequencies.",
+    "facts": [
+      {
+        "text": "Selects up or down shifted frequencies.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:882"
+      }
+    ],
+    "original": null
+  },
+  "Pattern Tremolo": {
+    "maker": "Lightfoot Labs",
+    "unit": "Goatkeeper",
+    "kind": "modulation",
+    "notes": "The model draws on Lightfoot Labs Goatkeeper.",
+    "facts": [
+      {
+        "text": "Pattern Tremolo origin: Lightfoot Labs Goatkeeper.",
+        "source": "catalog/fx-origins.json:40"
+      }
+    ],
+    "original": false
+  },
+  "Script Phase": {
+    "maker": "MXR",
+    "unit": "Phase 90",
+    "kind": "modulation",
+    "notes": "The model draws on MXR Phase 90.",
+    "facts": [
+      {
+        "text": "Script Phase origin: MXR Phase 90.",
+        "source": "catalog/fx-origins.json:47"
+      },
+      {
+        "text": "One Speed knob, like the original script-logo version.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:830"
+      }
+    ],
+    "original": false
+  },
+  "AC Flanger": {
+    "maker": "MXR",
+    "unit": "Flanger",
+    "kind": "modulation",
+    "notes": "The model draws on MXR Flanger.",
+    "facts": [
+      {
+        "text": "AC Flanger origin: MXR Flanger.",
+        "source": "catalog/fx-origins.json:4"
+      }
+    ],
+    "original": false
+  },
+  "80A Flanger": {
+    "maker": "A/DA",
+    "unit": "Flanger",
+    "kind": "modulation",
+    "notes": "The model draws on A/DA Flanger.",
+    "facts": [
+      {
+        "text": "80A Flanger origin: A/DA Flanger.",
+        "source": "catalog/fx-origins.json:3"
+      },
+      {
+        "text": "The gallery describes a signature jet-like sweep.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:858"
+      }
+    ],
+    "original": false
+  },
+  "'63 Spring": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "The model draws on 1963 brown-panel spring reverb unit.",
+    "facts": [
+      {
+        "text": "'63 Spring origin: 1963 brown-panel spring reverb unit.",
+        "source": "catalog/fx-origins.json:2"
+      },
+      {
+        "text": "Based on a 1963 brown spring reverb head unit.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1169"
+      }
+    ],
+    "original": false
+  },
+  "Spring": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Based on a studio spring reverb.",
+    "facts": [
+      {
+        "text": "Based on a studio spring reverb.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1169"
+      },
+      {
+        "text": "Springs are suspended inside a metal box.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1172"
+      }
+    ],
+    "original": false
+  },
+  "Plate": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Based on a studio plate reverb.",
+    "facts": [
+      {
+        "text": "Based on a studio plate reverb.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1169"
+      },
+      {
+        "text": "Plate reverbs used a thin suspended metal sheet.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1172"
+      }
+    ],
+    "original": false
+  },
+  "Room": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Simulates a classic echo chamber used in early recording studios.",
+    "facts": [
+      {
+        "text": "Simulates a classic echo chamber used in early recording studios.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1171"
+      }
+    ],
+    "original": null
+  },
+  "Chamber": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Models an elongated space such as a hall or stairwell.",
+    "facts": [
+      {
+        "text": "Models an elongated space such as a hall or stairwell.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1181"
+      }
+    ],
+    "original": null
+  },
+  "Hall": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Simulates a concert hall or large open space.",
+    "facts": [
+      {
+        "text": "Simulates a concert hall or large open space.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1181"
+      }
+    ],
+    "original": null
+  },
+  "Ducking": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Reverb volume is reduced while playing and increases when you stop.",
+    "facts": [
+      {
+        "text": "Reverb volume is reduced while playing and increases when you stop.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1183"
+      }
+    ],
+    "original": null
+  },
+  "Octo": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Ambient space with a harmonized decay.",
+    "facts": [
+      {
+        "text": "Ambient space with a harmonized decay.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1181"
+      }
+    ],
+    "original": null
+  },
+  "Cave": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Cavernous echo chamber.",
+    "facts": [
+      {
+        "text": "Cavernous echo chamber.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1191"
+      }
+    ],
+    "original": null
+  },
+  "Tile": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Emulates reflections of a tiled room.",
+    "facts": [
+      {
+        "text": "Emulates reflections of a tiled room.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1192"
+      }
+    ],
+    "original": null
+  },
+  "Echo": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "Echo with reverb.",
+    "facts": [
+      {
+        "text": "Echo with reverb.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1193"
+      }
+    ],
+    "original": null
+  },
+  "Particle Verb": {
+    "maker": null,
+    "unit": null,
+    "kind": "reverb",
+    "notes": "A Line 6 original reverb: Stable mode makes a modulated pad; Critical mode adds a pitch rise.",
+    "facts": [
+      {
+        "text": "A Line 6 original.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1191"
+      },
+      {
+        "text": "Stable mode turns chords into a modulated pad.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1193"
+      },
+      {
+        "text": "Critical mode adds a slight rise in pitch.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1194"
+      }
+    ],
+    "original": true
+  },
+  "Jet Fuzz": {
+    "maker": "Roland",
+    "unit": "Jet Phaser",
+    "kind": "distortion",
+    "notes": "The model draws on Roland Jet Phaser.",
+    "facts": [
+      {
+        "text": "Jet Fuzz origin: Roland Jet Phaser.",
+        "source": "catalog/fx-origins.json:32"
+      },
+      {
+        "text": "Combines fuzz and phaser effects.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:919"
+      }
+    ],
+    "original": false
+  },
+  "Classic Dist": {
+    "maker": "ProCo",
+    "unit": "Rat",
+    "kind": "distortion",
+    "notes": "The model draws on ProCo Rat.",
+    "facts": [
+      {
+        "text": "Classic Dist origin: ProCo Rat.",
+        "source": "catalog/fx-origins.json:18"
+      },
+      {
+        "text": "The gallery describes angry and aggressive distortion.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:899"
+      }
+    ],
+    "original": false
+  },
+  "Octave Fuzz": {
+    "maker": "Tycobrahe",
+    "unit": "Octavia",
+    "kind": "distortion",
+    "notes": "The model draws on Tycobrahe Octavia.",
+    "facts": [
+      {
+        "text": "Octave Fuzz origin: Tycobrahe Octavia.",
+        "source": "catalog/fx-origins.json:37"
+      },
+      {
+        "text": "Octavia is a fuzz-plus-octave effect.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:937"
+      }
+    ],
+    "original": false
+  },
+  "Tube Drive": {
+    "maker": "Chandler",
+    "unit": "Tube Driver",
+    "kind": "distortion",
+    "notes": "The model draws on Chandler Tube Driver.",
+    "facts": [
+      {
+        "text": "Tube Drive origin: Chandler Tube Driver.",
+        "source": "catalog/fx-origins.json:62"
+      },
+      {
+        "text": "The gallery describes a sweet singing sustain.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:900"
+      }
+    ],
+    "original": false
+  },
+  "Screamer": {
+    "maker": "Ibanez",
+    "unit": "Tube Screamer",
+    "kind": "distortion",
+    "notes": "The model draws on Ibanez Tube Screamer.",
+    "facts": [
+      {
+        "text": "Screamer origin: Ibanez Tube Screamer.",
+        "source": "catalog/fx-origins.json:46"
+      },
+      {
+        "text": "The gallery describes medium-gain pedals.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:902"
+      }
+    ],
+    "original": false
+  },
+  "Fuzz Pi": {
+    "maker": "Electro-Harmonix",
+    "unit": "Big Muff Pi",
+    "kind": "distortion",
+    "notes": "The model draws on Electro-Harmonix Big Muff Pi.",
+    "facts": [
+      {
+        "text": "Fuzz Pi origin: Electro-Harmonix Big Muff Pi.",
+        "source": "catalog/fx-origins.json:27"
+      },
+      {
+        "text": "The gallery emphasizes sustain more than buzz.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:922"
+      }
+    ],
+    "original": false
+  },
+  "Overdrive": {
+    "maker": "DOD",
+    "unit": "Overdrive/Preamp 250",
+    "kind": "distortion",
+    "notes": "The model draws on DOD Overdrive/Preamp 250.",
+    "facts": [
+      {
+        "text": "Overdrive origin: DOD Overdrive/Preamp 250.",
+        "source": "catalog/fx-origins.json:38"
+      },
+      {
+        "text": "Designed to slam the input of a tube guitar amp.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:900"
+      }
+    ],
+    "original": false
+  },
+  "Facial Fuzz": {
+    "maker": "Arbiter",
+    "unit": "Fuzz Face",
+    "kind": "distortion",
+    "notes": "The model draws on Arbiter Fuzz Face.",
+    "facts": [
+      {
+        "text": "Facial Fuzz origin: Arbiter Fuzz Face.",
+        "source": "catalog/fx-origins.json:25"
+      }
+    ],
+    "original": false
+  },
+  "Line 6 Distortion": {
+    "maker": null,
+    "unit": null,
+    "kind": "distortion",
+    "notes": null,
+    "facts": [],
+    "original": null
+  },
+  "Line 6 Drive": {
+    "maker": "Colorsound",
+    "unit": "Tone Bender",
+    "kind": "distortion",
+    "notes": "The model draws on Colorsound Tone Bender.",
+    "facts": [
+      {
+        "text": "Line 6 Drive origin: Colorsound Tone Bender.",
+        "source": "catalog/fx-origins.json:34"
+      }
+    ],
+    "original": false
+  },
+  "Sub Octave Fuzz": {
+    "maker": "PAiA",
+    "unit": "Roctave",
+    "kind": "distortion",
+    "notes": "The model draws on PAiA Roctave.",
+    "facts": [
+      {
+        "text": "Sub Octave Fuzz origin: PAiA Roctave.",
+        "source": "catalog/fx-origins.json:52"
+      },
+      {
+        "text": "Fuzz with an octave below.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:937"
+      }
+    ],
+    "original": false
+  },
+  "Buzz Saw": {
+    "maker": "Maestro",
+    "unit": "Fuzz Tone",
+    "kind": "distortion",
+    "notes": "The model draws on Maestro Fuzz Tone.",
+    "facts": [
+      {
+        "text": "Buzz Saw origin: Maestro Fuzz Tone.",
+        "source": "catalog/fx-origins.json:15"
+      }
+    ],
+    "original": false
+  },
+  "Heavy Dist": {
+    "maker": "Boss",
+    "unit": "Metal Zone",
+    "kind": "distortion",
+    "notes": "The model draws on Boss Metal Zone.",
+    "facts": [
+      {
+        "text": "Heavy Dist origin: Boss Metal Zone.",
+        "source": "catalog/fx-origins.json:30"
+      }
+    ],
+    "original": false
+  },
+  "Jumbo Fuzz": {
+    "maker": "Vox",
+    "unit": "Tone Bender",
+    "kind": "distortion",
+    "notes": "The model draws on Vox Tone Bender.",
+    "facts": [
+      {
+        "text": "Jumbo Fuzz origin: Vox Tone Bender.",
+        "source": "catalog/fx-origins.json:33"
+      }
+    ],
+    "original": false
+  },
+  "Color Drive": {
+    "maker": "Colorsound",
+    "unit": "Overdriver",
+    "kind": "distortion",
+    "notes": "The model draws on Colorsound Overdriver.",
+    "facts": [
+      {
+        "text": "Color Drive origin: Colorsound Overdriver.",
+        "source": "catalog/fx-origins.json:19"
+      }
+    ],
+    "original": false
+  },
+  "Vetta Wah": {
+    "maker": "Line 6",
+    "unit": "Vetta II amp wah",
+    "kind": "wah",
+    "notes": "The model draws on Line 6 Vetta II amp wah.",
+    "facts": [
+      {
+        "text": "Vetta Wah origin: Line 6 Vetta II amp wah.",
+        "source": "catalog/fx-origins.json:67"
+      },
+      {
+        "text": "Taken from Line 6 Vetta II guitar amplifier.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1110"
+      }
+    ],
+    "original": null
+  },
+  "Fassel": {
+    "maker": "Dunlop",
+    "unit": "Cry Baby Super",
+    "kind": "wah",
+    "notes": "The model draws on Dunlop Cry Baby Super.",
+    "facts": [
+      {
+        "text": "Fassel origin: Dunlop Cry Baby Super.",
+        "source": "catalog/fx-origins.json:26"
+      },
+      {
+        "text": "Cry Baby Super uses a Fasel inductor.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1112"
+      }
+    ],
+    "original": false
+  },
+  "Weeper": {
+    "maker": "Arbiter",
+    "unit": "Cry Baby",
+    "kind": "wah",
+    "notes": "The model draws on Arbiter Cry Baby.",
+    "facts": [
+      {
+        "text": "Weeper origin: Arbiter Cry Baby.",
+        "source": "catalog/fx-origins.json:69"
+      },
+      {
+        "text": "Different inductor and other component choices.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1113"
+      }
+    ],
+    "original": false
+  },
+  "Chrome": {
+    "maker": "Vox",
+    "unit": "V847",
+    "kind": "wah",
+    "notes": "The model draws on Vox V847.",
+    "facts": [
+      {
+        "text": "Chrome origin: Vox V847.",
+        "source": "catalog/fx-origins.json:16"
+      },
+      {
+        "text": "V847 succeeds the Clyde McCoy wah.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1111"
+      }
+    ],
+    "original": false
+  },
+  "Chrome Custom": {
+    "maker": null,
+    "unit": null,
+    "kind": "wah",
+    "notes": "A modified Vox V847, with altered gain staging, a wider Q and a 470k pot.",
+    "facts": [
+      {
+        "text": "Chrome Custom origin: modded Vox V847.",
+        "source": "catalog/fx-origins.json:17"
+      },
+      {
+        "text": "Modified V847 with tweaked gain staging.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1132"
+      },
+      {
+        "text": "Q widened and pot replaced with a 470k pot.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1136"
+      }
+    ],
+    "original": false
+  },
+  "Throaty": {
+    "maker": "RMC",
+    "unit": "Real McCoy 1",
+    "kind": "wah",
+    "notes": "The model draws on RMC Real McCoy 1.",
+    "facts": [
+      {
+        "text": "Throaty origin: RMC Real McCoy 1.",
+        "source": "catalog/fx-origins.json:56"
+      },
+      {
+        "text": "Clones the rare Vox Clyde McCoy Picture wah.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1135"
+      }
+    ],
+    "original": false
+  },
+  "Conductor": {
+    "maker": "Maestro",
+    "unit": "Boomerang",
+    "kind": "wah",
+    "notes": "The model draws on Maestro Boomerang.",
+    "facts": [
+      {
+        "text": "Conductor origin: Maestro Boomerang.",
+        "source": "catalog/fx-origins.json:21"
+      }
+    ],
+    "original": false
+  },
+  "Colorful": {
+    "maker": "Colorsound",
+    "unit": "Wah-fuzz",
+    "kind": "wah",
+    "notes": "Only the wah section of the Colorsound Wah-fuzz is modeled; the pedal has an inductor-less design.",
+    "facts": [
+      {
+        "text": "Colorful origin: Colorsound Wah-fuzz.",
+        "source": "catalog/fx-origins.json:20"
+      },
+      {
+        "text": "Models only the wah section.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1133"
+      },
+      {
+        "text": "The pedal uses an inductor-less design.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1135"
+      }
+    ],
+    "original": false
+  },
+  "Volume": {
+    "maker": null,
+    "unit": null,
+    "kind": "volume/pan",
+    "notes": "Volume control via the expression pedal.",
+    "facts": [
+      {
+        "text": "Volume control via the expression pedal.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:970"
+      }
+    ],
+    "original": null
+  },
+  "Pan": {
+    "maker": null,
+    "unit": null,
+    "kind": "volume/pan",
+    "notes": null,
+    "facts": [],
+    "original": null
+  },
+  "FX Loop": {
+    "maker": null,
+    "unit": null,
+    "kind": "fx loop",
+    "notes": null,
+    "facts": [],
+    "original": null
+  },
+  "Pitch Glide": {
+    "maker": "Digitech",
+    "unit": "Whammy",
+    "kind": "pitch",
+    "notes": "The model draws on Digitech Whammy.",
+    "facts": [
+      {
+        "text": "Pitch Glide origin: Digitech Whammy.",
+        "source": "catalog/fx-origins.json:41"
+      },
+      {
+        "text": "The gallery recommends an expression pedal.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1147"
+      }
+    ],
+    "original": false
+  },
+  "Smart Harmony": {
+    "maker": "Eventide",
+    "unit": "H3000",
+    "kind": "pitch",
+    "notes": "The model draws on Eventide H3000.",
+    "facts": [
+      {
+        "text": "Smart Harmony origin: Eventide H3000.",
+        "source": "catalog/fx-origins.json:49"
+      },
+      {
+        "text": "Diatonic harmonizer.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1144"
+      }
+    ],
+    "original": false
+  },
+  "Bass Octaver": {
+    "maker": "EBS",
+    "unit": "OctaBass",
+    "kind": "pitch",
+    "notes": "The model draws on EBS OctaBass.",
+    "facts": [
+      {
+        "text": "Bass Octaver origin: EBS OctaBass.",
+        "source": "catalog/fx-origins.json:10"
+      },
+      {
+        "text": "Gives a clean octave-down signal.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:940"
+      }
+    ],
+    "original": false
+  },
+  "Tron Up": {
+    "maker": "Mu-Tron",
+    "unit": "III",
+    "kind": "filter",
+    "notes": "The model draws on Mu-Tron III.",
+    "facts": [
+      {
+        "text": "Tron Up origin: Mu-Tron III.",
+        "source": "catalog/fx-origins.json:60"
+      },
+      {
+        "text": "Mu-Tron III envelope follower in the Up position.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1059"
+      }
+    ],
+    "original": false
+  },
+  "Tron Down": {
+    "maker": "Mu-Tron",
+    "unit": "III",
+    "kind": "filter",
+    "notes": "The model draws on Mu-Tron III.",
+    "facts": [
+      {
+        "text": "Tron Down origin: Mu-Tron III.",
+        "source": "catalog/fx-origins.json:59"
+      },
+      {
+        "text": "Mu-Tron III envelope follower in the Down position.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1059"
+      }
+    ],
+    "original": false
+  },
+  "Seeker": {
+    "maker": "Z-Vex",
+    "unit": "Seek Wah",
+    "kind": "filter",
+    "notes": "The model draws on Z-Vex Seek Wah.",
+    "facts": [
+      {
+        "text": "Seeker origin: Z-Vex Seek Wah.",
+        "source": "catalog/fx-origins.json:48"
+      },
+      {
+        "text": "Sequences eight parked-wah filters.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1059"
+      }
+    ],
+    "original": false
+  },
+  "Obi Wah": {
+    "maker": "Oberheim",
+    "unit": "Voltage Controlled Sample and Hold filter",
+    "kind": "filter",
+    "notes": "The model draws on Oberheim Voltage Controlled Sample and Hold filter.",
+    "facts": [
+      {
+        "text": "Obi Wah origin: Oberheim Voltage Controlled Sample and Hold filter.",
+        "source": "catalog/fx-origins.json:36"
+      },
+      {
+        "text": "Voltage Controlled Sample and Hold filter.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1059"
+      }
+    ],
+    "original": false
+  },
+  "Slow Filter": {
+    "maker": null,
+    "unit": null,
+    "kind": "filter",
+    "notes": "Triggered filter rolls off the high end with adjustable speed.",
+    "facts": [
+      {
+        "text": "Triggered filter rolls off the high end with adjustable speed.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1084"
+      }
+    ],
+    "original": null
+  },
+  "Q Filter": {
+    "maker": null,
+    "unit": null,
+    "kind": "filter",
+    "notes": "A wah parked in one position.",
+    "facts": [
+      {
+        "text": "A wah parked in one position.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1103"
+      }
+    ],
+    "original": null
+  },
+  "Throbber": {
+    "maker": "Electrix",
+    "unit": "Filter Factory",
+    "kind": "filter",
+    "notes": "The model draws on Electrix Filter Factory.",
+    "facts": [
+      {
+        "text": "Throbber origin: Electrix Filter Factory.",
+        "source": "catalog/fx-origins.json:57"
+      }
+    ],
+    "original": false
+  },
+  "Spin Cycle": {
+    "maker": null,
+    "unit": null,
+    "kind": "filter",
+    "notes": "The model draws on Craig Anderton’s Wah/Anti-Wah.",
+    "facts": [
+      {
+        "text": "Spin Cycle origin: Craig Anderton’s Wah/Anti-Wah.",
+        "source": "catalog/fx-origins.json:50"
+      },
+      {
+        "text": "Two wahs panned left and right work in opposite directions.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1075"
+      }
+    ],
+    "original": false
+  },
+  "Comet Trails": {
+    "maker": null,
+    "unit": null,
+    "kind": "filter",
+    "notes": null,
+    "facts": [],
+    "original": null
+  },
+  "Octisynth": {
+    "maker": null,
+    "unit": null,
+    "kind": "filter",
+    "notes": null,
+    "facts": [],
+    "original": null
+  },
+  "Growler": {
+    "maker": "Mu-Tron",
+    "unit": "III",
+    "kind": "filter",
+    "notes": "The gallery calls this a combination of R700 and Mu-Tron III; R700 is not further identified.",
+    "facts": [
+      {
+        "text": "Growler origin: Mu-Tron III.",
+        "source": "catalog/fx-origins.json:29"
+      },
+      {
+        "text": "R700 meets Mu-Tron III.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1099"
+      }
+    ],
+    "original": false
+  },
+  "Synth O Matic": {
+    "maker": null,
+    "unit": null,
+    "kind": "filter",
+    "notes": "Inspired by a collection of vintage analog synths.",
+    "facts": [
+      {
+        "text": "Inspired by a collection of vintage analog synths.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1084"
+      }
+    ],
+    "original": null
+  },
+  "Attack Synth": {
+    "maker": "Korg",
+    "unit": "X911 Guitar Synth",
+    "kind": "filter",
+    "notes": "The model draws on Korg X911 Guitar Synth.",
+    "facts": [
+      {
+        "text": "Attack Synth origin: Korg X911 Guitar Synth.",
+        "source": "catalog/fx-origins.json:9"
+      },
+      {
+        "text": "Modeled after one of the X911 waveforms.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1102"
+      }
+    ],
+    "original": false
+  },
+  "Synth String": {
+    "maker": "Roland",
+    "unit": "GR700 Guitar Synth",
+    "kind": "filter",
+    "notes": "The model draws on Roland GR700 Guitar Synth.",
+    "facts": [
+      {
+        "text": "Synth String origin: Roland GR700 Guitar Synth.",
+        "source": "catalog/fx-origins.json:53"
+      },
+      {
+        "text": "Based on one of the GR700 sounds.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1103"
+      }
+    ],
+    "original": false
+  },
+  "Voice Box": {
+    "maker": null,
+    "unit": null,
+    "kind": "filter",
+    "notes": "Inspired by vocoders, vocal tracts and surgical tubing.",
+    "facts": [
+      {
+        "text": "Inspired by vocoders, vocal tracts and surgical tubing.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1072"
+      }
+    ],
+    "original": null
+  },
+  "V-Tron": {
+    "maker": "Mu-Tron",
+    "unit": "III",
+    "kind": "filter",
+    "notes": "The model draws on Mu-Tron III.",
+    "facts": [
+      {
+        "text": "V-Tron origin: Mu-Tron III.",
+        "source": "catalog/fx-origins.json:66"
+      },
+      {
+        "text": "Combines Voice Box and Mu-Tron III.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1072"
+      }
+    ],
+    "original": false
+  },
+  "Vocoder": {
+    "maker": null,
+    "unit": null,
+    "kind": "filter",
+    "notes": null,
+    "facts": [],
+    "original": null
+  },
+  "Graphic EQ": {
+    "maker": "MXR",
+    "unit": "ten-band graphic equalizer",
+    "kind": "preamp+eq",
+    "notes": "The model draws on MXR ten-band graphic equalizer.",
+    "facts": [
+      {
+        "text": "Graphic EQ origin: MXR ten-band graphic equalizer.",
+        "source": "catalog/fx-origins.json:28"
+      }
+    ],
+    "original": false
+  },
+  "Studio EQ": {
+    "maker": "API",
+    "unit": "550B",
+    "kind": "preamp+eq",
+    "notes": "The model draws on API 550B.",
+    "facts": [
+      {
+        "text": "Studio EQ origin: API 550B.",
+        "source": "catalog/fx-origins.json:51"
+      },
+      {
+        "text": "Features constant Q.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:998"
+      },
+      {
+        "text": "Soft clipping output with level control.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:999"
+      }
+    ],
+    "original": false
+  },
+  "Parametric EQ": {
+    "maker": null,
+    "unit": null,
+    "kind": "preamp+eq",
+    "notes": "High shelf, low shelf, and a fully parametric band.",
+    "facts": [
+      {
+        "text": "High shelf, low shelf, and a fully parametric band.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:997"
+      }
+    ],
+    "original": null
+  },
+  "4 Band Shift EQ": {
+    "maker": null,
+    "unit": null,
+    "kind": "preamp+eq",
+    "notes": "Four-band graphic EQ; shifter moves the lower band lower.",
+    "facts": [
+      {
+        "text": "Four-band graphic EQ; shifter moves the lower band lower.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1020"
+      }
+    ],
+    "original": null
+  },
+  "Mid Focus EQ": {
+    "maker": null,
+    "unit": null,
+    "kind": "preamp+eq",
+    "notes": "High-pass and low-pass filters used to create a band-pass.",
+    "facts": [
+      {
+        "text": "High-pass and low-pass filters used to create a band-pass.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1020"
+      }
+    ],
+    "original": null
+  },
+  "Vintage Pre": {
+    "maker": "Requisite",
+    "unit": "Y7 vintage tube mic preamp",
+    "kind": "preamp+eq",
+    "notes": "The model draws on Requisite Y7 vintage tube mic preamp.",
+    "facts": [
+      {
+        "text": "Vintage Pre origin: Requisite Y7 vintage tube mic preamp.",
+        "source": "catalog/fx-origins.json:68"
+      },
+      {
+        "text": "Vintage-voiced tube mic preamp.",
+        "source": "tools/sources/pod-hd-model-gallery.txt:1020"
+      }
+    ],
+    "original": false
+  }
+}

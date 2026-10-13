@@ -8,10 +8,9 @@ try {
   await page.click('#pedalSettings'); await page.waitForSelector('.globals .ios-group');
   const tuner = await page.$eval('input[aria-label="Tuner reference"]', e => e.value);
   assert.ok(Number(tuner) >= 400, `tuner ${tuner}`);
-  await page.click('.globals .ios-action .primary'); await wait(300);           // snapshot
-  await api('globals', { id: 2, value: 442 });
-  await page.click('.globals .ios-action .primary'); await wait(600);           // compare
+  await page.click('.globals [aria-label="Watch the pedal"]'); await wait(300);
+  await api('globals', { id: 2, value: 442 }); await wait(1500);
   const text = await page.$eval('.globals', e => e.textContent);
-  assert.match(text, /0x02: 440 → 442|0x02: \d+ → 442/);
+  assert.match(text, /0x02: 440 → 442/);
   console.log('Pedal settings sheet passed.');
 } finally { await browser.close(); }

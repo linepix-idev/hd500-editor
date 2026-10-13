@@ -20,20 +20,25 @@ export async function openGlobals() {
   };
   const row = g => h('div', { class: 'row' }, h('label', {}, label(g), KNOWN[g.id]?.unit ? h('small', { class: 'dim' }, ` ${KNOWN[g.id].unit}`) : null), field(g));
   const named = rows.filter(g => KNOWN[g.id] || names[g.id]), unnamed = rows.filter(g => !KNOWN[g.id] && !names[g.id]);
-  let snap = null; const finder = h('div', {});
-  const paintFinder = changes => finder.replaceChildren(
-    h('p', { class: 'ios-footer' }, snap ? 'Now change ONE setting on the pedal (Setup/Utilities), then press Compare.' : 'Take a snapshot, change one setting on the pedal, then compare to find which value moved.'),
-    h('div', { class: 'ios-action' }, h('button', { class: 'primary', onClick: async () => {
-      try {
-        const now = await api('globals');
-        if (!snap) { snap = now; toast('Snapshot saved.'); return paintFinder(); }
-        const ch = now.filter(g => snap.find(s => s.id === g.id)?.value !== g.value).map(g => ({ ...g, was: snap.find(s => s.id === g.id)?.value }));
-        snap = null; paintFinder(ch);
-      } catch (e) { fail(e); }
-    } }, snap ? 'Compare' : 'Take snapshot')),
-    changes ? (changes.length ? h('div', { class: 'ios-group' }, changes.map(c => { const nm = h('input', { type: 'text', placeholder: 'What is it?', value: names[c.id] ?? '', onChange: () => { names[c.id] = nm.value; save(names); } });
-      return h('div', { class: 'row' }, h('label', {}, `${hex(c.id)}: ${c.was} → ${c.value}`), nm); }))
-      : h('p', { class: 'ios-footer' }, 'Nothing changed. Try again.')) : null);
+  // Live watch: poll the pedal and report every value that changes while you turn knobs / walk its menus.
+  const finder = h('div', {}), changes = new Map(); let last = new Map(rows.map(g => [g.id, g.value])), timer = null, watching = false;
+  const listChanges = () => [...changes.values()].sort((x, y) => y.at - x.at);
+  const paintFinder = () => finder.replaceChildren(
+    h('div', { class: 'ios-group' }, h('div', { class: 'row' }, h('label', {}, 'Watch the pedal'),
+      h('button', { class: 'switch', role: 'switch', 'aria-checked': String(watching), 'aria-label': 'Watch the pedal', onClick: () => { watching ? stop() : start(); } }))),
+    h('p', { class: 'ios-footer' }, watching ? 'Watching. Change a setting on the pedal (Global / Setup / Utilities) and it appears here; then say what it is.' : 'Turn on, then change one setting at a time on the pedal.'),
+    changes.size ? h('div', { class: 'ios-group' }, listChanges().map(c => { const nm = h('input', { type: 'text', placeholder: 'What is it?', value: names[c.id] ?? '', 'aria-label': `Name of ${hex(c.id)}`, onChange: () => { names[c.id] = nm.value; save(names); } });
+      return h('div', { class: 'row' }, h('label', {}, `${hex(c.id)}: ${c.first} → ${c.now}`), nm); })) : null);
+  const tick = async () => {
+    if (!body.isConnected) return stop();
+    try {
+      const now = await api('globals'); let moved = false;
+      for (const g of now) { const was = last.get(g.id); if (was !== undefined && was !== g.value) { const c = changes.get(g.id); changes.set(g.id, { id: g.id, first: c?.first ?? was, now: g.value, at: Date.now() }); moved = true; } last.set(g.id, g.value); }
+      if (moved) paintFinder();
+    } catch {}
+  };
+  const start = () => { watching = true; timer = setInterval(tick, 700); paintFinder(); };
+  const stop = () => { watching = false; clearInterval(timer); if (body.isConnected) paintFinder(); };
   paintFinder();
   body.replaceChildren(
     h('p', { class: 'ios-footer' }, 'These settings belong to the pedal itself, not to the preset. Only the tuner reference is identified so far; help map the rest below.'),
