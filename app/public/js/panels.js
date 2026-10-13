@@ -5,7 +5,8 @@ import { pickDestination } from './picker.js';
 import { selectSlot } from './nav.js';
 import { icon } from './icons.js';
 import { tr } from './i18n.js';
-import { bindLiveInput } from './editing.js';
+import { bindLiveInput, liveEdits, optimistic } from './editing.js';
+import { Knob } from './knob.js';
 
 // ---------------------------------------------------------------------------------------- Entradas / preset
 export let tapHandler = null;
@@ -51,12 +52,14 @@ export function renderMixer(root) {
   const p = S.st.preset, m = p.mixer;
   const path = which => {
     const spec = MIX[which], [lk, pk] = spec.key;
-    const dbOut = h('output', { class: 'mx-db' }, fmtDb(m[lk])), panOut = h('output', { class: 'mx-pan' }, fmtPan(m[pk]));
+    const dbOut = h('output', { class: 'mx-db' }, fmtDb(m[lk]));
     const fader = h('input', { type: 'range', class: 'mx-fader', min: -60, max: 12, step: 0.5, value: m[lk], 'aria-label': `Path ${which} level`, orient: 'vertical' });
     const commitLevel = bindLiveInput(fader, 'setupF', () => ({ id: spec.level, value: m[lk] }), () => { m[lk] = Number(fader.value); dbOut.textContent = fmtDb(m[lk]); mute.setAttribute('aria-pressed', String(m[lk] <= -59.9)); });
-    const pan = h('input', { type: 'range', class: 'mx-panslider', min: -1, max: 1, step: 0.01, value: m[pk], 'aria-label': `Path ${which} pan` });
-    const commitPan = bindLiveInput(pan, 'setupF', () => ({ id: spec.pan, value: m[pk] }), () => { m[pk] = Number(pan.value); panOut.textContent = fmtPan(m[pk]); });
-    pan.ondblclick = () => { pan.value = which === 'A' ? -1 : 1; commitPan(); };
+    const panOp = () => ({ id: spec.pan, value: m[pk] });
+    const pan = Knob({ label: 'Pan', value: (m[pk] + 1) / 2, bipolar: true, format: v => fmtPan(v * 2 - 1), title: 'Pan (double-click: centre)',
+      onStart: () => liveEdits.begin('setupF', panOp()),
+      onInput: v => { m[pk] = Math.round((v * 2 - 1) * 100) / 100; optimistic(); liveEdits.move('setupF', panOp()); },
+      onCommit: v => { m[pk] = Math.round((v * 2 - 1) * 100) / 100; liveEdits.end('setupF', panOp()); } });
     const mute = h('button', { class: 'mx-mute', 'aria-pressed': String(m[lk] <= -59.9), title: 'Mute this path', onClick: () => {
       if (m[lk] > -59.9) { remembered[which] = m[lk]; m[lk] = -60; } else m[lk] = remembered[which] || 0;
       fader.value = m[lk]; commitLevel();
@@ -65,7 +68,7 @@ export function renderMixer(root) {
       h('header', {}, h('b', {}, `Path ${which}`), h('span', { class: 'dim' }, which === 'A' ? 'Input 1' : 'Input 2')),
       h('div', { class: 'mx-faderwrap' }, h('div', { class: 'mx-scale', 'aria-hidden': 'true' }, [[12, '+12'], [0, '0'], [-12, '−12'], [-24, '−24'], [-36, '−36'], [-48, '−48'], [-60, 'Mute']].map(([v, t]) => h('i', { style: { top: `${(12 - v) / 72 * 100}%` } }, t))), fader),
       dbOut, mute,
-      h('label', { class: 'mx-panlabel' }, h('span', {}, 'Pan'), pan, panOut));
+      h('div', { class: 'mx-pan-knob' }, pan));
   };
   const trails = h('button', { class: 'switch', role: 'switch', 'aria-checked': String(p.trails), 'aria-label': 'Trails', onClick: () => {
     p.trails = !p.trails; trails.setAttribute('aria-checked', String(p.trails)); edit('setup', { id: 0x38, value: p.trails ? 1 : 0 }).catch(fail);

@@ -2073,3 +2073,6 @@ main { gap:28px; padding:32px; }
 .tag-exp { color:#ff9f0a; background:color-mix(in srgb,#ff9f0a 18%,transparent); }
 :root[data-theme=light] .tag-exp { color:#c25e00; }
 .block.off .tag { opacity:.55; }
+
+.mx-pan-knob { display:flex; justify-content:center; margin-top:12px; }
+.knob .ctr { stroke:var(--dim); stroke-width:1.5; stroke-linecap:round; opacity:.7; }
