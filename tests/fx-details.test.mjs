@@ -37,6 +37,22 @@ test('provenance validator rejects unrelated claims and counts distinct words', 
   assert(checkFxDetails(d, [screamer]).some(e => /fewer than 3/.test(e)));
 });
 
+test('PT notes and every PT fact are required, including facts with URL sources', () => {
+  for (const missing of [undefined, null, '', '   ']) {
+    const d = fixture(); d.Screamer.notes_pt = missing; d.Screamer.facts[0].text_pt = missing;
+    const errors = checkFxDetails(d, [screamer]);
+    assert(errors.some(e => /missing notes_pt/.test(e)));
+    assert(errors.some(e => /missing text_pt/.test(e)));
+    d.Screamer.facts[0].source = 'https://example.com/official-model';
+    assert(checkFxDetails(d, [screamer]).some(e => /missing text_pt/.test(e)));
+  }
+  const d = fixture();
+  // Provenance must continue to use English, not words in the translation.
+  d.Screamer.notes_pt = 'Texto em português.';
+  d.Screamer.facts[0].text_pt = 'Texto em português.';
+  assert.deepEqual(checkFxDetails(d, [screamer]), []);
+});
+
 test('unknown fields stay null and original=true needs explicit gallery evidence', () => {
   assert.equal(details.Vocoder.maker, null);
   assert.equal(details.Vocoder.unit, null);

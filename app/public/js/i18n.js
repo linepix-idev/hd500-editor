@@ -12,8 +12,8 @@ document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
 const exact = new Map(), rules = [];
 const tokens = s => { const out = []; let last = 0; for (const m of s.matchAll(/\$\{(.*?)\}/g)) { if (m.index > last) out.push({ lit: s.slice(last, m.index) }); out.push({ expr: m[1] }); last = m.index + m[0].length; } if (last < s.length) out.push({ lit: s.slice(last) }); return out; };
 for (const [en, pt] of Object.entries(PT)) {
-  if (!en.includes('${')) { exact.set(en, pt); continue; }
-  const et = tokens(en), pt_ = tokens(pt), lit = et.filter(t => t.lit).map(t => t.lit).join('');
+  if (!en.includes('${')) { exact.set(en.trim(), pt.trim()); continue; }
+  const et = tokens(en.trim()), pt_ = tokens(pt.trim()), lit = et.filter(t => t.lit).map(t => t.lit).join('');
   if (lit.trim().length < 6) continue;
   const exprs = et.filter(t => t.expr).map(t => t.expr);
   const re = new RegExp('^' + et.map(t => (t.lit != null ? t.lit.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '(.+?)')).join('') + '$', 's');

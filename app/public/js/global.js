@@ -1,8 +1,9 @@
 // Pedal-wide settings (outside the preset). Status ids 0x00–0x25 are readable/writable; only a few are named so far,
 // so the sheet includes a guided "find a setting" tool: snapshot, change it on the pedal, compare, name it.
 import { h, api, fail, toast, modal, download } from './util.js';
+import { tr } from './i18n.js';
 const KEY = 'hd500.globalNames';
-const KNOWN = { 2: { name: 'Tuner reference', unit: 'Hz', min: 400, max: 480 } };
+const KNOWN = { 2: { name: tr('Tuner reference'), unit: 'Hz', min: 400, max: 480 } };
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY) ?? '{}'); } catch { return {}; } };
 const save = n => { try { localStorage.setItem(KEY, JSON.stringify(n)); } catch {} };
 const hex = id => '0x' + id.toString(16).padStart(2, '0');
@@ -12,7 +13,7 @@ export async function openGlobals() {
   const body = h('div', { class: 'globals' }, h('p', { class: 'ios-footer' }, 'Reading the pedal…'));
   modal('Pedal settings', body);
   try { rows = await api('globals'); } catch (e) { body.replaceChildren(h('p', { class: 'ios-footer' }, e.message)); return; }
-  const label = g => KNOWN[g.id]?.name ?? names[g.id] ?? `Setting ${hex(g.id)}`;
+  const label = g => KNOWN[g.id]?.name ?? names[g.id] ?? tr(`Setting ${hex(g.id)}`);
   const inputs = new Map();
   const field = g => {
     const k = KNOWN[g.id], inp = h('input', { type: 'number', value: g.value, min: k?.min, max: k?.max, 'aria-label': label(g),

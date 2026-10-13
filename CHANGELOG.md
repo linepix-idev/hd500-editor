@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.2.9
+- Effect info sheets: maker/unit and sourced facts with Portuguese translations, friendly source labels; i18n coverage check.
+- Save now reloads the slot afterwards so the pedal's "edited" asterisk clears.
 - Cleaner UI: the Advanced tab (raw bytes, MIDI bytes, setting learner) moved to File ▸ Developer tools; footers removed; side-panel tab bar has four items.
 - Motion pass: one easing and three durations, springy hover/press, sheets and tabs slide in, wires fade in; reduced-motion respected; cheaper scrolling for the preset list.
 - Mixer: Pan is now a bipolar knob (arc grows to the side the sound moves to; double-click centres it).

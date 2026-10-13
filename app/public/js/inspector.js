@@ -6,6 +6,7 @@ import { S, notify } from './store.js';
 import { ParamControl, edit, fmt } from './params.js';
 import { pickModel } from './picker.js';
 import { icon, categoryIcon } from './icons.js';
+import { tr } from './i18n.js';
 
 let inspectedKey = null;
 export function renderInspector(root) {
@@ -52,7 +53,7 @@ function DtRow(it) {
 function RangeRow(it, p) {
   const out = h('span', { class: 'dim', style: { minWidth: '120px' } });
   const mk = which => {
-    const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${which === 'lo' ? 'heel' : 'toe'}` });
+    const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${tr(which === 'lo' ? 'heel' : 'toe')}` });
     bindLiveInput(i, 'range', () => ({ item: it.id, index: p.index, lo: p.lo, hi: p.hi }), () => { p[which] = Number(i.value); paint(); });
     return i;
   };

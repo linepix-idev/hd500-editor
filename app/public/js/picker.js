@@ -40,7 +40,7 @@ export function pickModel(item, state = {}) {
     if(!matches.size)grid.append(h('p',{class:'placeholder'},'No models found.'));
   };
   q.addEventListener('input', draw); draw();
-  close = modal(`Model — ${item.kind === 'amp' ? 'Amp' : item.kind === 'cab' ? 'Cab' : 'Effect'}`, [q, micToggle, chips, grid]);
+  close = modal(tr(`Model — ${tr(item.kind === 'amp' ? 'Amp' : item.kind === 'cab' ? 'Cab' : 'Effect')}`), [q, micToggle, chips, grid]);
   q.focus();
 }
 

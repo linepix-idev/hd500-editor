@@ -2103,7 +2103,7 @@ button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { tran
 /* cheaper scrolling for the long library list */
 .library-list > .slot { content-visibility:auto; contain-intrinsic-size:auto 40px; }
 .chain-scroll, #librarySidebar, #side, #inspector { contain:layout paint; }
-@media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:.001ms !important; animation-delay:0s !important; transition-duration:.001ms !important; } }
+@media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:0s !important; animation-delay:0s !important; transition-duration:0s !important; } }
 
 /* Info button: SF-style "info.circle" — thin ring, dot over a stem, accent tinted */
 .model-info-button, .picker .model-info-button, #modal .model-info-button { flex:none; width:44px; height:44px; min-width:44px; padding:0; background:transparent !important; border:0 !important; box-shadow:none; color:var(--accent); display:grid; place-items:center; opacity:.85; }
@@ -2118,3 +2118,8 @@ button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { tran
 .model-info-button span::before { top:3.2px; width:2px; height:2px; margin-left:-1px; }
 .model-info-button span::after { top:6.4px; width:1.6px; height:5px; margin-left:-.8px; border-radius:.8px; }
 .model-info-button { opacity:.7; }
+
+/* Keep every text node at >= 11px (the glyph's letter is hidden, the ring/dot/stem are drawn) */
+.model-info-button span { font-size:11px; color:transparent; }
+#tabs.tabs button { font-size:11px; }
+@media (max-width:420px) { #tabs.tabs button { font-size:11px; } }

@@ -3,6 +3,7 @@ import { h, api, fail, menu } from './util.js';
 import { Knob } from './knob.js';
 import { S } from './store.js';
 import { liveEdits, optimistic } from './editing.js';
+import { tr } from './i18n.js';
 
 export const NOTES = ['Whole', '1/2 (dot)', '1/2', '1/2 (3)', '1/4 (dot)', '1/4', '1/4 (3)', '8th (dot)', '8th', '8th (3)', '16 (dot)', '16', '16 (3)', '32 (dot)', '32', '32 (3)', '64 (dot)', '64', '64 (3)'];
 
@@ -54,7 +55,7 @@ export function ParamControl(item, p, color) {
   const range = p.ctl ? [p.lo, p.hi] : null;
   const knob = Knob({
     label: p.name, value: Math.min(1, p.value), format: v => fmt(p, v), color, badge, range,
-    title: `${p.name}${p.setup != null ? '' : p.ctl ? ` — controlled by ${S.cat.ctl[p.ctl]} (right-click to change)` : ' — right-click: assign to an expression pedal'}`,
+    title: p.name + (p.setup != null ? '' : p.ctl ? tr(` — controlled by ${S.cat.ctl[p.ctl]} (right-click to change)`) : tr(' — right-click: assign to an expression pedal')),
     onStart: () => liveEdits.begin(...operation(item, p, p.value)),
     onInput: v => send(item, p, v, 'move'), onCommit: v => send(item, p, v, 'end'), onContext: p.setup != null ? null : ctlMenu(item, p),
   });

@@ -5,11 +5,12 @@ export async function launchUI(viewport = { width: 1440, height: 900 }) {
   return puppeteer.launch({ executablePath: process.env.CHROME ?? '/usr/bin/google-chrome', headless: true, pipe: true,
     args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'], defaultViewport: viewport });
 }
-export async function openUI(browser, errors = []) {
+export async function openUI(browser, errors = [], { lang = 'en' } = {}) {
   const page = await browser.newPage();
   page.on('pageerror', e => errors.push(e.message));
-  await page.evaluateOnNewDocument(() => { localStorage.setItem('hd500.lang', 'en'); localStorage.setItem('hd500.theme', 'dark'); });
+  const { identifier } = await page.evaluateOnNewDocument(language => { localStorage.setItem('hd500.lang', language); localStorage.setItem('hd500.theme', 'dark'); }, lang);
   await page.goto(UI_URL, { waitUntil: 'networkidle2' }); await page.waitForSelector('.block[data-item="4"]');
+  await page.removeScriptToEvaluateOnNewDocument(identifier);
   return page;
 }
 export async function api(path, body) {

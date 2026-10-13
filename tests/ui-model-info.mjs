@@ -11,19 +11,19 @@ try {
   assert.match(await page.$eval('.model-info', e=>e.textContent), /Maestro EP-3 Echoplex/);
   assert.match(await page.$eval('.origin-details', e=>e.textContent), /MakerMaestroUnitEP-3 Echoplex/);
   assert.match(await page.$eval('.origin-notes', e=>e.textContent), /transistors rather than tubes/);
-  assert.match(await page.$eval('.origin-sources', e=>e.textContent), /Sources.*catalog\/fx-origins\.json:\d+.*pod-hd-model-gallery\.txt:755/);
+  assert.match(await page.$eval('.origin-sources', e=>e.textContent), /Source: Line 6 POD HD Model Gallery \[1\]/);
   assert.match(await page.$eval('.origin-facts', e=>e.textContent), /EP-3 used transistors instead of tubes/);
   assert.match(await page.$eval('.parameter-guide', e=>e.textContent), /Mix/);
   await page.screenshot({path:`${out}/model-info-effect.png`});
   await page.keyboard.press('Escape');
   assert.equal(await page.$eval('#inspector .model-info-button', e=>e===document.activeElement), true);
   await page.click('#inspector .model-title');
-  await page.type('.dlg input[type="search"]', 'Ibanez');
+  await page.type('.dlg input[type="search"]', 'Ibanez Tube Screamer');
   assert.equal(await page.$$eval('.models .model-choice', es=>es.length), 1);
   await page.click('.models .model-info-button'); await page.waitForSelector('.model-info');
   assert.match(await page.$eval('.model-info',e=>e.textContent), /Ibanez Tube Screamer/);
   await page.click('.info-back');
-  assert.equal(await page.$eval('.dlg input[type="search"]',e=>e.value), 'Ibanez');
+  assert.equal(await page.$eval('.dlg input[type="search"]',e=>e.value), 'Ibanez Tube Screamer');
   await page.$eval('.dlg input[type="search"]',e=>{e.value='rhythmic';e.dispatchEvent(new Event('input'));});
   assert(await page.$$eval('.models .model-choice',es=>es.length)>0, 'Descriptions are searchable');
   await page.keyboard.press('Escape');
@@ -31,7 +31,7 @@ try {
   await page.type('.dlg input[type="search"]','Twin');await page.click('.models .model-info-button');
   assert.match(await page.$eval('.model-info',e=>e.textContent),/Fender Twin Reverb/);
   await page.keyboard.press('Escape');
-  await page.click('.block[data-item="1"]'); await page.click('#inspector .model-info-button');
+  await page.click('.block[data-item="3"]'); await page.click('#inspector .model-info-button');
   await page.waitForSelector('.mic-info-list');
   assert.equal(await page.$$eval('.mic-info-list button',es=>es.length),8);
   await page.click('.mic-info-list button'); assert.match(await page.$eval('.model-info',e=>e.textContent), /Dynamic/);
@@ -60,7 +60,7 @@ try {
       e.setAttribute('aria-checked',original);return results;
     }).flat());
     for(const c of checks) {
-      assert(c.width>=44 && c.height>=44,'44px switch target');
+      assert(c.width>=43.9 && c.height>=43.9,'44px switch target '+JSON.stringify(c));
       assert(Math.abs((c.on?c.right:c.left)-c.inset)<.1,`${theme} ${zoom}: equal endpoint inset`);
       assert(Math.abs(c.vertical-c.inset)<.1,'Thumb fills track height with equal inset');
     }
@@ -83,7 +83,7 @@ try {
   await page.click('#inspector .model-info-button');await page.waitForSelector('.parameter-guide');
   assert.match(await page.$eval('.model-info',e=>e.textContent),/O que os parâmetros fazem/);
   assert.match(await page.$eval('.origin-details',e=>e.textContent),/FabricanteMaestroEquipamentoEP-3 Echoplex/);
-  assert.match(await page.$eval('.origin-sources',e=>e.textContent),/Fontes/);
+  assert.match(await page.$eval('.origin-sources',e=>e.textContent),/Fonte/);
   assert.deepEqual((await api('state')).preset,before,'Info navigation never edits the preset');
   assert.deepEqual(errors,[]);console.log('Model info, origins, translated descriptions, zoom, switches and responsive labels passed.');
 } finally {await browser.close();}

@@ -25,12 +25,14 @@ export function checkFxDetails(details, pedals = readJSON('catalog/catalog.json'
     }
     if (d.kind !== (pedal.group?.toLowerCase() ?? null)) errors.push(`${name}: kind must come from the catalog group`);
     if (typeof d.notes === 'string' && [...d.notes].length > 160) errors.push(`${name}: notes exceed 160 characters`);
+    if (d.notes !== null && (typeof d.notes_pt !== 'string' || !d.notes_pt.trim())) errors.push(`${name}: missing notes_pt`);
     if (![true, false, null].includes(d.original)) errors.push(`${name}: original must be true, false or null`);
     if (!Array.isArray(d.facts)) { errors.push(`${name}: facts must be an array`); continue; }
     let explicitOriginal = false;
     for (const [index, fact] of d.facts.entries()) {
       const label = `${name} fact ${index + 1}`;
       if (!fact || typeof fact.text !== 'string' || !fact.text.trim()) { errors.push(`${label}: missing text`); continue; }
+      if (typeof fact.text_pt !== 'string' || !fact.text_pt.trim()) errors.push(`${label}: missing text_pt`);
       if (typeof fact.source !== 'string' || !fact.source.trim()) { errors.push(`${label}: missing source`); continue; }
       if (/^https?:\/\//.test(fact.source)) {
         try { const url = new URL(fact.source); if (!url.hostname || url.username || url.password) throw new Error(); }

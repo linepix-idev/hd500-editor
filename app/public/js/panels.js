@@ -88,7 +88,7 @@ export function renderControllers(root) {
   const ctlSel = (cur, onPick) => { const sel = h('select', { 'aria-label': 'Controller' }, S.cat.ctl.map((n, i) => h('option', { value: i }, i === 0 ? 'Off' : n))); sel.value = cur; sel.onchange = () => onPick(Number(sel.value)); return sel; };
   const range = (it, p) => {
     const out = h('span', { class: 'dim' }, `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`);
-    const mk = which => { const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${which === 'lo' ? 'heel' : 'toe'}` });
+    const mk = which => { const i = h('input', { type: 'range', min: 0, max: 1, step: 0.005, value: p[which], 'aria-label': `${p.name} ${tr(which === 'lo' ? 'heel' : 'toe')}` });
       bindLiveInput(i, 'range', () => ({ item: it.id, index: p.index, lo: p.lo, hi: p.hi }), () => { p[which] = Number(i.value); out.textContent = `${fmt(p, p.lo)} → ${fmt(p, p.hi)}`; }); return i; };
     return h('div', { class: 'ctl-range' }, h('small', {}, 'heel'), mk('lo'), h('small', {}, 'toe'), mk('hi'), out);
   };

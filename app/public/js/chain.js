@@ -3,6 +3,7 @@ import { h, api, fail, menu, toast } from './util.js';
 import { pickModel } from './picker.js';
 import { S, notify, GROUP_CLASS } from './store.js';
 import { icon, categoryIcon } from './icons.js';
+import { tr } from './i18n.js';
 
 const LANE = { pre: 0, aPre: 1, bPre: 2, aPost: 3, bPost: 4, post: 5 };
 const LANE_KEYS = ['pre', 'aPre', 'bPre', 'aPost', 'bPost', 'post'];
@@ -13,7 +14,7 @@ const settle = async (id, type) => { for (let i = 0; i < 25; i++) { if (S.st.pre
 
 async function pasteBlock(it) {
   const c = S.clip; if (!c) return toast('Nothing copied yet.', true);
-  if (c.kind !== it.kind) return toast(`You can only paste ${c.kind === 'fx' ? 'effects into effect slots' : c.kind === 'amp' ? 'amps into amp slots' : 'cabs into cab slots'}.`, true);
+  if (c.kind !== it.kind) return toast(tr(`You can only paste ${tr(c.kind === 'fx' ? 'effects into effect slots' : c.kind === 'amp' ? 'amps into amp slots' : 'cabs into cab slots')}.`), true);
   try {
     if (it.type !== c.type) { await edit('model', { item: it.id, type: c.type }); await settle(it.id, c.type); }
     const cur = S.st.preset.items.find(x => x.id === it.id);
@@ -47,7 +48,7 @@ function Block(it) {
   const el = h('div', {
     class: `block ${it.kind} ${GROUP_CLASS(it.group)} ${it.empty ? 'emptyslot' : ''} ${it.active ? '' : 'off'} ${S.sel === it.id ? 'sel' : ''}`,
     dataset: { item: it.id }, tabindex: 0, role: 'group', 'aria-label': it.empty ? 'Empty slot' : it.model,
-    title: it.empty ? 'Empty — click to choose' : `${it.basedOn ? `${it.model} — based on ${it.basedOn}. ` : ''}Select block. Drag to move. Alt + arrows to reorder.`,
+    title: it.empty ? tr('Empty — click to choose') : (it.basedOn ? tr(`${it.model} — based on ${it.basedOn}.`) + ' ' : '') + tr('Select block. Drag to move. Alt + arrows to reorder.'),
     onClick: () => { if (performance.now() < suppressClickUntil) return; S.sel = it.id; notify(); },
     onDblclick: () => pickModel(current()), onContextmenu: e => blockMenu(e, current()),
     onKeydown: e => {
