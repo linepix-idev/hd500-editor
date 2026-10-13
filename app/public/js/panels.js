@@ -7,9 +7,11 @@ import { icon } from './icons.js';
 import { tr } from './i18n.js';
 import { bindLiveInput, liveEdits, optimistic } from './editing.js';
 import { Knob } from './knob.js';
+import { tapTempo, setTempo } from './tempo.js';
 
 // ---------------------------------------------------------------------------------------- Entradas / preset
-export let tapHandler = null;
+let bpmInput = null;
+document.addEventListener('tempo', e => { if (bpmInput?.isConnected && document.activeElement !== bpmInput) bpmInput.value = e.detail; });
 export function renderSetup(root) {
   const p = S.st.preset, su = p.setup;
   const name = h('input', { type: 'text', maxlength: 16, value: p.name, 'aria-label': 'Preset name', style: { width: '190px', background: 'var(--panel3)', border: '1px solid var(--line)', borderRadius: '8px', padding: '6px 8px' } });
@@ -20,16 +22,7 @@ export function renderSetup(root) {
   };
   const bpm = h('input', { type: 'number', min: 30, max: 240, step: 1, value: Math.round(p.tempo), 'aria-label': 'Tempo (BPM)', style: { width: '80px' } });
   bindLiveInput(bpm, 'tempo', () => ({ bpm: Number(bpm.value) }), () => { p.tempo = Number(bpm.value); });
-  // Tap tempo: average of the last intervals; a pause longer than 2 s starts a new count.
-  let taps = [];
-  const tap = h('button', { class: 'tap-btn', type: 'button', title: 'Tap the tempo (T)', 'aria-label': 'Tap tempo', onClick: () => {
-    const now = performance.now(); if (taps.length && now - taps.at(-1) > 2000) taps = [];
-    taps.push(now); taps = taps.slice(-6); if (taps.length < 2) return;
-    const gaps = taps.slice(1).map((t, i) => t - taps[i]), bpm = Math.min(240, Math.max(30, Math.round(600000 / (gaps.reduce((a, b) => a + b, 0) / gaps.length)) / 10));
-    bpm_set(bpm);
-  } }, 'Tap');
-  const bpm_set = v => { bpm.value = v; p.tempo = v; edit('tempo', { bpm: v }).catch(fail); };
-  tapHandler = () => tap.click();
+  bpmInput = bpm;
   root.replaceChildren(
     h('div', { class: 'ios-group' }, h('div', { class: 'row' }, h('label', {}, 'Preset name'), name)),
     h('h3', { class: 'ios-header' }, 'Input routing'),
@@ -38,7 +31,7 @@ export function renderSetup(root) {
       select('Input 2 (path B)', 'input2', S.cat.input2, 0x37),
       select('Guitar input impedance', 'inZ', S.cat.inZ, 0x55)),
     h('details', { class: 'inset-details' }, h('summary', {}, 'Input routing help'), h('p', { class: 'dim' }, 'To use a mic and a guitar together: Input 1 = Guitar and Input 2 = Mic. Each input feeds its own path (A and B) in the signal chain.')),
-    h('div', { class: 'ios-group' }, h('div', { class: 'row' }, h('label', {}, 'Tempo (BPM)'), bpm, tap)));
+    h('div', { class: 'ios-group' }, h('div', { class: 'row' }, h('label', {}, 'Tempo (BPM)'), bpm, h('button', { class: 'tap-btn', type: 'button', title: 'Tap the tempo (T)', 'aria-label': 'Tap tempo', onClick: tapTempo }, 'Tap'))));
 }
 
 

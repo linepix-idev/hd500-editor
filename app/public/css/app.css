@@ -2136,3 +2136,23 @@ button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { tran
 .node-tags.dual .tag { flex:1 1 0; min-width:0; justify-content:center; padding:0 5px; }
 .tag > span, .tag { overflow:hidden; text-overflow:clip; }
 .tag-toe { color:var(--accent); }
+
+/* Tempo pill in the chain toolbar */
+.canvas-toolbar > div { display:flex; align-items:center; gap:8px; }
+.tempo-pill { display:inline-flex; align-items:center; gap:8px; height:44px; padding:0 6px 0 14px; border-radius:99px; background:var(--panel2); margin-right:8px; }
+.tempo-bpm { font:600 17px var(--font-display); font-variant-numeric:tabular-nums; min-width:2.2em; text-align:right; cursor:text; }
+.tempo-unit { font:500 11px var(--font-text); letter-spacing:.06em; color:var(--dim); }
+.tempo-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); animation:beat var(--beat,.5s) ease-in-out infinite; }
+@keyframes beat { 0%,100% { opacity:.25; transform:scale(.8); } 8% { opacity:1; transform:scale(1.15); } 40% { opacity:.25; transform:scale(.8); } }
+.tempo-pill.tapped .tap-btn { background:color-mix(in srgb,var(--accent) 34%,transparent); }
+
+/* Fit-to-width steps for the signal chain */
+#chain.compact { gap:14px; grid-template-columns:60px auto minmax(300px,1fr) 52px auto 60px; }
+#chain.compact .block { width:112px; padding:10px; }
+#chain.compact .path-row { gap:12px; padding:16px 6px 8px; }
+#chain.compact .node-tags { left:8px; right:6px; }
+#chain.compact .tag { padding:0 5px 0 4px; font-size:11px; }
+#chain.tight { gap:8px; }
+#chain.tight .block { width:98px; padding:8px; }
+#chain.tight .path-row { gap:8px; }
+#chain.tight .block > .gear { width:34px; height:34px; }

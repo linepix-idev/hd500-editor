@@ -1,11 +1,12 @@
 import { openGlobals } from './global.js';
+import { tapTempo, initTempoPill } from './tempo.js';
 import { liveEdits } from './editing.js';
 import { lang, langs, setLang, tr } from './i18n.js';
 import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, bytesToB64, b64ToBytes } from './util.js';
 import { S, onChange, notify, presetLabel } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
-import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, tapHandler, openDevTools } from './panels.js';
+import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, openDevTools } from './panels.js';
 import { selectSlot } from './nav.js';
 import { icon, buttonIcon } from './icons.js';
 
@@ -196,7 +197,7 @@ $('#librarySidebar').addEventListener('keydown',e=>{
 const openMixer = () => { S.tab = 'mixer'; renderSide(); document.querySelector('#side')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); };
 { const b = $('#openMixer'); b.append(icon('mixer'), document.createTextNode('Mixer')); b.onclick = openMixer; }
 document.addEventListener('open-mixer', openMixer);
-addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && e.key.toLowerCase() === 't' && !e.target.matches('input, textarea, select, [contenteditable]')) { if (S.tab !== 'setup') { S.tab = 'setup'; renderSide(); } tapHandler?.(); } });
+addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && e.key.toLowerCase() === 't' && !e.target.matches('input, textarea, select, [contenteditable]')) tapTempo(); });
 addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === 'm' && !e.target.matches('input, textarea, select, [contenteditable]')) openMixer(); });
 
 // lápis visíveis: renomear o preset atual e o set atual
@@ -208,9 +209,15 @@ addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && 
 {
   const sc = document.querySelector('.chain-scroll');
   if (sc) {
+    const chain = sc.querySelector('#chain');
+    // Fit: tighten the layout in two steps before falling back to scrolling.
+    const fit = () => { if (!chain) return; chain.classList.remove('compact', 'tight'); if (sc.scrollWidth > sc.clientWidth + 2) { chain.classList.add('compact'); if (sc.scrollWidth > sc.clientWidth + 2) chain.classList.add('tight'); } };
     const paint = () => { sc.dataset.fadeL = String(sc.scrollLeft > 4); sc.dataset.fadeR = String(sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 4); };
     sc.addEventListener('scroll', paint, { passive: true });
-    new ResizeObserver(paint).observe(sc); new MutationObserver(paint).observe(sc, { childList: true, subtree: true });
-    paint();
+    let raf = 0; const refit = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { fit(); paint(); }); };
+    new ResizeObserver(refit).observe(sc); new MutationObserver(refit).observe(sc, { childList: true, subtree: true });
+    refit();
   }
 }
+
+initTempoPill(document.querySelector('.canvas-toolbar > div'));
