@@ -448,5 +448,12 @@ export const PT = {
  "Voltage Controlled Sample and Hold filter": "filtro de amostragem e retenção controlado por tensão",
  "ten-band graphic equalizer": "equalizador gráfico de dez bandas",
  "Y7 vintage tube mic preamp": "pré-amplificador de microfone valvulado vintage Y7",
- "Expression pedal toe switch": "Chave toe do pedal de expressão"
+ "Expression pedal toe switch": "Chave toe do pedal de expressão",
+ "Compare: hear the saved version, press again to return to your edits": "Comparar: ouça a versão salva, pressione de novo para voltar às suas edições",
+ "Compare with saved": "Comparar com o salvo",
+ "Hearing the saved version. Press Compare again to return to your edits.": "Ouvindo a versão salva. Pressione Comparar de novo para voltar às suas edições.",
+ "Back to your edits.": "De volta às suas edições.",
+ "Tempo": "Tempo",
+ "Double-click to type a tempo": "Clique duas vezes para digitar um tempo",
+ "Tempo (BPM, 30–240)": "Tempo (BPM, 30–240)"
 };

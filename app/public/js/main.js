@@ -47,15 +47,17 @@ function renderSide() {
 onChange(render);
 function paintStatus(status = S.st) {
   if (!status || !S.st?.preset) return;
-  Object.assign(S.st, { dirty: status.dirty, canUndo: status.canUndo, canRedo: status.canRedo });
-  $('#dirty').hidden = !status.dirty; $('#revert').hidden = !status.dirty;
+  Object.assign(S.st, { dirty: status.dirty, canUndo: status.canUndo, canRedo: status.canRedo, comparing: !!status.comparing });
+  $('#dirty').hidden = !status.dirty; $('#revert').hidden = !status.dirty || !!status.comparing;
+  $('#compare').hidden = !status.dirty; $('#compare').setAttribute('aria-pressed', String(!!status.comparing)); document.body.classList.toggle('comparing', !!status.comparing);
   $('#undo').disabled = !status.canUndo; $('#redo').disabled = !status.canRedo;
   $('#save').setAttribute('aria-label', status.dirty ? 'Save unsaved changes' : 'Save to pedal');
   document.title = `${status.dirty ? '● ' : ''}${S.st.preset.name} — HD500 Editor`;
 }
-document.addEventListener('local-edit', () => paintStatus());
+document.addEventListener('local-edit', () => { if (S.st?.comparing) { S.st.comparing = false; } paintStatus({ ...S.st, dirty: true, comparing: false }); });
+$('#compare').onclick = async () => { try { await liveEdits.flush(); const v = await api('compare', { on: !S.st?.comparing }); load(v); toast(v.comparing ? 'Hearing the saved version. Press Compare again to return to your edits.' : 'Back to your edits.'); } catch (e) { fail(e); } };
 
-async function load(st) { if(!S.cat) S.cat=await api('catalog'); S.st = st; notify(); }
+async function load(st) { if(!S.cat) S.cat=await api('catalog'); S.st = st; notify(); if (st?.preset) paintStatus(st); }
 async function init() {
   try { S.cat = await api('catalog'); await load(await api('state')); } catch (e) {
     for(const id of ['save','undo','redo','prev','next','fileMenu','chainTrash']) $('#'+id).disabled=true;
@@ -165,7 +167,7 @@ addEventListener('drop', async e => {
 });
 
 // Local symbols and responsive library controls.
-for(const [id,name] of Object.entries({sidebarToggle:'sidebar',prev:'left',next:'right',undo:'undo',redo:'redo',revert:'reread',fileMenu:'library',pedalSettings:'settings',language:'globe',help:'help',libraryMore:'more',libraryClose:'close',colorLegend:'colors',chainTrash:'trash'})) buttonIcon($('#'+id),name);
+for(const [id,name] of Object.entries({sidebarToggle:'sidebar',prev:'left',next:'right',undo:'undo',redo:'redo',revert:'reread',fileMenu:'library',pedalSettings:'settings',compare:'swap',language:'globe',help:'help',libraryMore:'more',libraryClose:'close',colorLegend:'colors',chainTrash:'trash'})) buttonIcon($('#'+id),name);
 buttonIcon($('#save'),'save','Save to pedal');$('#searchIcon').append(icon('search'));
 for(const [tab,name] of Object.entries({setup:'input',mixer:'mixer',controllers:'expression',fs:'footswitch'})) $('#tabs [data-tab="'+tab+'"]').prepend(icon(name));
 $('#conn').setAttribute('aria-live','polite');

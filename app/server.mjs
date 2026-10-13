@@ -21,20 +21,20 @@ const BACKUPS = new Lib.Backups(BACKUP_DIR);
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 let pod = null, preset = null, selection = { set: 0, preset: 0 }, setNames = [], slotNames = new Map(), lastError = null;
-let loadedBody = null;
+let loadedBody = null, compareStash = null;
 const same = (a, b) => a && b && Buffer.compare(a, b) === 0;
 const queue = new EditQueue();
 const hist = new GestureHistory(() => preset?.body, () => emit('history', status()));
-const status = () => ({ dirty: !!preset && !same(preset.body, loadedBody), canUndo: hist.canUndo, canRedo: hist.canRedo });
+const status = () => ({ comparing: !!compareStash, dirty: !!compareStash || (!!preset && !same(preset.body, loadedBody)), canUndo: hist.canUndo, canRedo: hist.canRedo });
 const snapshot = () => { hist.push(); emit('history', status()); };
-function resetHistory() { hist.reset(); loadedBody = Buffer.from(preset.body); }
+function resetHistory() { compareStash = null; hist.reset(); loadedBody = Buffer.from(preset.body); }
 const sent = new Map();
 const isEcho = key => (sent.get(key) ?? 0) > Date.now();
 const remember = b => sent.set(editKey(b), Date.now() + 600);
 
 const clients = new Set();
 const emit = (ev, data) => clients.forEach(r => r.write(`event: ${ev}\ndata: ${JSON.stringify(data)}\n\n`));
-const view = () => ({ connected: !!pod, dirty: !!preset && !same(preset.body, loadedBody), canUndo: hist.idx > 0, canRedo: hist.idx < hist.list.length - 1, selection, setNames, preset: preset?.toJSON(), chain: preset ? Object.fromEntries(Object.entries(chainOf(preset)).map(([k, v]) => [k, v.map(i => i.id)])) : null });
+const view = () => ({ connected: !!pod, comparing: !!compareStash, dirty: !!compareStash || (!!preset && !same(preset.body, loadedBody)), canUndo: hist.idx > 0, canRedo: hist.idx < hist.list.length - 1, selection, setNames, preset: preset?.toJSON(), chain: preset ? Object.fromEntries(Object.entries(chainOf(preset)).map(([k, v]) => [k, v.map(i => i.id)])) : null });
 
 async function connect() {
   if (pod) return;
@@ -112,7 +112,14 @@ const routes = {
   'GET /api/state': async () => { await connect(); return view(); },
   'POST /api/reconnect': async () => { await drop(); await wait(1500); await connect(); return view(); },
   'POST /api/disconnect': async () => { await drop(); emit('state', view()); return { ok: true }; },
+  // Compare: audition the version stored in the pedal against the edited one (A/B). Any edit or save exits the comparison first.
+  'POST /api/compare': async ({ on }) => {
+    if (on && !compareStash) { if (same(preset.body, loadedBody)) return view(); compareStash = Buffer.from(preset.body); preset = new Preset(Buffer.from(loadedBody)); await pod.apply(preset); }
+    else if (!on && compareStash) { preset = new Preset(compareStash); compareStash = null; await pod.apply(preset); }
+    emit('state', view()); emit('history', status()); return view();
+  },
   'POST /api/edit': async b => {
+    if (compareStash) { preset = new Preset(compareStash); compareStash = null; await pod.apply(preset); emit('history', status()); }
     hist.before(b);
     if (FAST_EDITS.has(b.op)) remember(b);
     await edits[b.op](b);
@@ -122,6 +129,7 @@ const routes = {
   },
   'POST /api/select': async ({ set, preset: p }) => { await pod.select(set, p); await refresh(); return view(); },
   'POST /api/save': async () => {
+    if (compareStash) { preset = new Preset(compareStash); compareStash = null; await pod.apply(preset); }
     const live = await pod.readCurrent();
     BACKUPS.save(selection.set, selection.preset, await pod.readSlot(selection.set, selection.preset));
     await pod.writeSlot(selection.set, selection.preset, live);

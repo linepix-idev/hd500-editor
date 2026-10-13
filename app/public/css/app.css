@@ -2177,3 +2177,6 @@ button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { tran
 .fsbtn:active { transform:translateY(1px) scale(.98); box-shadow:inset 0 -1px 0 color-mix(in srgb,var(--text) 8%,transparent); }
 .fsbtn.exp { flex-direction:row; justify-content:center; min-height:56px; padding:10px; gap:8px; }
 .fsbtn.exp > .symbol { display:block; }
+
+#compare[aria-pressed=true] { background:color-mix(in srgb,#ff9f0a 22%,transparent); color:#ff9f0a; }
+body.comparing #presetName b::after { content:" · saved"; font-weight:500; color:#ff9f0a; }
