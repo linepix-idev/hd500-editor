@@ -455,5 +455,11 @@ export const PT = {
  "Back to your edits.": "De volta às suas edições.",
  "Tempo": "Tempo",
  "Double-click to type a tempo": "Clique duas vezes para digitar um tempo",
- "Tempo (BPM, 30–240)": "Tempo (BPM, 30–240)"
+ "Tempo (BPM, 30–240)": "Tempo (BPM, 30–240)",
+ "Backups…": "Backups…",
+ "Backups": "Backups",
+ "Before the editor overwrites a preset in the pedal, it keeps a copy here. Restoring puts the copy back in its original slot (the current content of that slot is backed up first).": "Antes de o editor sobrescrever um preset no pedal, ele guarda uma cópia aqui. Restaurar coloca a cópia de volta no slot original (o conteúdo atual do slot recebe um backup antes).",
+ "No backups yet.": "Nenhum backup ainda.",
+ "Restore": "Restaurar",
+ "Restored": "Restaurado"
 };

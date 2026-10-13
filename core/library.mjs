@@ -15,6 +15,21 @@ export class Backups {
     writeFileSync(f, p.body); return f;
   }
   list() { try { return readdirSync(this.dir).filter(f => f.endsWith('.bin')).sort().reverse(); } catch { return []; } }
+  /** Backups with the slot, tag, time and preset name parsed from the file. Newest first. */
+  detailed() {
+    const re = /^set(\d+)-preset(\d+)-(.+?)-(\d{4}-\d\d-\d\dT[\d-]+Z)\.bin$/;
+    return this.list().flatMap(file => {
+      const m = re.exec(file); if (!m) return [];
+      let name = ''; try { name = new Preset(readFileSync(`${this.dir}/${file}`)).name; } catch {}
+      const at = m[4].replace(/T(\d\d)-(\d\d)-(\d\d)-\d+Z$/, 'T$1:$2:$3Z');
+      return [{ file, set: Number(m[1]) - 1, preset: Number(m[2]) - 1, tag: m[3], at, name }];
+    });
+  }
+  /** Read one backup by file name (no paths allowed). */
+  read(file) {
+    if (!/^set\d+-preset\d+-[\w-]+-[\w.-]+\.bin$/.test(file)) throw new Error('invalid backup name');
+    return new Preset(readFileSync(`${this.dir}/${file}`));
+  }
 }
 
 // --- pacote da biblioteca (JSON legível por qualquer ferramenta) ---------------------------

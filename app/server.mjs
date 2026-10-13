@@ -178,6 +178,15 @@ const routes = {
     await pod.writeSlot(to.set, to.preset, p); await reloadIfCurrent(to); return { ok: true };
   },
   'GET /api/backups': async () => BACKUPS.list(),
+  'GET /api/backups/detailed': async () => BACKUPS.detailed(),
+  // restore = write the backup into its original slot (the slot's current content is backed up first)
+  'POST /api/backups/restore': async ({ file }) => {
+    const info = BACKUPS.detailed().find(b => b.file === file); if (!info) throw new Error('backup not found');
+    const p = BACKUPS.read(file);
+    BACKUPS.save(info.set, info.preset, await pod.readSlot(info.set, info.preset), 'antes-restaurar');
+    await pod.writeSlot(info.set, info.preset, p); await reloadIfCurrent({ set: info.set, preset: info.preset });
+    return { ok: true, set: info.set, preset: info.preset, name: p.name };
+  },
   'GET /api/globals': async () => pod.globals(),
   // read-only probe of a wider id range (finding where the pedal keeps settings we have not located yet)
   'POST /api/globals/probe': async ({ from = 0, to = 0x3f }) => pod.globals(Array.from({ length: Math.max(0, Math.min(to, 0xff) - from + 1) }, (_, i) => from + i)),
@@ -196,7 +205,7 @@ export async function handleRequest(req, res) {
       if (editing && !edits[body.op]) throw new Error(`unknown operation: ${body.op}`);
       if (editing && body.gesture != null && !['start', 'move', 'end'].includes(body.gesture)) throw new Error('invalid gesture');
       const run = async () => {
-        const needsPod = !/catalog|reconnect|disconnect|backups|state$/.test(key);
+        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|state$/.test(key);
         if (needsPod) await connect();
         return routes[key](body);
       };

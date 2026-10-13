@@ -1838,5 +1838,29 @@
 [
 "Tempo (BPM, 30–240)",
 "Tempo (BPM, 30–240)"
+],
+[
+"Backups…",
+"Backups…"
+],
+[
+"Backups",
+"Backups"
+],
+[
+"Antes de o editor sobrescrever um preset no pedal, ele guarda uma cópia aqui. Restaurar coloca a cópia de volta no slot original (o conteúdo atual do slot recebe um backup antes).",
+"Before the editor overwrites a preset in the pedal, it keeps a copy here. Restoring puts the copy back in its original slot (the current content of that slot is backed up first)."
+],
+[
+"Nenhum backup ainda.",
+"No backups yet."
+],
+[
+"Restaurar",
+"Restore"
+],
+[
+"Restaurado",
+"Restored"
 ]
 ]

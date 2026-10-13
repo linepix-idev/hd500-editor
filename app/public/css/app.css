@@ -2180,3 +2180,8 @@ button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { tran
 
 #compare[aria-pressed=true] { background:color-mix(in srgb,#ff9f0a 22%,transparent); color:#ff9f0a; }
 body.comparing #presetName b::after { content:" · saved"; font-weight:500; color:#ff9f0a; }
+
+.backup-row { min-height:56px !important; }
+.backup-row > label { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 6px; }
+.backup-when { flex-basis:100%; font-size:12px; }
+.backups { max-height:min(70vh,640px); overflow:auto; }
