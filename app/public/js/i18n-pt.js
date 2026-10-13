@@ -447,5 +447,6 @@ export const PT = {
  "Vetta II amp wah": "wah do amplificador Vetta II",
  "Voltage Controlled Sample and Hold filter": "filtro de amostragem e retenção controlado por tensão",
  "ten-band graphic equalizer": "equalizador gráfico de dez bandas",
- "Y7 vintage tube mic preamp": "pré-amplificador de microfone valvulado vintage Y7"
+ "Y7 vintage tube mic preamp": "pré-amplificador de microfone valvulado vintage Y7",
+ "Expression pedal toe switch": "Chave toe do pedal de expressão"
 };
