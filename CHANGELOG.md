@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.2.9
+- Chain blocks show clear footswitch (FS) and expression-pedal (EXP) tags; the footswitch panel is ordered FS1–FS4 over FS5–FS8 like the official editor.
 - Tap tempo: a Tap button (or the T key) in the Inputs tab sets the preset tempo from your taps (average of the last intervals) and sends it to the pedal live; tempo changed on the pedal updates the editor.
 - Cleaner gear icon for the Advanced tab.
 - Fix: importing (.h5e), copying, moving, swapping or clearing onto the preset currently open now reloads the editor; before, the screen kept showing the old preset.

@@ -61,7 +61,9 @@ function Block(it) {
     h('div', { class: 'grp' }, it.kind === 'fx' ? it.empty ? '' : it.group ?? 'Effect' : it.kind === 'amp' ? 'Amp' : 'Cab'),
     it.empty ? null : h('div', { class: 'nm' }, it.model),
     !it.empty ? h('button', { class: `led ${it.active ? 'on' : ''}`, role:'switch', 'aria-checked':String(it.active), 'aria-label':`${it.model}: bypass`, title:'Toggle (bypass)',onDblclick:e=>e.stopPropagation(),onClick:e=>{ e.stopPropagation(); toggle(current()); } }) : null,
-    it.fs && !it.empty ? h('span', {class:'fsb',dataset:{fs:it.fs}},S.cat.fs[it.fs]) : null);
+    it.empty ? null : h('div', { class: 'node-tags' },
+      it.fs ? h('span', { class: 'tag tag-fs', dataset: { fs: it.fs }, title: 'Footswitch' }, icon('footswitch'), S.cat.fs[it.fs]) : null,
+      ...[...new Set(it.params.filter(q => q.ctl).map(q => q.ctl))].map(c => h('span', { class: 'tag tag-exp', title: 'Expression pedal controller' }, icon('expression'), S.cat.ctl[c] ?? `EXP ${c}`))));
   return el;
 }
 function Lane(key, label, ids) {

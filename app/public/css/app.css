@@ -2062,3 +2062,14 @@ main { gap:28px; padding:32px; }
 .tap-btn { min-height:34px; min-width:56px; padding:0 16px; border:0; border-radius:99px; background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--accent); font:600 15px var(--font-text); cursor:pointer; transition:transform 90ms, background 90ms; }
 .tap-btn:active { transform:scale(.94); background:color-mix(in srgb,var(--accent) 30%,transparent); }
 .ios-group > .row input[type=number] { max-width:70px; font-variant-numeric:tabular-nums; }
+
+/* Footswitch / expression tags on chain blocks */
+.block .fsb { display:none; }
+.block .nm { padding-bottom:30px; }
+.node-tags { position:absolute; left:10px; right:8px; bottom:8px; display:flex; flex-wrap:wrap; gap:4px; }
+.tag { display:inline-flex; align-items:center; gap:3px; height:20px; padding:0 7px 0 5px; border-radius:99px; font:600 11px var(--font-text); letter-spacing:0; white-space:nowrap; }
+.tag .symbol { width:12px; height:12px; stroke-width:1.8; }
+.tag-fs { color:var(--accent); background:color-mix(in srgb,var(--accent) 16%,transparent); }
+.tag-exp { color:#ff9f0a; background:color-mix(in srgb,#ff9f0a 18%,transparent); }
+:root[data-theme=light] .tag-exp { color:#c25e00; }
+.block.off .tag { opacity:.55; }

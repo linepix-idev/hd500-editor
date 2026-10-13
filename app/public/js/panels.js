@@ -121,7 +121,7 @@ export function renderFootswitches(root) {
   };
   root.replaceChildren(
     h('p', { class: 'dim', style: { fontSize: '12px', margin: '0 0 10px' } }, 'Each footswitch toggles its assigned blocks. Step on the pedal and the block lights up here.'),
-    h('div', { class: 'fsgrid' }, [5, 6, 7, 8, 1, 2, 3, 4].map(tile), tile(9)),
+    h('div', { class: 'fsgrid' }, [1, 2, 3, 4, 5, 6, 7, 8].map(tile), tile(9)),
     its.some(i => !i.fs) ? h('p', { class: 'dim', style: { fontSize: '12px' } }, 'No footswitch: ' + its.filter(i => !i.fs).map(i => i.model).join(', ')) : null);
 }
 export function flashFs(fs) {
