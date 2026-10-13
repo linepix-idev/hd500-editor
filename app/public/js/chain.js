@@ -141,6 +141,22 @@ function prepareDrag(e,it,el) {
   const up=e=>{if(e.pointerId===g.pointer) finish();}, cancelEvent=()=>finish(true), esc=e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();finish(true);}};
   addEventListener('pointermove',move,{passive:false}); addEventListener('pointerup',up); addEventListener('pointercancel',cancelEvent); addEventListener('keydown',esc,true);
 }
+const NS='http://www.w3.org/2000/svg';
+const GLYPH={
+  guitar:{fill:'M10 9.6c1.4 0 2.3.8 2.3 1.9 0 .5-.2.9-.5 1.2.9.4 1.5 1.3 1.5 2.4 0 1.7-1.5 2.9-3.3 2.9s-3.3-1.2-3.3-2.9c0-1.1.6-2 1.5-2.4-.3-.3-.5-.7-.5-1.2 0-1.1.9-1.9 2.3-1.9z M9.2 1.6h1.6v2.6H9.2z',stroke:'M10 4.2v6',rot:35},
+  mic:{fill:'M10 2.5a2.8 2.8 0 0 1 2.8 2.8v4.4a2.8 2.8 0 0 1-5.6 0V5.3A2.8 2.8 0 0 1 10 2.5z',stroke:'M4.6 9.2a5.4 5.4 0 0 0 10.8 0 M10 14.6v3 M7.2 17.6h5.6'},
+  input:{fill:'M5 3h10v6.5a5 5 0 0 1-10 0z',stroke:'M7.6 3V1.5 M12.4 3V1.5 M10 14.5v3.5'},
+  output:{fill:'M3 7.6h3.2L10.4 4v12l-4.2-3.6H3z',stroke:'M13.2 7.2a4 4 0 0 1 0 5.6 M15.6 5a7.2 7.2 0 0 1 0 10'},
+};
+function ioTile(kind){
+  const g=GLYPH[kind]??GLYPH.input, svg=document.createElementNS(NS,'svg');
+  for(const [k,v] of Object.entries({viewBox:'0 0 20 20',width:22,height:22,fill:'none','aria-hidden':'true',focusable:'false'})) svg.setAttribute(k,v);
+  const f=document.createElementNS(NS,'path'); f.setAttribute('d',g.fill); f.setAttribute('fill','currentColor'); f.setAttribute('stroke','none');
+  const st=document.createElementNS(NS,'path'); st.setAttribute('d',g.stroke); st.setAttribute('stroke','currentColor'); st.setAttribute('stroke-width','1.6'); st.setAttribute('stroke-linecap','round'); st.setAttribute('stroke-linejoin','round');
+  if(g.rot) for(const e of [f,st]) e.setAttribute('transform',`rotate(${g.rot} 10 10)`);
+  svg.append(f,st);
+  return h('span',{class:`io-tile io-${kind}`},svg);
+}
 function sourceIcon(name) { return /mic/i.test(name)?'mic':/guitar|variax/i.test(name)?'guitar':'input'; }
 export function renderChain(root) {
   if(isDragging()) return;
@@ -157,11 +173,11 @@ export function renderChain(root) {
     Lane(pre,'Before',c[pre]),Block(get(amp)),Block(get(cab)),Lane(post,'After',c[post]));
   root.replaceChildren(
     h('div',{class:'io inputs',id:'chainInput'},
-      h('div',{class:'input-source',dataset:{source:1}},icon(sourceIcon(inName(setup.input1))),h('b',{},'Input 1'),h('span',{class:'source'},inName(setup.input1))),
-      h('div',{class:'input-source',dataset:{source:2}},icon(sourceIcon(inName(setup.input2===0?setup.input1:setup.input2))),h('b',{},'Input 2'),h('span',{class:'source'},inName(setup.input2)))),
+      h('div',{class:'input-source',dataset:{source:1}},ioTile(sourceIcon(inName(setup.input1))),h('b',{},'Input 1'),h('span',{class:'source'},inName(setup.input1))),
+      h('div',{class:'input-source',dataset:{source:2}},ioTile(sourceIcon(inName(setup.input2===0?setup.input1:setup.input2))),h('b',{},'Input 2'),h('span',{class:'source'},inName(setup.input2)))),
     Lane('pre','Before · shared',c.pre),
     h('div',{class:'paths'},row('A',0,1,'aPre','aPost'),row('B',2,3,'bPre','bPost')),
-    Lane('post','After · mix',c.post),h('div',{class:'io',id:'chainOutput'},icon('output'),h('b',{},'Output'),h('span',{},'Stereo')));
+    Lane('post','After · mix',c.post),h('div',{class:'io',id:'chainOutput'},ioTile('output'),h('b',{},'Output'),h('span',{},'Stereo')));
   resizeObserver?.disconnect(); resizeObserver=new ResizeObserver(()=>drawWires()); resizeObserver.observe(root);
   requestAnimationFrame(drawWires);
 }

@@ -1989,3 +1989,12 @@ main { gap:28px; padding:32px; }
 @media (max-width:799px) { main { padding:16px; gap:24px; } #inspector, #side { padding:20px; } .workspace-heading h1 { font-size:28px; } .insp-title .model-title { font-size:22px; } .knobs { gap:24px 8px; } }
 
 .legend-dot { width:8px; height:8px; flex:none; border-radius:50%; }
+
+/* Input / output tiles: iOS-style rounded squares with a soft gradient */
+.io-tile { display:grid; place-items:center; width:44px; height:44px; border-radius:11px; color:#fff;
+  background:linear-gradient(160deg,var(--tile-a),var(--tile-b)); box-shadow:0 1px 2px #0003, inset 0 .5px 0 #fff5; }
+.io-guitar { --tile-a:#ffa24a; --tile-b:#f0622a; }
+.io-mic { --tile-a:#5ab0ff; --tile-b:#2f6df0; }
+.io-input { --tile-a:#9aa3b2; --tile-b:#6a7383; }
+.io-output { --tile-a:#4fd67c; --tile-b:#23a559; }
+.io b { margin-top:2px; }
