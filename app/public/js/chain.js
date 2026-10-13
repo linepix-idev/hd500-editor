@@ -1,3 +1,4 @@
+import { gearEl, gearSpec } from './gear-spec.js';
 import { h, api, fail, menu, toast } from './util.js';
 import { pickModel } from './picker.js';
 import { S, notify, GROUP_CLASS } from './store.js';
@@ -56,7 +57,7 @@ function Block(it) {
       if (e.key === 'F10' && e.shiftKey) { const r = el.getBoundingClientRect(); blockMenu({ preventDefault(){},clientX:r.left,clientY:r.bottom },current()); e.preventDefault(); }
       if (e.altKey && it.kind === 'fx' && e.key.startsWith('Arrow')) { e.preventDefault(); e.stopPropagation(); keyboardMove(it,e.key); }
     }, onPointerdown: e => prepareDrag(e, current(), el),
-  }, icon(it.empty && it.kind === 'fx' ? 'plus' : categoryIcon(it)),
+  }, it.empty ? icon(it.kind === 'fx' ? 'plus' : categoryIcon(it)) : gearEl(gearSpec(it)),
     h('div', { class: 'grp' }, it.kind === 'fx' ? it.empty ? '' : it.group ?? 'Effect' : it.kind === 'amp' ? 'Amp' : 'Cab'),
     it.empty ? null : h('div', { class: 'nm' }, it.model),
     !it.empty ? h('button', { class: `led ${it.active ? 'on' : ''}`, role:'switch', 'aria-checked':String(it.active), 'aria-label':`${it.model}: bypass`, title:'Toggle (bypass)',onDblclick:e=>e.stopPropagation(),onClick:e=>{ e.stopPropagation(); toggle(current()); } }) : null,

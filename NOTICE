@@ -7,3 +7,5 @@ Third-party material
   (https://github.com/StarAurryon/lpedit-lib), LGPL-3.0. Converted and extended by tools/gen-catalog.py.
   Its protocol research (POD HD500X) was the starting point of this project.
 * Electron, node-usb (usb), puppeteer-core and their dependencies — see their respective licenses.
+
+* app/public/js/gear.js, catalog/gear-styles.json — original vector illustrations of amps, cabs, microphones and pedals, drawn from real-world gear archetypes; no Line 6 artwork is used.

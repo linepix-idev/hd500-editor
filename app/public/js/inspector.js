@@ -1,3 +1,4 @@
+import { gearEl, gearSpec } from './gear-spec.js';
 import { h, api, fail, toast } from './util.js';
 import { S, notify, GROUP_CLASS } from './store.js';
 import { ParamControl, edit, fmt } from './params.js';
@@ -21,7 +22,7 @@ export function renderInspector(root) {
   fsSel.value = it.fs;
 
   const head = h('div', { class: 'insp-head', style: { '--c': color } },
-    h('span', { class: 'category-tile' }, icon(categoryIcon(it))),
+    h('span', { class: 'category-tile' }, it.empty ? icon(categoryIcon(it)) : gearEl(gearSpec(it))),
     h('div', { class: 'insp-title' }, h('span', { class: 'chip' }, kindName),
       h('button', { class: 'model-title', title: 'Change model…', 'aria-label': 'Change model…', onClick: () => pickModel(it) }, it.empty ? 'Choose model…' : it.model, icon('down'))),
     it.kind === 'fx' && !it.empty ? h('label', { class: 'fs-assign', title: 'Footswitch' }, icon('footswitch'), fsSel) : null,
