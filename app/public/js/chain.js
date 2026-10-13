@@ -191,7 +191,7 @@ function drawWires() {
   const lane=k=>{const l=root.querySelector(`[data-lane="${k}"]`),nodes=[...l.querySelectorAll('.block:not(.drag-origin),.drop-gap')];return nodes.length?nodes:[l];};
   const join=(a,b)=>{
     if(!a||!b)return;
-    const ar=a.getBoundingClientRect(),br=b.getBoundingClientRect(),x=ar.right-bounds.left,y=ar.top+ar.height/2-bounds.top,u=br.left-bounds.left,v=br.top+br.height/2-bounds.top,curve=Math.max(16,(u-x)/2);
+    const tile=e=>e.querySelector?.(':scope > .io-tile')??e,ar=tile(a).getBoundingClientRect(),br=tile(b).getBoundingClientRect(),x=ar.right-bounds.left,y=ar.top+ar.height/2-bounds.top,u=br.left-bounds.left,v=br.top+br.height/2-bounds.top,curve=Math.max(16,(u-x)/2);
     const d=`M${x} ${y} C${x+curve} ${y} ${u-curve} ${v} ${u} ${v}`;
     const bypass=a.classList.contains('off')||b.classList.contains('off'), pathRow=b.closest('[data-path]')??a.closest('[data-path]'),color=pathRow?.dataset.path==='A'?'var(--path-a)':pathRow?.dataset.path==='B'?'var(--path-b)':'var(--io)';
     const path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d',d);path.setAttribute('stroke',color);path.style.setProperty('--wire-color',color);path.setAttribute('class',`connection ${bypass?'bypass':''}`);svg.append(path);
