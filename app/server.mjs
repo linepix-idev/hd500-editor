@@ -63,6 +63,11 @@ async function refresh(first = false) {
   sent.clear(); resetHistory();
   emit('state', view());
 }
+// After a library write that lands on the slot being edited, reload it so the editor shows what is now stored.
+async function reloadIfCurrent(...slots) {
+  if (!slots.some(x => x && x.set === selection.set && x.preset === selection.preset)) return;
+  await pod.select(selection.set, selection.preset); await wait(150); await refresh();
+}
 async function drop() { try { await pod?.close(); } catch {} pod = null; preset = null; }
 
 // Alterações sem comando próprio (footswitch, controlador, ordem dos blocos, nome…) substituem todo o buffer de edição.
@@ -139,7 +144,7 @@ const routes = {
   'POST /api/library/rename-set': async ({ set, name }) => { await pod.renameSet(set, name); setNames = await pod.setNames(); emit('state', view()); return setNames; },
   'POST /api/library/export': async ({ sets }) => Lib.exportBundle(pod, sets, progress('Exportando')),
   'POST /api/library/import': async ({ bundle, map, renameSets }) => ({ written: await Lib.importBundle(pod, bundle, { map, renameSets, backups: BACKUPS, onProgress: progress('Gravando') }) }),
-  'POST /api/library/copy': async ({ from, to }) => { await Lib.copySlot(pod, from, to, BACKUPS); return { ok: true }; },
+  'POST /api/library/copy': async ({ from, to }) => { await Lib.copySlot(pod, from, to, BACKUPS); await reloadIfCurrent(to); return { ok: true }; },
   // mover = inserir: o preset vai para outra posição do mesmo set e os do meio se deslocam (como no editor oficial)
   'POST /api/library/move': async ({ set, from, to }) => {
     if (from === to) return { ok: true };
@@ -147,10 +152,11 @@ const routes = {
     for (let i = lo; i <= hi; i++) { const sl = await pod.readSlot(set, i); BACKUPS.save(set, i, sl, 'mover'); cur.push(sl); }
     const moved = from < to ? [...cur.slice(1), cur[0]] : [cur[cur.length - 1], ...cur.slice(0, -1)];
     for (let k = 0; k < moved.length; k++) { await pod.writeSlot(set, lo + k, moved[k]); emit('progress', { what: 'Moving', done: k + 1, total: moved.length }); }
+    await reloadIfCurrent(...Array.from({ length: hi - lo + 1 }, (_, k) => ({ set, preset: lo + k })));
     return { ok: true };
   },
-  'POST /api/library/swap': async ({ a, b }) => { await Lib.swapSlots(pod, a, b, BACKUPS); return { ok: true }; },
-  'POST /api/library/clear': async ({ at }) => { await Lib.clearSlot(pod, at, BACKUPS); return { ok: true }; },
+  'POST /api/library/swap': async ({ a, b }) => { await Lib.swapSlots(pod, a, b, BACKUPS); await reloadIfCurrent(a, b); return { ok: true }; },
+  'POST /api/library/clear': async ({ at }) => { await Lib.clearSlot(pod, at, BACKUPS); await reloadIfCurrent(at); return { ok: true }; },
   'POST /api/library/export-h5e': async ({ set, preset: p }) => {
     const pr = set == null ? preset : await pod.readSlot(set, p);
     return { name: pr.name, data: Lib.presetToH5e(pr).toString('base64') };
@@ -159,7 +165,7 @@ const routes = {
     const p = Lib.presetFromH5e(Buffer.from(data, 'base64'));
     if (!to) { preset = p; await pushAll(); return view(); }          // só no buffer de edição
     BACKUPS.save(to.set, to.preset, await pod.readSlot(to.set, to.preset));
-    await pod.writeSlot(to.set, to.preset, p); return { ok: true };
+    await pod.writeSlot(to.set, to.preset, p); await reloadIfCurrent(to); return { ok: true };
   },
   'GET /api/backups': async () => BACKUPS.list(),
   'GET /api/globals': async () => pod.globals(),

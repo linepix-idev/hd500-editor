@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.2.9
+- Fix: importing (.h5e), copying, moving, swapping or clearing onto the preset currently open now reloads the editor; before, the screen kept showing the old preset.
 - Fix: Save failed with ENOTDIR in the packaged app (backups were written inside the read-only app bundle). Backups now go to ~/.local/share/hd500-editor/backups (override with HD500_BACKUPS).
 
 ## 0.2.8
