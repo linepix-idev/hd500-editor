@@ -461,5 +461,13 @@ export const PT = {
  "Before the editor overwrites a preset in the pedal, it keeps a copy here. Restoring puts the copy back in its original slot (the current content of that slot is backed up first).": "Antes de o editor sobrescrever um preset no pedal, ele guarda uma cópia aqui. Restaurar coloca a cópia de volta no slot original (o conteúdo atual do slot recebe um backup antes).",
  "No backups yet.": "Nenhum backup ainda.",
  "Restore": "Restaurar",
- "Restored": "Restaurado"
+ "Restored": "Restaurado",
+ "Print setlist…": "Imprimir setlist…",
+ "Setlist": "Setlist",
+ "Export": "Exportar",
+ "Print / PDF": "Imprimir / PDF",
+ "CSV": "CSV",
+ "Still reading the set…": "Ainda lendo o set…",
+ "Heel": "Calcanhar",
+ "Toe": "Ponta"
 };

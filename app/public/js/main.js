@@ -1,5 +1,6 @@
 import { openGlobals } from './global.js';
 import { openBackups } from './backups.js';
+import { openSetlist } from './setlist.js';
 import { tapTempo, initTempoPill } from './tempo.js';
 import { liveEdits } from './editing.js';
 import { lang, langs, setLang, tr } from './i18n.js';
@@ -142,6 +143,7 @@ $('#fileMenu').onclick = e => { const r = e.currentTarget.getBoundingClientRect(
   ['Import preset (.h5e) into the buffer…', importH5e],
   ['Export this preset (.h5e)', async () => { try { const j = await api('library/export-h5e', {}); download(`${j.name || 'preset'}.h5e`, b64ToBytes(j.data)); } catch (x) { fail(x); } }],
   ['Reconnect to the pedal', reconnect],
+  ['Print setlist…', openSetlist],
   ['Backups…', openBackups],
   ['Developer tools…', openDevTools],
   ['Help and shortcuts', showHelp],

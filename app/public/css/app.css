@@ -2185,3 +2185,20 @@ body.comparing #presetName b::after { content:" · saved"; font-weight:500; colo
 .backup-row > label { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 6px; }
 .backup-when { flex-basis:100%; font-size:12px; }
 .backups { max-height:min(70vh,640px); overflow:auto; }
+
+.setlist-controls .row { flex-wrap:nowrap; }
+.setlist-actions { display:flex; gap:8px; }
+.setlist-sheet { margin-top:16px; }
+.setlist-title { margin:0; font-size:24px; }
+.setlist-sub { margin:2px 0 16px; color:var(--dim); font-size:13px; }
+.setlist-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px 20px; }
+.setlist-bank h4 { margin:0 0 4px; font:600 11px var(--font-text); letter-spacing:.06em; text-transform:uppercase; color:var(--dim); }
+.setlist-item { display:flex; gap:10px; padding:3px 0; border-bottom:.5px solid var(--line); font-size:14px; }
+.setlist-item b { width:28px; flex:none; color:var(--dim); font-weight:600; }
+@media print {
+  body > *:not(#modal) { display:none !important; }
+  #modal, #modal .dlg, #modal .bd { position:static !important; display:block !important; background:#fff !important; color:#000 !important; box-shadow:none !important; border:0 !important; max-height:none !important; overflow:visible !important; width:auto !important; backdrop-filter:none !important; animation:none !important; }
+  #modal header, .setlist-controls { display:none !important; }
+  .setlist-grid { grid-template-columns:repeat(3,1fr); }
+  .setlist-item, .setlist-bank h4, .setlist-sub { color:#000 !important; border-color:#bbb !important; }
+}
