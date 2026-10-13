@@ -2123,3 +2123,9 @@ button, select, input, .block, .slot, .row, .tag, .io-tile, .fsbtn, .pill { tran
 .model-info-button span { font-size:11px; color:transparent; }
 #tabs.tabs button { font-size:11px; }
 @media (max-width:420px) { #tabs.tabs button { font-size:11px; } }
+
+/* Chain edge fades: blocks dissolve into the card instead of being cut by a hard edge */
+.chain-scroll { --fade:36px; }
+.chain-scroll[data-fade-r="true"] { -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - var(--fade)),transparent); mask-image:linear-gradient(90deg,#000 calc(100% - var(--fade)),transparent); }
+.chain-scroll[data-fade-l="true"] { -webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--fade)); mask-image:linear-gradient(90deg,transparent,#000 var(--fade)); }
+.chain-scroll[data-fade-l="true"][data-fade-r="true"] { -webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent); mask-image:linear-gradient(90deg,transparent,#000 var(--fade),#000 calc(100% - var(--fade)),transparent); }

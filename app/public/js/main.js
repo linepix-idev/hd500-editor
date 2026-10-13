@@ -203,3 +203,14 @@ addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && 
 { const a = $('#renameBtn'), b = $('#renameSetBtn'); a.append(icon('edit')); b.append(icon('edit'));
   a.onclick = () => renamePreset();
   b.onclick = async () => { const set = S.st.selection.set, n = prompt('New set name (up to 16 characters)', S.st.setNames[set]); if (n != null && n.trim()) { try { await api('library/rename-set', { set, name: n.trim() }); toast('Set renamed.'); } catch (e) { fail(e); } } }; }
+
+// Soft edge fades on the signal chain when it scrolls horizontally (no hard-cut blocks at the card edge).
+{
+  const sc = document.querySelector('.chain-scroll');
+  if (sc) {
+    const paint = () => { sc.dataset.fadeL = String(sc.scrollLeft > 4); sc.dataset.fadeR = String(sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 4); };
+    sc.addEventListener('scroll', paint, { passive: true });
+    new ResizeObserver(paint).observe(sc); new MutationObserver(paint).observe(sc, { childList: true, subtree: true });
+    paint();
+  }
+}
