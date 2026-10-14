@@ -34,8 +34,8 @@ const find = async () => {
 const call = async (path, body) => {
   base ??= await find();
   let r;
-  try { r = await fetch(`${base}/api/${path}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1' }, body: JSON.stringify(body) }); }
-  catch { base = await find(); r = await fetch(`${base}/api/${path}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1' }, body: JSON.stringify(body) }); }
+  try { r = await fetch(`${base}/api/${path}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1', 'x-hd500-actor': 'ai' }, body: JSON.stringify(body) }); }
+  catch { base = await find(); r = await fetch(`${base}/api/${path}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1', 'x-hd500-actor': 'ai' }, body: JSON.stringify(body) }); }
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error ?? `HTTP ${r.status}`);
   return j;
@@ -43,6 +43,7 @@ const call = async (path, body) => {
 let catalogCache = null;
 const catalog = async () => (catalogCache ??= await call('catalog'));
 const state = () => call('state');
+const presence = (status, items) => call('ai', { status, items }).catch(() => {});
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const optName = (list, v) => (list.find(x => x[0] === v) ?? [])[1] ?? v;
 const optValue = (list, key, v) => { if (typeof v === 'number') return v; const hit = list.find(x => norm(x[1]) === norm(v)); if (!hit) throw new Error(`unknown ${key} "${v}" (${list.map(x => x[1]).join(', ')})`); return hit[0]; };
@@ -226,12 +227,14 @@ const handlers = {
     if (!Array.isArray(ops) || !ops.length) throw new Error('ops is empty');
     let st = await state(); if (!st.connected) throw new Error('the pedal is not connected');
     const cat = await catalog(), snap = await ensureSnapshot(st), log = [];
+    await presence(label ?? 'Editing the sound', []);
     if (st.comparing) await call('compare', { on: false });
     for (const o of ops) {
       try { log.push('✔ ' + await runOp(o, st, cat)); }
       catch (e) { log.push(`✖ ${o.op}: ${e.message}`); break; }
       if (['model', 'order', 'undo', 'redo'].includes(o.op)) { await wait(350); st = await state(); }
     }
+    await presence(null);
     return `${label ? label + '\n' : ''}${log.join('\n')}${snap ? `\n(snapshot of the previous sound saved: ${snap})` : ''}`;
   },
   async select({ set, preset, discard }) {
@@ -262,8 +265,14 @@ async function onLine(line) {
     if (method === 'tools/list') return send({ jsonrpc: '2.0', id, result: { tools: TOOLS } });
     if (method === 'tools/call') {
       const h = handlers[params.name]; if (!h) throw new Error(`unknown tool: ${params.name}`);
-      try { return send({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: String(await h(params.arguments ?? {})) }] } }); }
-      catch (e) { return send({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: `error: ${e.message}` }], isError: true } }); }
+      const writes = { select: 'Switching preset', compare: 'Comparing with the saved version', save: 'Saving to the pedal' };
+      try {
+        if (writes[params.name]) await presence(writes[params.name], []);
+        const text = String(await h(params.arguments ?? {}));
+        if (writes[params.name]) await presence(null);
+        return send({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text }] } });
+      }
+      catch (e) { await presence(null); return send({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: `error: ${e.message}` }], isError: true } }); }
     }
     send({ jsonrpc: '2.0', id, error: { code: -32601, message: `unsupported method: ${method}` } });
   } catch (e) { send({ jsonrpc: '2.0', id, error: { code: -32603, message: String(e.message ?? e) } }); }

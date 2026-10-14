@@ -2242,3 +2242,20 @@ input[type=text]:focus-visible, input[type=number]:focus-visible, input[type=sea
 #inspector .insp-head { grid-template-columns:auto auto auto 1fr auto; }
 #inspector .insp-head .fs-assign { justify-self:end; }
 #inspector .insp-head .model-info-button { align-self:start; margin-top:14px; }
+
+/* ---- AI editing indicator (calm, system-like: soft aurora orb, a thin light across the top bar) ---- */
+.ai-pill { display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 12px 0 10px; margin-right:8px; border-radius:99px; background:color-mix(in srgb,var(--text) 6%,transparent); font:500 13px var(--font-text); animation:aiIn var(--dur-3) var(--ease); }
+.ai-pill[hidden] { display:none; }
+.ai-pill.leaving { opacity:0; transform:scale(.96); transition:opacity .8s var(--ease), transform .8s var(--ease); }
+.ai-pill b { font-weight:700; background:linear-gradient(90deg,#7aa7ff,#c28bff,#ff8fb1); -webkit-background-clip:text; background-clip:text; color:transparent; }
+#aiStatus { color:var(--dim); max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ai-orb { width:14px; height:14px; border-radius:50%; background:conic-gradient(from 0deg,#7aa7ff,#c28bff,#ff8fb1,#ffc27a,#7aa7ff); filter:blur(.4px); box-shadow:0 0 10px 1px rgba(194,139,255,.55); animation:aiSpin 2.4s linear infinite, aiPulse 1.8s ease-in-out infinite; }
+@keyframes aiSpin { to { transform:rotate(360deg); } }
+@keyframes aiPulse { 0%,100% { box-shadow:0 0 6px 0 rgba(194,139,255,.35); } 50% { box-shadow:0 0 14px 3px rgba(194,139,255,.7); } }
+@keyframes aiIn { from { opacity:0; transform:translateY(-4px) scale(.96); } to { opacity:1; transform:none; } }
+#top { position:relative; }
+#top::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; opacity:0; background:linear-gradient(90deg,transparent,#7aa7ff,#c28bff,#ff8fb1,transparent); background-size:50% 100%; background-repeat:no-repeat; transition:opacity var(--dur-3) var(--ease); pointer-events:none; }
+body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infinite; }
+@keyframes aiSweep { from { background-position:-60% 0; } to { background-position:160% 0; } }
+.block.ai-flash { animation:aiFlash 1.4s var(--ease); }
+@keyframes aiFlash { 0% { box-shadow:0 0 0 0 rgba(194,139,255,.0); } 20% { box-shadow:0 0 0 3px rgba(194,139,255,.65), 0 0 22px 4px rgba(122,167,255,.45); } 100% { box-shadow:0 0 0 0 rgba(194,139,255,0); } }

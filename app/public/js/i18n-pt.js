@@ -484,5 +484,11 @@ export const PT = {
  "Close the official Line 6 editor or any other MIDI/USB tool.": "Feche o editor oficial da Line 6 ou qualquer outra ferramenta MIDI/USB.",
  "Copy": "Copiar",
  "DT amp power stage (L6 LINK)": "Estágio de potência do amp DT (L6 LINK)",
- "Only used when a Line 6 DT50 or DT25 amp is connected through L6 LINK. Without one these settings do not change the sound.": "Só é usado quando um amp Line 6 DT50 ou DT25 está conectado pelo L6 LINK. Sem um deles, estes ajustes não mudam o som."
+ "Only used when a Line 6 DT50 or DT25 amp is connected through L6 LINK. Without one these settings do not change the sound.": "Só é usado quando um amp Line 6 DT50 ou DT25 está conectado pelo L6 LINK. Sem um deles, estes ajustes não mudam o som.",
+ "editing": "editando",
+ "Editing the sound": "Editando o som",
+ "Switching preset": "Trocando de preset",
+ "Comparing with the saved version": "Comparando com a versão salva",
+ "Saving to the pedal": "Salvando no pedal",
+ "AI": "IA"
 };

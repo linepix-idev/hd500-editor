@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.2.9
+- MCP server for AI editing (look, describe, edit, select, compare, save), with an "AI is editing" indicator in the app; edits from outside the UI now refresh the screen live.
+- Central edit limits: every edit is validated/clamped before reaching the pedal.
 - The Mixer is now a block of the signal chain: select the Mixer node (or press M) and it opens in the block inspector like any pedal. The Mixer tab and toolbar button are gone.
 - Tempo pill with Tap in the chain toolbar (blinks at the tempo; T key); the chain now fits the window in two compact steps.
 - Compare button: hear the saved version against your edits.

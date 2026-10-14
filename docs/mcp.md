@@ -25,3 +25,6 @@ Values accept normalized numbers (0–1) or units: `"35%"`, `"250 ms"`, `"-6 dB"
 * Before the first edit of a preset, a **snapshot of the sound the user is hearing** is stored (Backups sheet, tag `ia`).
 * An error stops the rest of a batch; every op reports what it did.
 * Facts about real gear come from `describe` (sourced); the assistant is told never to invent them.
+
+## Seeing the AI work
+While the assistant edits, the app shows an **AI pill** in the top bar (with what it is doing), a soft light sweeping along the bar, and a glow on each block it touches. Edits made from outside the UI also refresh the open screen live.

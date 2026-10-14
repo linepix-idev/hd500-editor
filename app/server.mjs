@@ -36,6 +36,12 @@ const sent = new Map();
 const isEcho = key => (sent.get(key) ?? 0) > Date.now();
 const remember = b => sent.set(editKey(b), Date.now() + 600);
 
+// AI activity (MCP): shown in the UI; auto-clears when the AI stops sending signs of life.
+let aiTimer = null;
+const aiSignal = data => { emit('ai', data); clearTimeout(aiTimer); if (data.status) aiTimer = setTimeout(() => emit('ai', { status: null }), 12000); };
+let stateTimer = null;
+const stateSoon = () => { clearTimeout(stateTimer); stateTimer = setTimeout(() => { try { emit('state', view()); emit('history', status()); } catch {} }, 150); };
+
 const clients = new Set();
 const emit = (ev, data) => clients.forEach(r => r.write(`event: ${ev}\ndata: ${JSON.stringify(data)}\n\n`));
 const view = () => ({ connected: !!pod, comparing: !!compareStash, dirty: !!compareStash || (!!preset && !same(preset.body, loadedBody)), canUndo: hist.idx > 0, canRedo: hist.idx < hist.list.length - 1, selection, setNames, preset: preset?.toJSON(), chain: preset ? Object.fromEntries(Object.entries(chainOf(preset)).map(([k, v]) => [k, v.map(i => i.id)])) : null });
@@ -186,6 +192,8 @@ const routes = {
     platform: process.platform, visible: DEMO || deviceVisible(), lastError,
     udev: process.platform === 'linux' ? ['/etc/udev/rules.d/99-line6-hd500.rules', '/lib/udev/rules.d/99-line6-hd500.rules', '/usr/lib/udev/rules.d/99-line6-hd500.rules'].some(f => existsSync(f)) : null,
   }),
+  // AI presence: the MCP says what it is doing so the app can show it.
+  'POST /api/ai': async ({ status = null, items = [] }) => { aiSignal({ status: status ? String(status).slice(0, 80) : null, items: items.filter(Number.isInteger) }); return { ok: true }; },
   'GET /api/backups': async () => BACKUPS.list(),
   // Snapshot of the CURRENT edit buffer (what the user is hearing) before an AI session edits it; restorable from the Backups sheet.
   'POST /api/backups/stash': async ({ tag = 'ia' }) => ({ file: BACKUPS.save(selection.set, selection.preset, preset, String(tag).replace(/[^\w-]/g, '').slice(0, 12) || 'ia').split('/').pop() }),
@@ -217,11 +225,14 @@ export async function handleRequest(req, res) {
       if (editing) { try { sanitize(body, preset); } catch (e) { return json(res, 400, { error: e.message }); } }
       if (editing && body.gesture != null && !['start', 'move', 'end'].includes(body.gesture)) throw new Error('invalid gesture');
       const run = async () => {
-        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|state$/.test(key);
+        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|api\/ai$|state$/.test(key);
         if (needsPod) await connect();
         return routes[key](body);
       };
+      const byAI = req.headers['x-hd500-actor'] === 'ai';
+      if (editing && byAI) aiSignal({ status: 'Editing the sound', items: Number.isInteger(body.item) ? [body.item] : [] });
       const operation = queue.enqueue(run, editing && FAST_EDITS.has(body.op) ? body : null);
+      if (editing && byAI) operation.then(stateSoon, () => {});
       if (editing && FAST_EDITS.has(body.op)) {
         // Acknowledge acceptance without waiting for USB. Ordered failures arrive
         // on the event stream; the client never blocks a knob on a response.

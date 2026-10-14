@@ -74,6 +74,15 @@ async function init() {
     if (liveEdits.pending) { await liveEdits.flush(); return load(await api('state')); }
     load(JSON.parse(e.data));
   });
+  // AI (MCP) activity: a calm animated pill + a thin light across the top bar; touched blocks glow once.
+  let aiHide = null;
+  es.addEventListener('ai', e => {
+    const d = JSON.parse(e.data), pill = $('#aiPill');
+    clearTimeout(aiHide);
+    if (d.status) { $('#aiStatus').textContent = d.status; pill.hidden = false; pill.classList.remove('leaving'); document.body.classList.add('ai-active'); }
+    else { pill.classList.add('leaving'); document.body.classList.remove('ai-active'); aiHide = setTimeout(() => { pill.hidden = true; pill.classList.remove('leaving'); }, 900); }
+    for (const id of d.items ?? []) { const el = document.querySelector(`.block[data-item="${id}"]`); if (el) { el.classList.remove('ai-flash'); void el.offsetWidth; el.classList.add('ai-flash'); } }
+  });
   es.addEventListener('history', e => { paintStatus(JSON.parse(e.data)); renderSidebar(); });
   es.addEventListener('edit-error', async e => { fail(new Error(JSON.parse(e.data).error)); await liveEdits.flush(); await load(await api('state')); });
   es.addEventListener('param', e => { const { item, id, value } = JSON.parse(e.data); if (liveEdits.ignores(`param:${item}:${id}`)) return; const it = S.st?.preset.items.find(i => i.id === item); const p = it?.params.find(p => p.id === id); if (p) p.value = value; patchParam(item, id, value); });
