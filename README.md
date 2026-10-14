@@ -31,14 +31,14 @@ Everything marked ✅ was verified against a real POD HD500 (firmware 2.x). Plea
 
 ## Install
 
-**Linux** — download the `.AppImage` or `.deb` from the Releases page. The `.deb` installs the udev rule for you. For the AppImage (or running from source) install the rule once:
+**Linux** — download the `.deb` (recommended on Ubuntu/Debian: `sudo apt install ./HD500-Editor-<version>.deb`) or the `.AppImage` (needs `libfuse2`/`libfuse2t64`) from the Releases page. The `.deb` installs the udev rule for you. For the AppImage (or running from source) install the rule once:
 
 ```sh
 sudo cp 99-line6-hd500.rules /etc/udev/rules.d/ && sudo udevadm control --reload
 # then unplug and plug the pedal again
 ```
 
-**Windows** — the Line 6 driver owns the pedal's control interface. Use [Zadig](https://zadig.akeo.ie) to bind the *"POD HD500 (Interface 1)"* to **WinUSB**. (This disables the pedal's USB audio on that interface; keep the official driver if you need audio and use a second profile.) *Untested — feedback welcome.*
+**Windows** — download `HD500-Editor-Setup-<version>.exe` (or the `-portable.exe`). The installer offers to open the bundled [Zadig](https://zadig.akeo.ie) at the end. The Line 6 driver owns the pedal's control interface. Use [Zadig](https://zadig.akeo.ie) to bind the *"POD HD500 (Interface 1)"* to **WinUSB**. (This disables the pedal's USB audio on that interface; keep the official driver if you need audio and use a second profile.) *Untested — feedback welcome.*
 
 **macOS** — download `HD500-Editor-<version>-mac-arm64.dmg` (Apple Silicon) or `-x64.dmg` (Intel). The app is **not signed** (no Apple developer account), so macOS blocks it the first time: open the `.dmg`, drag the app to Applications, then **right-click the app → Open → Open**. If macOS says the app is “damaged”, run once in Terminal: `xattr -cr "/Applications/HD500 Editor.app"`. *Untested on real hardware — feedback welcome.*
 

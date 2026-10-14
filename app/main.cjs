@@ -1,6 +1,9 @@
 // Casca Electron: sobe o servidor local e mostra a interface numa janela.
 const { app, BrowserWindow, shell } = require('electron');
 
+// AppImage não tem chrome-sandbox com setuid e o Ubuntu 24.04+ bloqueia o sandbox por userns (AppArmor); a janela só carrega o servidor local
+if (process.platform === 'linux' && process.env.APPIMAGE) app.commandLine.appendSwitch('no-sandbox');
+
 let win = null, server = null;
 async function createWindow() {
   server ??= await import('./server.mjs');

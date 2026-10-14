@@ -17,6 +17,13 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
       - run: npm ci
+      - name: Zadig (WinUSB helper bundled in the Windows installer)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          mkdir -p build/win
+          curl -fsSL -o build/win/zadig.exe https://github.com/pbatard/libwdi/releases/download/v1.5.1/zadig-2.9.exe
+          echo "4ecaa95df3da3621486a043aef8b3050b8bafe7c901402871e816229ef82039b  build/win/zadig.exe" | sha256sum -c -
       - run: node node_modules/electron/install.js
       - run: npx electron-builder ${{ matrix.args }} --publish never
       - uses: actions/upload-artifact@v4
