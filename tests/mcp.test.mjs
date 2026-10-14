@@ -34,6 +34,10 @@ test('model by name, mixer and tempo', async () => {
   assert.doesNotMatch(r.text, /✖/); const s = (await tool('look')).text;
   assert.match(s, /Mixer: A -3\.0 dB pan -0\.50/); assert.match(s, /140\.0 BPM/); assert.match(s, /\[5\] FX2: Screamer .*off · FS3/);
 });
+test('inputs are shown and set by name', async () => {
+  assert.match((await tool('look')).text, /Inputs: (Guitar|Mic|Aux|Variax[^→]*) → path A, /);
+  assert.match((await tool('edit', { ops: [{ op: 'input', input1: 'Guitar', guitarZ: '1M' }] })).text, /input1=Guitar guitarZ=1M/);
+});
 test('safety: select with edits and save without confirm are refused', async () => {
   const a = await tool('select', { set: 1, preset: '1A' }); assert.ok(a.error); assert.match(a.text, /unsaved edits/);
   const b = await tool('save', {}); assert.ok(b.error); assert.match(b.text, /confirm:true/);

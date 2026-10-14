@@ -89,3 +89,6 @@ There is plenty to discover: names for the remaining preset settings, the MIDI-a
 ## License
 
 MIT (see [LICENSE](LICENSE)). Model/parameter tables in `catalog/` derive from LGPL-3.0 data (see `catalog/NOTICE`).
+
+## MCP (AI editing)
+An included MCP server lets an AI assistant read and edit your preset live, safely (edit buffer only, snapshot first, explicit confirm to save). See [docs/mcp.md](docs/mcp.md).

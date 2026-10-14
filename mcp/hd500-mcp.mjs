@@ -44,6 +44,8 @@ let catalogCache = null;
 const catalog = async () => (catalogCache ??= await call('catalog'));
 const state = () => call('state');
 const wait = ms => new Promise(r => setTimeout(r, ms));
+const optName = (list, v) => (list.find(x => x[0] === v) ?? [])[1] ?? v;
+const optValue = (list, key, v) => { if (typeof v === 'number') return v; const hit = list.find(x => norm(x[1]) === norm(v)); if (!hit) throw new Error(`unknown ${key} "${v}" (${list.map(x => x[1]).join(', ')})`); return hit[0]; };
 const slot = p => `${Math.floor(p / 4) + 1}${'ABCD'[p % 4]}`;
 
 // ---------- value formatting / parsing ----------
@@ -102,7 +104,7 @@ const fsIndex = (cat, v) => { if (v == null || v === 'none' || v === 0) return 0
 function chainText(st, cat, { detail = true } = {}) {
   const p = st.preset, lines = [];
   lines.push(`Preset "${p.name}" · set ${st.selection.set + 1} (${st.setNames[st.selection.set]}) slot ${slot(st.selection.preset)}${st.dirty ? ' · UNSAVED EDITS' : ''}${st.comparing ? ' · COMPARING (hearing the saved version)' : ''}`);
-  lines.push(`Inputs: ${cat.input1[p.setup.input1] ?? p.setup.input1} → path A, ${cat.input2[p.setup.input2] ?? p.setup.input2} → path B · guitar Z ${cat.inZ[p.setup.inZ] ?? p.setup.inZ} · tempo ${(+p.tempo).toFixed(1)} BPM`);
+  lines.push(`Inputs: ${optName(cat.input1, p.setup.input1)} → path A, ${optName(cat.input2, p.setup.input2)} → path B · guitar Z ${optName(cat.inZ, p.setup.inZ)} · tempo ${(+p.tempo).toFixed(1)} BPM`);
   const m = p.mixer; lines.push(`Mixer: A ${m.levelA <= -59.9 ? 'mute' : m.levelA.toFixed(1) + ' dB'} pan ${m.panA.toFixed(2)} · B ${m.levelB <= -59.9 ? 'mute' : m.levelB.toFixed(1) + ' dB'} pan ${m.panB.toFixed(2)} · trails ${p.trails ? 'on' : 'off'}`);
   const byId = id => p.items.find(i => i.id === id), c = st.chain ?? {};
   lines.push(`Flow: pre[${(c.pre ?? []).join(',')}]  A: pre[${(c.aPre ?? []).join(',')}] amp0 cab1 post[${(c.aPost ?? []).join(',')}]  B: pre[${(c.bPre ?? []).join(',')}] amp2 cab3 post[${(c.bPost ?? []).join(',')}]  → mixer → post[${(c.post ?? []).join(',')}]`);
@@ -187,8 +189,8 @@ async function runOp(o, st, cat) {
     case 'input': {
       const done = [];
       for (const [key, id, list] of [['input1', 0x36, cat.input1], ['input2', 0x37, cat.input2], ['guitarZ', 0x55, cat.inZ]]) {
-        if (o[key] == null) continue; const i = typeof o[key] === 'number' ? o[key] : list.findIndex(n => norm(n) === norm(o[key])); if (i < 0) throw new Error(`unknown ${key} "${o[key]}" (${list.join(', ')})`);
-        await call('edit', { op: 'setup', id, value: i }); done.push(`${key}=${list[i]}`);
+        if (o[key] == null) continue; const v = optValue(list, key, o[key]);
+        await call('edit', { op: 'setup', id, value: v }); done.push(`${key}=${optName(list, v)}`);
       } return `inputs ${done.join(' ')}`;
     }
     case 'name': await call('edit', { op: 'name', name: String(o.name).slice(0, 16) }); return `preset renamed "${String(o.name).slice(0, 16)}"`;
