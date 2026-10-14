@@ -78,3 +78,11 @@ As linhas referem-se aos arquivos desta entrega. Cenários inferidos por leitura
 - `tools/i18n/pairs.json`
 - `tests/core.test.mjs`, `tests/security.test.mjs`, `tests/i18n-runtime.test.mjs`, `tests/mcp.test.mjs`, `tests/mcp-fetch.mjs`
 - `docs/AUDITORIA-NOTURNA.md`
+
+## Atualização — achados de risco alto (branch `correcoes-risco-alto`)
+
+- **Import de bundle:** valida todos os destinos (set 0–7, preset 0–63) e corpos (4096 bytes) antes da primeira escrita; falha não deixa o pedal pela metade. Também corrigido: o retorno contava 0 sem callback de progresso.
+- **Globais:** `POST /api/globals` exige id inteiro 0–255 e valor inteiro 0–65535 (valores reais lidos do pedal cabem, ex.: 440).
+- **Validação na fila:** `sanitize` roda de novo dentro da fila, contra o preset atual (troca de modelo pendente não deixa passar parâmetro do modelo antigo).
+- **Edição recusada pelo pedal:** se `edits[op]` falha, o servidor relê o buffer do pedal e reenvia o estado, pra UI não mostrar valor que não vale.
+- Testes novos em `tests/security.test.mjs`; `npm test` 55 ok; teste ao vivo na POD ok.

@@ -136,7 +136,11 @@ const routes = {
     if (compareStash) { const next = new Preset(compareStash); await pod.apply(next); preset = next; compareStash = null; emit('history', status()); }
     hist.before(b);
     if (FAST_EDITS.has(b.op)) remember(b);
-    await edits[b.op](b);
+    try { await edits[b.op](b); }
+    catch (e) { // o buffer local já mudou mas o pedal pode ter recusado: relê para a UI não mostrar valor que não vale
+      try { preset = await pod.readCurrent(); sent.clear(); emit('state', view()); } catch {}
+      throw e;
+    }
     if (FAST_EDITS.has(b.op)) remember(b);
     if (b.op !== 'undo' && b.op !== 'redo') hist.after(b);
     return { ok: true };
@@ -213,7 +217,10 @@ const routes = {
   'GET /api/globals': async () => pod.globals(),
   // read-only probe of a wider id range (finding where the pedal keeps settings we have not located yet)
   'POST /api/globals/probe': async ({ from = 0, to = 0x3f }) => pod.globals(Array.from({ length: Math.max(0, Math.min(to, 0xff) - from + 1) }, (_, i) => from + i)),
-  'POST /api/globals': async ({ id, value }) => { await pod.setGlobal(id, value); return { ok: true }; },
+  'POST /api/globals': async ({ id, value }) => {
+    if (!Number.isInteger(id) || id < 0 || id > 0xff) throw new Error('invalid global id');
+    if (!Number.isInteger(value) || value < 0 || value > 0xffff) throw new Error('invalid global value');
+    await pod.setGlobal(id, value); return { ok: true }; },
 };
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
@@ -231,6 +238,7 @@ export async function handleRequest(req, res) {
       const run = async () => {
         const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|api\/ai$|state$/.test(key);
         if (needsPod) await connect();
+        if (editing) sanitize(body, preset); // revalida contra o preset atual: uma troca de modelo/preset pode ter rodado antes desta edição
         return routes[key](body);
       };
       const byAI = req.headers['x-hd500-actor'] === 'ai';

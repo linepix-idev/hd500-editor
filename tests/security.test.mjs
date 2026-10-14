@@ -104,3 +104,25 @@ test('compare recusado preserva edições; sair da comparação recusado preserv
   assert.equal((await post('compare', { on: false })).status, 200);
   current = await state(); assert.equal(current.preset.name, 'EDITADO'); assert.equal(current.comparing, false);
 });
+
+test('ajustes globais recusam id/valor fora da faixa e aceitam o normal', async t => {
+  t.after(stop);
+  const h = { 'x-hd500-editor': '1', Origin: `http://127.0.0.1:${port}` };
+  const post = body => call(port, { method: 'POST', path: '/api/globals', headers: h, body: JSON.stringify(body) });
+  for (const bad of [{ id: -1, value: 1 }, { id: 0x100, value: 1 }, { id: 1.5, value: 1 }, { id: '2', value: 1 }, { id: 2, value: -1 }, { id: 2, value: 1e9 }, { id: 2, value: 'x' }, { id: 2, value: null }, {}])
+    assert.notEqual((await post(bad)).status, 200, JSON.stringify(bad));
+  assert.equal((await post({ id: 2, value: 440 })).status, 200);
+});
+
+test('importar bundle valida o lote inteiro antes da primeira escrita', async () => {
+  const { importBundle } = await import('../core/library.mjs');
+  const { Preset } = await import('../core/preset.mjs');
+  const writes = [], pod = { readSlot: async () => new Preset(Buffer.alloc(4096)), writeSlot: async (s, p) => writes.push([s, p]) };
+  const ok = Buffer.alloc(4096).toString('base64'), short = Buffer.alloc(10).toString('base64');
+  const bundle = body2 => ({ format: 'hd500-bundle', sets: [{ index: 0, presets: [{ index: 0, body: ok }, { index: 1, body: body2 }] }] });
+  await assert.rejects(importBundle(pod, bundle(short)));                   // 2º corpo inválido
+  await assert.rejects(importBundle(pod, bundle(ok), { map: [{ from: { set: 0, preset: 0 }, to: { set: 0, preset: 0 } }, { from: { set: 0, preset: 1 }, to: { set: 9, preset: 99 } }] })); // destino fora
+  assert.equal(writes.length, 0);                                           // nada gravado
+  assert.equal(await importBundle(pod, bundle(ok)), 2);
+  assert.equal(writes.length, 2);
+});
