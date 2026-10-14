@@ -30,7 +30,7 @@
   "build": {
     "appId": "org.hd500edit.app",
     "productName": "HD500 Editor",
-    "copyright": "MIT \u2014 n\u00e3o afiliado \u00e0 Line 6",
+    "copyright": "MIT — não afiliado à Line 6",
     "files": [
       "app/**",
       "core/**",
@@ -78,10 +78,30 @@
     },
     "mac": {
       "target": [
-        "dmg"
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
       ],
       "category": "public.app-category.music",
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "identity": null,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "artifactName": "HD500-Editor-${version}-mac-${arch}.${ext}"
+    },
+    "dmg": {
+      "sign": false
     }
   },
   "devDependencies": {

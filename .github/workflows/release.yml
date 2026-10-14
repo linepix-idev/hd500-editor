@@ -27,3 +27,4 @@ jobs:
             dist/*.deb
             dist/*.exe
             dist/*.dmg
+            dist/*mac*.zip
