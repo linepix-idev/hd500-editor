@@ -16,7 +16,8 @@ export function readiness(d) {
 
 export async function connectHelp(error, retry) {
   const root = h('div', { class: 'connect-help' });
-  let working = false, wasReady = null;
+  let working = false, trying = false, wasReady = null;
+  const tryAgain = async () => { trying = true; paint(); try { await retry(); } finally { trying = false; await refresh(); } };
   const install = async () => {
     working = true; paint(); 
     try { await api('driver/install', {}); toast(d.platform === 'win32' ? 'Zadig opened. Follow the steps, then come back here.' : 'Permission installed. Re-plug the pedal if it does not connect.'); }
@@ -43,8 +44,8 @@ export async function connectHelp(error, retry) {
       h('h2', {}, 'Connect your POD HD500'),
       h('p', { class: 'ios-footer' }, 'The editor connects by itself as soon as the pedal is ready.'),
       h('div', { class: 'ios-group' }, steps), cmd,
-      error && !d.connected ? h('p', { class: 'ios-footer connect-error' }, error) : null,
-      h('div', { class: 'ios-action' }, h('button', { class: 'primary', type: 'button', onClick: retry }, 'Try again'))].filter(Boolean));
+      (d.lastError || error) && !d.connected ? h('p', { class: 'ios-footer connect-error' }, d.lastError || error) : null,
+      h('div', { class: 'ios-action' }, h('button', { class: 'primary', type: 'button', disabled: trying, onClick: tryAgain }, trying ? 'Trying…' : 'Try again'))].filter(Boolean));
   };
   const refresh = async () => {
     try { d = await api('diagnose'); } catch { return; }
