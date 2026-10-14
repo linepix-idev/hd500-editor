@@ -1,13 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 <defs>
-<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3040"/><stop offset="1" stop-color="#101218"/></linearGradient>
-<linearGradient id="ac" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#4da3ff"/><stop offset=".55" stop-color="#a77bff"/><stop offset="1" stop-color="#ff8fb1"/></linearGradient>
-<linearGradient id="lw" x1="150" y1="0" x2="362" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4da3ff"/><stop offset=".5" stop-color="#a77bff"/><stop offset="1" stop-color="#ff8fb1"/></linearGradient>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3040"/><stop offset="1" stop-color="#0f1116"/></linearGradient>
+<radialGradient id="skirt" cx=".5" cy=".35" r=".75"><stop offset="0" stop-color="#454c5c"/><stop offset="1" stop-color="#191c24"/></radialGradient>
+<radialGradient id="cap" cx=".42" cy=".3" r=".85"><stop offset="0" stop-color="#7b8499"/><stop offset=".55" stop-color="#3b4152"/><stop offset="1" stop-color="#232733"/></radialGradient>
+<linearGradient id="ptr" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#a77bff"/><stop offset="1" stop-color="#ff8fb1"/></linearGradient>
 </defs>
 <rect width="512" height="512" rx="116" fill="url(#bg)"/>
-<circle cx="256" cy="226" r="122" fill="none" stroke="#343a49" stroke-width="40"/>
-<path d="M169.7 312.3A122 122 0 1 1 355.9 156.0" fill="none" stroke="url(#ac)" stroke-width="40" stroke-linecap="round"/>
-<path d="M256 226L352.7 158.3" stroke="#f4f6fa" stroke-width="26" stroke-linecap="round"/>
-<rect x="150" y="412" width="212" height="12" rx="6" fill="url(#lw)"/>
-<circle cx="150" cy="418" r="24" fill="#4da3ff"/><circle cx="256" cy="418" r="24" fill="#a77bff"/><circle cx="362" cy="418" r="24" fill="#ff8fb1"/>
+<path d="M131.5 380.5L110.3 401.7" stroke="#4da3ff" stroke-width="11" stroke-linecap="round"/><path d="M105.9 348.0L87.2 359.5" stroke="#599eff" stroke-width="8" stroke-linecap="round"/><path d="M88.6 310.4L67.7 317.2" stroke="#6499ff" stroke-width="8" stroke-linecap="round"/><path d="M80.5 269.8L58.6 271.5" stroke="#7093ff" stroke-width="8" stroke-linecap="round"/><path d="M82.2 228.5L60.4 225.0" stroke="#7c8eff" stroke-width="8" stroke-linecap="round"/><path d="M93.4 188.6L65.7 177.2" stroke="#8789ff" stroke-width="11" stroke-linecap="round"/><path d="M113.6 152.5L95.8 139.6" stroke="#9384ff" stroke-width="8" stroke-linecap="round"/><path d="M141.7 122.2L127.4 105.4" stroke="#9e7fff" stroke-width="8" stroke-linecap="round"/><path d="M176.1 99.2L166.1 79.6" stroke="#ab7cfc" stroke-width="8" stroke-linecap="round"/><path d="M214.9 84.9L209.8 63.5" stroke="#b87fef" stroke-width="8" stroke-linecap="round"/><path d="M256.0 80.0L256.0 50.0" stroke="#c682e3" stroke-width="11" stroke-linecap="round"/><path d="M297.1 84.9L302.2 63.5" stroke="#d485d7" stroke-width="8" stroke-linecap="round"/><path d="M335.9 99.2L345.9 79.6" stroke="#e288cb" stroke-width="8" stroke-linecap="round"/><path d="M370.3 122.2L384.6 105.4" stroke="#f08cbe" stroke-width="8" stroke-linecap="round"/><path d="M398.4 152.5L416.2 139.6" stroke="#fe8fb2" stroke-width="8" stroke-linecap="round"/><path d="M418.6 188.6L446.3 177.2" stroke="#3a4050" stroke-width="11" stroke-linecap="round"/><path d="M429.8 228.5L451.6 225.0" stroke="#3a4050" stroke-width="8" stroke-linecap="round"/><path d="M431.5 269.8L453.4 271.5" stroke="#3a4050" stroke-width="8" stroke-linecap="round"/><path d="M423.4 310.4L444.3 317.2" stroke="#3a4050" stroke-width="8" stroke-linecap="round"/><path d="M406.1 348.0L424.8 359.5" stroke="#3a4050" stroke-width="8" stroke-linecap="round"/><path d="M380.5 380.5L401.7 401.7" stroke="#3a4050" stroke-width="11" stroke-linecap="round"/>
+<circle cx="256" cy="262" r="146" fill="#000" opacity=".35"/>
+<circle cx="256" cy="256" r="146" fill="url(#skirt)"/>
+<circle cx="256" cy="256" r="140" fill="none" stroke="#1d2028" stroke-width="12" stroke-dasharray="7 9.6" opacity=".9"/>
+<circle cx="256" cy="256" r="118" fill="url(#cap)"/>
+<circle cx="256" cy="256" r="118" fill="none" stroke="#ffffff" stroke-opacity=".12" stroke-width="3"/>
+<path d="M283.9 236.5L341.2 196.3" stroke="url(#ptr)" stroke-width="20" stroke-linecap="round"/>
 </svg>
