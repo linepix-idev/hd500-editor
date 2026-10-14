@@ -490,5 +490,8 @@ export const PT = {
  "Switching preset": "Trocando de preset",
  "Comparing with the saved version": "Comparando com a versão salva",
  "Saving to the pedal": "Salvando no pedal",
- "AI": "IA"
+ "AI": "IA",
+ "Mix": "Mixagem",
+ "Level and pan of paths A and B, and Trails": "Nível e pan dos caminhos A e B, e Trails",
+ "${tr('Set')} ${set + 1} · HD500": "${tr('Set')} ${set + 1} · HD500"
 };

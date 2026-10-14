@@ -39,7 +39,7 @@ const remember = b => sent.set(editKey(b), Date.now() + 600);
 // AI activity (MCP): shown in the UI; auto-clears when the AI stops sending signs of life.
 let aiTimer = null;
 const aiSignal = data => { emit('ai', data); clearTimeout(aiTimer); if (data.status) aiTimer = setTimeout(() => emit('ai', { status: null }), 12000); };
-let stateTimer = null;
+let stateTimer = null, selectionTimer = null;
 const stateSoon = () => { clearTimeout(stateTimer); stateTimer = setTimeout(() => { try { emit('state', view()); emit('history', status()); } catch {} }, 150); };
 
 const clients = new Set();
@@ -62,14 +62,14 @@ async function connect() {
     try { vtype === 1 ? preset?.setSetupFloat(id, value) : preset?.setSetup(id, value); } catch {}
     emit('setup', { id, value, vtype });
   });
-  let t = null;
-  pod.on('selection', () => { clearTimeout(t); t = setTimeout(() => queue.enqueue(() => refresh()).catch(() => {}), 300); });
-  await refresh(true);
+  pod.on('selection', () => { clearTimeout(selectionTimer); selectionTimer = setTimeout(() => queue.enqueue(() => refresh()).catch(() => {}), 300); });
+  try { await refresh(true); }
+  catch (e) { lastError = e.message; await drop(); throw e; }
 }
 async function refresh(first = false) {
-  preset = await pod.readCurrent();
-  selection = await pod.selection();
-  if (first || !setNames.length) setNames = await pod.setNames();
+  const nextPreset = await pod.readCurrent(), nextSelection = await pod.selection();
+  const nextNames = first || !setNames.length ? await pod.setNames() : setNames;
+  preset = nextPreset; selection = nextSelection; setNames = nextNames;
   sent.clear(); resetHistory();
   emit('state', view());
 }
@@ -78,7 +78,11 @@ async function reloadIfCurrent(...slots) {
   if (!slots.some(x => x && x.set === selection.set && x.preset === selection.preset)) return;
   await pod.select(selection.set, selection.preset); await wait(150); await refresh();
 }
-async function drop() { try { await pod?.close(); } catch {} pod = null; preset = null; }
+async function drop() {
+  clearTimeout(selectionTimer); clearTimeout(stateTimer);
+  try { await pod?.close(); } catch {}
+  pod = null; preset = null; loadedBody = null; compareStash = null; sent.clear(); hist.reset();
+}
 
 // Alterações sem comando próprio (footswitch, controlador, ordem dos blocos, nome…) substituem todo o buffer de edição.
 // Relemos o buffer antes, para não sobrescrever o que mudou no painel do pedal nesse meio tempo.
@@ -87,8 +91,8 @@ async function pushAll() { await pod.apply(preset); await wait(200); emit('state
 
 const edits = {
   ...parameterEdits(() => preset, () => pod),
-  undo: async () => { if (hist.idx > 0) { hist.idx--; preset = new Preset(hist.list[hist.idx]); await pod.apply(preset); emit('state', view()); } },
-  redo: async () => { if (hist.idx < hist.list.length - 1) { hist.idx++; preset = new Preset(hist.list[hist.idx]); await pod.apply(preset); emit('state', view()); } },
+  undo: async () => { if (hist.idx > 0) { const next = new Preset(hist.list[hist.idx - 1]); await pod.apply(next); hist.idx--; preset = next; emit('state', view()); } },
+  redo: async () => { if (hist.idx < hist.list.length - 1) { const next = new Preset(hist.list[hist.idx + 1]); await pod.apply(next); hist.idx++; preset = next; emit('state', view()); } },
   model: async ({ item, type }) => { await pod.model(item, type); await wait(300); preset = await pod.readCurrent(); emit('state', view()); },
   midi: async ({ index, bytes }) => mutate(p => bytes.forEach((v, k) => (p.body[0xd84 + index * 6 + k] = v))),
   fs: async ({ item, fs }) => mutate(p => p.setItemFs(item, fs)),
@@ -124,12 +128,12 @@ const routes = {
   'POST /api/disconnect': async () => { await drop(); emit('state', view()); return { ok: true }; },
   // Compare: audition the version stored in the pedal against the edited one (A/B). Any edit or save exits the comparison first.
   'POST /api/compare': async ({ on }) => {
-    if (on && !compareStash) { if (same(preset.body, loadedBody)) return view(); compareStash = Buffer.from(preset.body); preset = new Preset(Buffer.from(loadedBody)); await pod.apply(preset); }
-    else if (!on && compareStash) { preset = new Preset(compareStash); compareStash = null; await pod.apply(preset); }
+    if (on && !compareStash) { if (same(preset.body, loadedBody)) return view(); const next = new Preset(loadedBody); await pod.apply(next); compareStash = Buffer.from(preset.body); preset = next; }
+    else if (!on && compareStash) { const next = new Preset(compareStash); await pod.apply(next); preset = next; compareStash = null; }
     emit('state', view()); emit('history', status()); return view();
   },
   'POST /api/edit': async b => {
-    if (compareStash) { preset = new Preset(compareStash); compareStash = null; await pod.apply(preset); emit('history', status()); }
+    if (compareStash) { const next = new Preset(compareStash); await pod.apply(next); preset = next; compareStash = null; emit('history', status()); }
     hist.before(b);
     if (FAST_EDITS.has(b.op)) remember(b);
     await edits[b.op](b);
@@ -139,7 +143,7 @@ const routes = {
   },
   'POST /api/select': async ({ set, preset: p }) => { await pod.select(set, p); await refresh(); return view(); },
   'POST /api/save': async () => {
-    if (compareStash) { preset = new Preset(compareStash); compareStash = null; await pod.apply(preset); }
+    if (compareStash) { const next = new Preset(compareStash); await pod.apply(next); preset = next; compareStash = null; }
     const live = await pod.readCurrent();
     BACKUPS.save(selection.set, selection.preset, await pod.readSlot(selection.set, selection.preset));
     await pod.writeSlot(selection.set, selection.preset, live);

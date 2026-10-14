@@ -85,6 +85,11 @@ export function openDevice() {
   if (viaDaemon) itf = viaDaemon.itf;
   const inEp = viaDaemon ? viaDaemon.inEp : itf.endpoint(0x81), outEp = viaDaemon ? viaDaemon.outEp : itf.endpoint(0x01);
 
+  return createTransport({ inEp, outEp, itf, dev });
+}
+
+/** Ciclo de vida do transporte; endpoints injetáveis para testes sem hardware. */
+export function createTransport({ inEp, outEp, itf, dev }) {
   const waiters = [], listeners = new Set();
   let cur = null, expected = 0, idle = null, closed = false;
 
@@ -94,37 +99,49 @@ export function openDevice() {
     for (const w of [...waiters]) if (w.pred(m)) { waiters.splice(waiters.indexOf(w), 1); w.res(m); }
     for (const l of listeners) { try { l(m); } catch (e) { console.error('listener:', e.message); } }
   };
-  inEp.startPoll(4, 64);
+  let failure = null;
+  const cancel = error => {
+    failure ??= error; clearTimeout(idle); cur = null; expected = 0;
+    for (const w of [...waiters]) w.rej(failure);
+  };
   inEp.on('data', b => {
+    if (closed || failure) return;
     const n = b[0], t = b[2], data = b.subarray(4, 4 + n);
+    if (b.length < 4 || (t === 1 && data.length < 2)) return;
     if (t === 1) { cur = Buffer.from(data); expected = ((data.readUInt16LE(0)) + 1) * 4; }
     else if (t === 4 && cur) cur = Buffer.concat([cur, data]);
     else return;
     clearTimeout(idle);
     if (cur.length >= expected) deliver(); else idle = setTimeout(() => { cur = null; expected = 0; }, 400); // mensagem incompleta (pacote perdido): descarta; quem pediu tenta de novo
   });
-  inEp.on('error', () => {});
+  inEp.on('error', e => cancel(e));
+  inEp.startPoll(4, 64);
 
   const send = async frame => {
-    for (const pkt of toPackets(frame)) await new Promise((res, rej) => outEp.transfer(pkt, e => (e ? rej(e) : res())));
+    for (const pkt of toPackets(frame)) {
+      if (closed || failure) throw failure ?? new Error('transport closed');
+      await new Promise((res, rej) => outEp.transfer(pkt, e => (e ? rej(e) : res())));
+    }
   };
   // envia e espera uma resposta que satisfaça pred; pedidos são serializados (o pedal atende um por vez)
   let chain = Promise.resolve();
   const request = (frame, pred = () => true, ms = 2500) => {
     const run = async () => {
-      let w;
-      const p = new Promise((res, rej) => {
-        const t = setTimeout(() => { waiters.splice(waiters.indexOf(w), 1); rej(new Error('the pedal did not answer in time')); }, ms);
-        w = { pred, res: m => { clearTimeout(t); res(m); } };
+      if (closed || failure) throw failure ?? new Error('transport closed');
+      return new Promise((res, rej) => {
+        let t;
+        const cleanup = () => { clearTimeout(t); const i = waiters.indexOf(w); if (i >= 0) waiters.splice(i, 1); };
+        const w = { pred, res: m => { cleanup(); res(m); }, rej: e => { cleanup(); rej(e); } };
+        t = setTimeout(() => w.rej(new Error('the pedal did not answer in time')), ms);
         waiters.push(w);
+        send(frame).catch(w.rej);
       });
-      await send(frame);
-      return p;
     };
     const r = chain.then(run, run); chain = r.catch(() => {}); return r;
   };
   const close = () => new Promise(res => {
     if (closed) return res(); closed = true;
+    cancel(new Error('transport closed')); listeners.clear();
     // o reset USB faz o kernel devolver a interface ao snd-usb-podhd (attachKernelDriver não funciona neste pedal)
     inEp.stopPoll(() => itf.release(false, () => dev.reset(() => { try { dev.close(); } catch {} res(); })));
   });

@@ -33,3 +33,74 @@ test('a interface estática e o catálogo carregam sem pedal', async t => {
   const home = await call(port, { path: '/' }); assert.equal(home.status, 200); assert.match(home.body, /HD500/);
   const cat = JSON.parse((await call(port)).body); assert.ok(cat.amps.length > 50 && cat.pedals.length > 100);
 });
+
+test('falha na leitura inicial libera a conexão e permite tentar novamente', async t => {
+  const { DemoPod } = await import('../app/demo-device.mjs');
+  const read = DemoPod.prototype.readCurrent, close = DemoPod.prototype.close;
+  let closed = 0;
+  t.after(async () => { DemoPod.prototype.readCurrent = read; DemoPod.prototype.close = close; await stop(); });
+  DemoPod.prototype.readCurrent = async () => { throw new Error('initial read failed'); };
+  DemoPod.prototype.close = async function() { closed++; return close.call(this); };
+  const failed = await call(port, { path: '/api/state' });
+  assert.equal(failed.status, 500); assert.match(failed.body, /initial read failed/);
+  assert.equal(closed, 1);
+  DemoPod.prototype.readCurrent = read;
+  const recovered = JSON.parse((await call(port, { path: '/api/state' })).body);
+  assert.equal(recovered.connected, true); assert.ok(recovered.preset); assert.equal(recovered.setNames.length, 8);
+});
+
+test('falha ao ler seleção não substitui o preset nem apaga seu histórico', async t => {
+  const { DemoPod } = await import('../app/demo-device.mjs');
+  const select = DemoPod.prototype.selection;
+  t.after(async () => { DemoPod.prototype.selection = select; await stop(); });
+  const initial = JSON.parse((await call(port, { path: '/api/state' })).body);
+  const post = (path, body) => call(port, { method: 'POST', path: '/api/' + path, headers: { 'x-hd500-editor': '1' }, body: JSON.stringify(body) });
+  await post('edit', { op: 'name', name: 'EDITADO' });
+  DemoPod.prototype.selection = async () => { throw new Error('selection failed'); };
+  assert.equal((await post('select', { set: 0, preset: 1 })).status, 500);
+  const state = JSON.parse((await call(port, { path: '/api/state' })).body);
+  assert.equal(state.preset.name, 'EDITADO'); assert.equal(state.selection.preset, initial.selection.preset); assert.equal(state.canUndo, true);
+});
+
+test('undo/redo recusados pelo pedal preservam preset e posição do histórico', async t => {
+  const { DemoPod } = await import('../app/demo-device.mjs');
+  const apply = DemoPod.prototype.apply;
+  t.after(async () => { DemoPod.prototype.apply = apply; await stop(); });
+  const state = async () => JSON.parse((await call(port, { path: '/api/state' })).body);
+  const post = body => call(port, { method: 'POST', path: '/api/edit', headers: { 'x-hd500-editor': '1' }, body: JSON.stringify(body) });
+  const initial = await state();
+  await post({ op: 'name', name: 'EDITADO' });
+  DemoPod.prototype.apply = async () => { throw new Error('apply failed'); };
+  assert.equal((await post({ op: 'undo' })).status, 500);
+  let current = await state();
+  assert.equal(current.preset.name, 'EDITADO'); assert.equal(current.canUndo, true); assert.equal(current.canRedo, false);
+  DemoPod.prototype.apply = apply;
+  assert.equal((await post({ op: 'undo' })).status, 200);
+  DemoPod.prototype.apply = async () => { throw new Error('apply failed'); };
+  assert.equal((await post({ op: 'redo' })).status, 500);
+  current = await state();
+  assert.equal(current.preset.name, initial.preset.name); assert.equal(current.canUndo, false); assert.equal(current.canRedo, true);
+});
+
+test('compare recusado preserva edições; sair da comparação recusado preserva o stash', async t => {
+  const { DemoPod } = await import('../app/demo-device.mjs');
+  const apply = DemoPod.prototype.apply;
+  t.after(async () => { DemoPod.prototype.apply = apply; await stop(); });
+  const state = async () => JSON.parse((await call(port, { path: '/api/state' })).body);
+  const post = (path, body) => call(port, { method: 'POST', path: '/api/' + path, headers: { 'x-hd500-editor': '1' }, body: JSON.stringify(body) });
+  const initial = await state();
+  await post('edit', { op: 'name', name: 'EDITADO' });
+  DemoPod.prototype.apply = async () => { throw new Error('apply failed'); };
+  assert.equal((await post('compare', { on: true })).status, 500);
+  let current = await state(); assert.equal(current.preset.name, 'EDITADO'); assert.equal(current.comparing, false);
+  DemoPod.prototype.apply = apply;
+  assert.equal((await post('compare', { on: true })).status, 200);
+  DemoPod.prototype.apply = async () => { throw new Error('apply failed'); };
+  for (const [path, body] of [['compare', { on: false }], ['edit', { op: 'name', name: 'OUTRO' }]]) {
+    assert.equal((await post(path, body)).status, 500);
+    current = await state(); assert.equal(current.preset.name, initial.preset.name); assert.equal(current.comparing, true);
+  }
+  DemoPod.prototype.apply = apply;
+  assert.equal((await post('compare', { on: false })).status, 200);
+  current = await state(); assert.equal(current.preset.name, 'EDITADO'); assert.equal(current.comparing, false);
+});

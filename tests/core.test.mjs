@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'fs';
 import * as M from '../core/protocol.mjs';
-import { toPackets } from '../core/transport.mjs';
+import { EventEmitter } from 'node:events';
+import { createTransport, toPackets } from '../core/transport.mjs';
 import { Preset, chainOf, FS_NAMES, LANES } from '../core/preset.mjs';
 import { BLANK, presetToH5e, presetFromH5e } from '../core/library.mjs';
 import { h5eToBlob, blobToH5e, isH5E } from '../core/h5e.mjs';
@@ -69,4 +70,47 @@ test('.h5e: ida e volta preserva o corpo e o cabeçalho', () => {
 test('.h5e real (se existir em ~/Documentos): decodifica com modelos reconhecidos', { skip: !existsSync(process.env.H5E_SAMPLE ?? '') }, () => {
   const p = presetFromH5e(readFileSync(process.env.H5E_SAMPLE));
   assert.ok(p.items.filter(i => !i.empty).every(i => !i.model.startsWith('0x')));
+});
+
+function fakeTransport(transfer = (_, cb) => cb(null)) {
+  const inEp = new EventEmitter(); inEp.startPoll = () => {}; inEp.stopPoll = cb => cb();
+  return { inEp, transport: createTransport({ inEp, outEp: { transfer }, itf: { release: (_, cb) => cb() }, dev: { reset: cb => cb(), close() {} } }) };
+}
+
+test('transporte: falha de envio cancela a espera e permite o próximo pedido', async () => {
+  let calls = 0;
+  const { transport, inEp } = fakeTransport((_, cb) => cb(++calls === 1 ? new Error('send failed') : null));
+  await assert.rejects(transport.request(M.queryPreset(), () => true, 20), /send failed/);
+  const next = transport.request(M.queryPreset(), () => true, 100);
+  await new Promise(r => setImmediate(r));
+  inEp.emit('data', toPackets(M.queryPreset())[0]);
+  assert.deepEqual(await next, M.queryPreset());
+  await new Promise(r => setTimeout(r, 30)); // o timer antigo não pode rejeitar depois
+  await transport.close();
+});
+
+test('transporte: desconexão e fechamento rejeitam pedidos ativos e enfileirados', async () => {
+  for (const disconnect of [true, false]) {
+    const { transport, inEp } = fakeTransport();
+    const a = transport.request(M.queryPreset()), b = transport.request(M.queryPreset());
+    const results = Promise.allSettled([a, b]);
+    await new Promise(r => setImmediate(r));
+    if (disconnect) inEp.emit('error', new Error('USB disconnected'));
+    else await transport.close();
+    assert((await results).every(r => r.status === 'rejected'));
+    await assert.rejects(transport.send(M.queryPreset()), /disconnected|closed/);
+    await transport.close();
+  }
+});
+
+test('transporte: pacotes truncados são descartados sem derrubar o leitor', async () => {
+  const { transport, inEp } = fakeTransport();
+  const response = transport.request(M.queryPreset(), () => true, 100);
+  await new Promise(r => setImmediate(r));
+  for (const packet of [Buffer.alloc(0), Buffer.from([1, 0, 1, 0, 0]), Buffer.from([60, 0, 1, 0, 0])]) {
+    assert.doesNotThrow(() => inEp.emit('data', packet));
+  }
+  inEp.emit('data', toPackets(M.queryPreset())[0]);
+  assert.deepEqual(await response, M.queryPreset());
+  await transport.close();
 });
