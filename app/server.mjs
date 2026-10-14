@@ -1,6 +1,6 @@
 // Servidor local do editor: fala com o pedal por USB e serve a interface web (http://127.0.0.1:5230).
 import { createServer } from 'http';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
 import { pathToFileURL } from 'url';
 import { Pod, SETS, PRESETS_PER_SET } from '../core/device.mjs';
 import { deviceVisible } from '../core/transport.mjs';
@@ -18,6 +18,9 @@ const BACKUP_DIR = process.env.HD500_BACKUPS ?? (import.meta.url.includes('.asar
   ? `${process.env.XDG_DATA_HOME ?? `${process.env.HOME ?? process.env.USERPROFILE}/.local/share`}/hd500-editor/backups`
   : new URL('../backups', import.meta.url).pathname);
 const BACKUPS = new Lib.Backups(BACKUP_DIR);
+// The MCP server (and other local tools) find the running editor through this file; written only for the real (non-demo) server.
+const DATA_DIR = process.env.HD500_DATA ?? `${process.env.XDG_DATA_HOME ?? `${process.env.HOME ?? process.env.USERPROFILE}/.local/share`}/hd500-editor`;
+const PORT_FILE = `${DATA_DIR}/server.json`;
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 let pod = null, preset = null, selection = { set: 0, preset: 0 }, setNames = [], slotNames = new Map(), lastError = null;
@@ -183,6 +186,8 @@ const routes = {
     udev: process.platform === 'linux' ? ['/etc/udev/rules.d/99-line6-hd500.rules', '/lib/udev/rules.d/99-line6-hd500.rules', '/usr/lib/udev/rules.d/99-line6-hd500.rules'].some(f => existsSync(f)) : null,
   }),
   'GET /api/backups': async () => BACKUPS.list(),
+  // Snapshot of the CURRENT edit buffer (what the user is hearing) before an AI session edits it; restorable from the Backups sheet.
+  'POST /api/backups/stash': async ({ tag = 'ia' }) => ({ file: BACKUPS.save(selection.set, selection.preset, preset, String(tag).replace(/[^\w-]/g, '').slice(0, 12) || 'ia').split('/').pop() }),
   'GET /api/backups/detailed': async () => BACKUPS.detailed(),
   // restore = write the backup into its original slot (the slot's current content is backed up first)
   'POST /api/backups/restore': async ({ file }) => {
@@ -246,8 +251,8 @@ function watch() {
     } catch {}
   }, 2500);
 }
-export const start = (port = PORT) => new Promise((res, rej) => { server.once('error', rej); server.listen(port, '127.0.0.1', () => { watch(); res(server.address().port); }); });
-export async function stop() { clearInterval(watching); await drop(); server.close(); }
+export const start = (port = PORT) => new Promise((res, rej) => { server.once('error', rej); server.listen(port, '127.0.0.1', () => { watch(); const p = server.address().port; if (!DEMO) { try { mkdirSync(DATA_DIR, { recursive: true }); writeFileSync(PORT_FILE, JSON.stringify({ port: p, pid: process.pid, at: Date.now() })); } catch {} } res(p); }); });
+export async function stop() { clearInterval(watching); try { if (!DEMO) unlinkSync(PORT_FILE); } catch {} await drop(); server.close(); }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) { // executado direto: node app/server.mjs
   start().then(p => console.log(`HD500 Editor em http://127.0.0.1:${p}`));

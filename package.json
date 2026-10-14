@@ -11,8 +11,8 @@
     "dist:linux": "electron-builder --linux",
     "dist:win": "electron-builder --win",
     "dist:mac": "electron-builder --mac",
-    "test": "node tools/check-fx-details.mjs && node tools/i18n/check-coverage.mjs && node --test tests/core.test.mjs tests/security.test.mjs tests/live-edit.test.mjs tests/fx-details.test.mjs tests/i18n-coverage.test.mjs tests/i18n-runtime.test.mjs",
-    "test:live-demo": "HD500_DEMO=1 PORT=5231 node tests/live-edit.test.mjs",
+    "test": "node tools/check-fx-details.mjs && node tools/i18n/check-coverage.mjs && node --test tests/core.test.mjs tests/security.test.mjs tests/live-edit.test.mjs tests/mcp.test.mjs tests/fx-details.test.mjs tests/i18n-coverage.test.mjs tests/i18n-runtime.test.mjs",
+    "test:live-demo": "HD500_DEMO=1 PORT=5231 node tests/live-edit.test.mjs tests/mcp.test.mjs",
     "test:ui": "node tests/ui-smoke.mjs /tmp",
     "test:ui-i18n": "HD500_DEMO=1 PORT=5231 node tests/ui-i18n.mjs",
     "test:live": "node tests/api-live.mjs && node tests/ui-interact.mjs"
