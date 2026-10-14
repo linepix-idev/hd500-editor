@@ -145,5 +145,5 @@ export function createTransport({ inEp, outEp, itf, dev }) {
     // o reset USB faz o kernel devolver a interface ao snd-usb-podhd (attachKernelDriver não funciona neste pedal)
     inEp.stopPoll(() => itf.release(false, () => dev.reset(() => { try { dev.close(); } catch {} res(); })));
   });
-  return { send, request, close, on: f => (listeners.add(f), () => listeners.delete(f)) };
+  return { send, request, close, get failed() { return !!failure && !closed; }, on: f => (listeners.add(f), () => listeners.delete(f)) };
 }

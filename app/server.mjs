@@ -86,7 +86,7 @@ async function reloadIfCurrent(...slots) {
 }
 async function drop() {
   clearTimeout(selectionTimer); clearTimeout(stateTimer);
-  try { await pod?.close(); } catch {}
+  try { await Promise.race([pod?.close(), wait(2500)]); } catch {} // dispositivo morto: o fechamento USB pode não responder
   pod = null; preset = null; loadedBody = null; compareStash = null; sent.clear(); hist.reset();
 }
 
@@ -245,6 +245,7 @@ const routes = {
     await pod.setGlobal(id, value); return { ok: true }; },
 };
 
+const DEAD_USB = /NO_DEVICE|LIBUSB_ERROR_(IO|PIPE|NOT_FOUND)/;
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
 export async function handleRequest(req, res) {
   const url = new URL(req.url, 'http://x'), key = `${req.method} ${url.pathname}`;
@@ -265,7 +266,11 @@ export async function handleRequest(req, res) {
         const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|api\/ai$|api\/mcp$|driver\/install$|state$/.test(key);
         if (needsPod) await connect();
         if (editing) sanitize(body, preset); // revalida contra o preset atual: uma troca de modelo/preset pode ter rodado antes desta edição
-        return routes[key](body);
+        try { return await routes[key](body); }
+        catch (e) { // handle USB morto (pedal reiniciado/recabeado rápido demais para o monitor perceber): derruba e deixa o monitor reconectar
+          if (pod && DEAD_USB.test(String(e.message))) { await drop(); emit('state', view()); throw new Error('The pedal was disconnected. Reconnecting…'); }
+          throw e;
+        }
       };
       const byAI = req.headers['x-hd500-actor'] === 'ai';
       if (editing && byAI) aiSignal({ status: 'Editing the sound', items: Number.isInteger(body.item) ? [body.item] : [] });
@@ -297,7 +302,7 @@ function watch() {
   watching = setInterval(async () => {
     try {
       const here = DEMO || deviceVisible();
-      if (pod && !here) { await queue.enqueue(async () => { await drop(); emit('state', view()); }); }
+      if (pod && (!here || pod.failed)) { await queue.enqueue(async () => { await drop(); emit('state', view()); }); }
       else if (!pod && here && clients.size && !connecting) { connecting = true; try { await queue.enqueue(async () => { await connect(); emit('state', view()); }); } catch {} connecting = false; }
     } catch {}
   }, 2500);

@@ -114,3 +114,12 @@ test('transporte: pacotes truncados são descartados sem derrubar o leitor', asy
   assert.deepEqual(await response, M.queryPreset());
   await transport.close();
 });
+
+test('erro no endpoint de entrada (USB re-enumerou) marca o transporte como falho; fechar de propósito não', async () => {
+  const mk = () => { const inEp = new EventEmitter(); inEp.startPoll = () => {}; inEp.stopPoll = cb => cb && cb();
+    return { inEp, t: createTransport({ inEp, outEp: { transfer: (p, cb) => cb(null) }, itf: { release: (_, cb) => cb() }, dev: { reset: cb => cb(), close() {} } }) }; };
+  const a = mk(); assert.equal(a.t.failed, false);
+  a.inEp.emit('error', new Error('LIBUSB_TRANSFER_NO_DEVICE')); assert.equal(a.t.failed, true);
+  await assert.rejects(a.t.request(Buffer.alloc(8)), /NO_DEVICE/);
+  const b = mk(); await b.t.close(); assert.equal(b.t.failed, false);
+});
