@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.12 (beta)
+- Driver assistant: shows what is missing per system (cable, udev rule, WinUSB driver), offers the fix (Zadig with administrator prompt on Windows, polkit on Linux) and connects by itself once it is done. It also appears when the cable is unplugged during use.
+- Windows: the diagnosis now looks at the whole device. Line 6's official audio driver takes over the pedal and the editor cannot connect while it is active; the assistant says so. On Windows the pedal is either a sound card (Line 6 driver) or editable here (WinUSB), not both.
+- Reconnection: recovers from a dead USB handle (reset or re-enumeration) instead of staying "connected" while every command fails; the library reloads after reconnecting.
+- Linux: the .deb removes the udev rule when uninstalled; the rule is checked against the repository copy by a test.
+- MCP on/off moved to Pedal settings; fixed stray "null" texts (new test scans the UI for leaks).
+- The Windows driver check is cached for 4 s (the assistant polls every 2 s).
+- CI now runs the tests on Linux, Windows and macOS; NOTICE credits the bundled Zadig (GPL-3.0).
+- Known limits: Windows and macOS installers are not code-signed (SmartScreen / Gatekeeper warnings); USB audio input on macOS needs a signed driver (separate hd500-audio package, output only for now).
+
 ## 0.2.11
 - macOS: when the HD500 Audio driver (hd500audiod) is installed it owns the USB device exclusively; the editor now talks to the pedal through the daemon's local socket (/var/run/hd500audiod.sock) and falls back to direct USB when the daemon is not running. Editor and audio work at the same time.
 
