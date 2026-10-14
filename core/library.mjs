@@ -55,13 +55,22 @@ export const parseBundle = obj => {
 export async function importBundle(pod, bundle, { map = null, backups, onProgress, renameSets = false } = {}) {
   parseBundle(bundle);
   const jobs = map ?? bundle.sets.flatMap(s => s.presets.map(p => ({ from: { set: s.index, preset: p.index }, to: { set: s.index, preset: p.index } })));
-  let n = 0;
-  for (const j of jobs) {
-    const src = bundle.sets.find(s => s.index === j.from.set)?.presets.find(p => p.index === j.from.preset);
+  const slotOk = a => Number.isInteger(a?.set) && a.set >= 0 && a.set < 8 && Number.isInteger(a?.preset) && a.preset >= 0 && a.preset < 64;
+  // valida o lote inteiro (destinos e corpos) antes da primeira escrita: falha no meio deixaria o pedal pela metade
+  const plan = [];
+  for (const j of Array.isArray(jobs) ? jobs : []) {
+    if (!slotOk(j?.from) || !slotOk(j?.to)) throw new Error('import: invalid slot in map');
+    const src = bundle.sets?.find(s => s.index === j.from.set)?.presets?.find(p => p.index === j.from.preset);
     if (!src) continue;
+    if (typeof src.body !== 'string') throw new Error(`import: invalid preset body at set ${j.from.set} slot ${j.from.preset}`);
+    plan.push({ to: j.to, preset: new Preset(Buffer.from(src.body, 'base64')) }); // lança se o corpo não tiver 4096 bytes
+  }
+  if (!Array.isArray(jobs)) throw new Error('import: invalid map');
+  let n = 0;
+  for (const j of plan) {
     backups?.save(j.to.set, j.to.preset, await pod.readSlot(j.to.set, j.to.preset));
-    await pod.writeSlot(j.to.set, j.to.preset, new Preset(Buffer.from(src.body, 'base64')));
-    onProgress?.(++n, jobs.length);
+    await pod.writeSlot(j.to.set, j.to.preset, j.preset);
+    n++; onProgress?.(n, plan.length);
   }
   if (renameSets) for (const s of bundle.sets) if (s.name) await pod.renameSet(s.index, s.name);
   return n;
