@@ -48,7 +48,7 @@ const view = () => ({ connected: !!pod, comparing: !!compareStash, dirty: !!comp
 
 async function connect() {
   if (pod) return;
-  try { pod = DEMO ? new DemoPod() : Pod.connect(); lastError = null; } catch (e) { pod = null; lastError = e.message; throw e; }
+  try { pod = DEMO ? new DemoPod() : await Pod.connect(); lastError = null; } catch (e) { pod = null; lastError = e.message; throw e; }
   // alterações feitas no painel do pedal
   pod.on('param', ({ item, id, value }) => {
     if (isEcho(`param:${item}:${id}`)) return;

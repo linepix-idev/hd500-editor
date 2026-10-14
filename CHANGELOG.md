@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.10
+- macOS: the pedal arrives with no active USB configuration; the editor now activates it before opening interface 1 (verified on a real POD HD500, Apple Silicon).
+- Installers: Windows setup bundles Zadig and offers the WinUSB step; icons for all systems; AppImage falls back to --no-sandbox.
+
 ## 0.2.9
 - MCP server for AI editing (look, describe, edit, select, compare, save), with an "AI is editing" indicator in the app; edits from outside the UI now refresh the screen live.
 - Central edit limits: every edit is validated/clamped before reaching the pedal.

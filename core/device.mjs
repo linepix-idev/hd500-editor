@@ -1,6 +1,6 @@
 // API de alto nível do POD HD500 sobre o transporte USB.
 import { EventEmitter } from 'events';
-import { openDevice } from './transport.mjs';
+import { openDevice, prepareDevice } from './transport.mjs';
 import * as M from './protocol.mjs';
 import { Preset } from './preset.mjs';
 
@@ -8,7 +8,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 export const SETS = 8, PRESETS_PER_SET = 64;
 
 export class Pod extends EventEmitter {
-  static connect() { return new Pod(openDevice()); }
+  static async connect() { await prepareDevice(); return new Pod(openDevice()); }
   constructor(dev) {
     super();
     this.dev = dev;

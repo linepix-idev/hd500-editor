@@ -1,6 +1,6 @@
 // Mostra o preset atual (ou um slot) em JSON.   uso: node tools/dump-preset.mjs [set preset]
 import { Pod } from '../core/device.mjs';
-const pod = Pod.connect();
+const pod = await Pod.connect();
 try {
   const [s, p] = [Number(process.argv[2]) - 1, Number(process.argv[3]) - 1];
   const preset = Number.isInteger(s) && Number.isInteger(p) && s >= 0 ? await pod.readSlot(s, p) : await pod.readCurrent();

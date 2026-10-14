@@ -30,6 +30,17 @@ export function toPackets(frame) {
   return out;
 }
 
+/** No macOS (e às vezes no Windows) o pedal chega sem configuração USB ativa e a interface 1 "não existe" até ativá-la. */
+export async function prepareDevice() {
+  const dev = findByIds(VID, PID);
+  if (!dev) throw new PodNotFound();
+  try {
+    dev.open();
+    if (!dev.configDescriptor) await new Promise((res, rej) => dev.setConfiguration(1, e => (e ? rej(e) : res())));
+  } catch (e) { throw friendly(e); }
+  finally { try { dev.close(); } catch {} }
+}
+
 export function openDevice() {
   const dev = findByIds(VID, PID);
   if (!dev) throw new PodNotFound();
