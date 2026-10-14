@@ -508,5 +508,6 @@ export const PT = {
  "Zadig opened. Follow the steps, then come back here.": "Zadig aberto. Siga os passos e volte aqui.",
  "Permission installed. Re-plug the pedal if it does not connect.": "Permissão instalada. Reconecte o pedal se não conectar.",
  "Audio driver running": "Driver de áudio ativo",
- "Lets Claude and other AI assistants read and edit the pedal through the MCP server. When off, they are blocked.": "Permite que o Claude e outros assistentes de IA leiam e editem o pedal pelo servidor MCP. Desligado, eles ficam bloqueados."
+ "Lets Claude and other AI assistants read and edit the pedal through the MCP server. When off, they are blocked.": "Permite que o Claude e outros assistentes de IA leiam e editem o pedal pelo servidor MCP. Desligado, eles ficam bloqueados.",
+ "Checked as soon as the pedal is plugged in.": "Verificado assim que o pedal for conectado."
 };

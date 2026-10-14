@@ -2050,5 +2050,9 @@
 [
 "Permite que o Claude e outros assistentes de IA leiam e editem o pedal pelo servidor MCP. Desligado, eles ficam bloqueados.",
 "Lets Claude and other AI assistants read and edit the pedal through the MCP server. When off, they are blocked."
+],
+[
+"Verificado assim que o pedal for conectado.",
+"Checked as soon as the pedal is plugged in."
 ]
 ]
