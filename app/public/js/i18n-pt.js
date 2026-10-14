@@ -478,6 +478,7 @@ export const PT = {
  "Install the rule once, then unplug and plug the pedal again.": "Instale a regra uma vez e depois desconecte e reconecte o pedal.",
  "Another driver controls the pedal (usually Line 6's audio driver). In Zadig: Options › List All Devices, pick “POD HD500” (or “Interface 1”), choose WinUSB, click Replace Driver.": "Outro driver controla o pedal (geralmente o de áudio da Line 6). No Zadig: Options › List All Devices, escolha “POD HD500” (ou “Interface 1”), selecione WinUSB e clique em Replace Driver.",
  "Heads-up: on Windows the pedal is either a sound card (Line 6 driver) or editable here (WinUSB), not both at once.": "Atenção: no Windows o pedal ou é placa de som (driver da Line 6) ou é editável aqui (WinUSB), não os dois ao mesmo tempo.",
+ "Get the Line 6 audio driver": "Baixar o driver de áudio da Line 6",
  "WinUSB driver on the control interface": "Driver WinUSB na interface de controle",
  "Bind “POD HD500 (Interface 1)” to WinUSB with Zadig (see the README).": "Associe “POD HD500 (Interface 1)” ao WinUSB com o Zadig (veja o README).",
  "Nothing to install": "Nada para instalar",

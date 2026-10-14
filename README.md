@@ -32,6 +32,8 @@ Everything marked ✅ was verified against a real POD HD500 (firmware 2.x). Plea
 
 ## Install
 
+Step-by-step guides with each system's limitations (PDF): [Linux](docs/pdf/HD500-Editor-Linux-en.pdf) · [Windows](docs/pdf/HD500-Editor-Windows-en.pdf) · [macOS](docs/pdf/HD500-Editor-macOS-en.pdf). Em português: [Linux](docs/pdf/HD500-Editor-Linux-pt-BR.pdf) · [Windows](docs/pdf/HD500-Editor-Windows-pt-BR.pdf) · [macOS](docs/pdf/HD500-Editor-macOS-pt-BR.pdf).
+
 **Linux** — download the `.deb` (recommended on Ubuntu/Debian: `sudo apt install ./HD500-Editor-<version>.deb`) or the `.AppImage` (needs `libfuse2`/`libfuse2t64`) from the Releases page. The `.deb` installs the udev rule for you. For the AppImage (or running from source) install the rule once:
 
 ```sh

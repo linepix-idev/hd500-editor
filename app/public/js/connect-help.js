@@ -46,6 +46,7 @@ export async function connectHelp(error, retry) {
       h('div', { class: 'ios-group' }, steps), cmd,
       win && d.driver && d.driver !== 'winusb' && d.driver !== 'absent' ? h('p', { class: 'ios-footer' }, 'Heads-up: on Windows the pedal is either a sound card (Line 6 driver) or editable here (WinUSB), not both at once.') : null,
       (d.lastError || error) && !d.connected ? h('p', { class: 'ios-footer connect-error' }, d.lastError || error) : null,
+      win ? h('p', { class: 'ios-footer' }, h('a', { href: 'https://line6.com/software/', target: '_blank', rel: 'noopener noreferrer' }, 'Get the Line 6 audio driver')) : null,
       h('div', { class: 'ios-action' }, h('button', { class: 'primary', type: 'button', disabled: trying, onClick: tryAgain }, trying ? 'Trying…' : 'Try again'))].filter(Boolean));
   };
   const refresh = async () => {
