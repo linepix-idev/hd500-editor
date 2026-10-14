@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.14 (beta)
+- Support the project: new menu item with a Pix QR code and key (voluntary donation), also shown on the new static project site (site/).
+
 ## 0.2.13 (beta)
 - Windows: the connection assistant has a "Get the Line 6 audio driver" button, and the installer explains clearly that the pedal is either a sound card (Line 6 driver) or editable here (WinUSB), not both.
 - Installation and user guides (PDF) for Linux, Windows and macOS, in English and Portuguese, with each system's limitations (docs/pdf).
