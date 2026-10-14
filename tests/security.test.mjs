@@ -154,6 +154,7 @@ test('assistente de driver: diagnóstico com forma estável, classificação de 
   assert.equal(classifyError('POD HD500 not found (USB cable?)'), 'notfound');
   assert.equal(classifyError('boom'), 'other'); assert.equal(classifyError(null), null);
   assert.equal(UDEV_RULE, readFileSync(new URL('../99-line6-hd500.rules', import.meta.url), 'utf8').split('\n').find(l => l.startsWith('SUBSYSTEM')), 'regra embutida igual ao arquivo do repositório');
+  assert.ok(readFileSync(new URL('../build/linux/after-install.sh', import.meta.url), 'utf8').includes(UDEV_RULE), 'regra do .deb igual ao arquivo do repositório');
   const h = { 'x-hd500-editor': '1', Origin: `http://127.0.0.1:${port}` };
   const d = JSON.parse((await call(port, { path: '/api/diagnose', headers: h })).body);
   for (const k of ['platform', 'visible', 'kind', 'udev', 'driver', 'daemon', 'canAssist']) assert.ok(k in d, `diagnose.${k}`);

@@ -63,7 +63,8 @@
       "artifactName": "HD500-Editor-${version}.${ext}"
     },
     "deb": {
-      "afterInstall": "build/linux/after-install.sh"
+      "afterInstall": "build/linux/after-install.sh",
+      "afterRemove": "build/linux/after-remove.sh"
     },
     "win": {
       "target": [

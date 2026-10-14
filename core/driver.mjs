@@ -18,7 +18,14 @@ const run = (file, args, timeout = 6000) => new Promise(res =>
   execFile(file, args, { timeout, windowsHide: true }, (err, stdout) => res({ err, out: String(stdout ?? '').trim() })));
 
 /** Windows: qual driver está ligado à interface de controle (MI_01)? 'winusb' | 'other' | 'absent' | 'unknown' */
-export async function windowsDriverState() {
+let winCache = null; // o assistente consulta a cada 2 s: um PowerShell por consulta pesa; reaproveita o resultado por 4 s e junta chamadas simultâneas
+export function windowsDriverState() {
+  if (winCache && Date.now() - winCache.at < 4000) return winCache.p;
+  const p = queryWindowsDriver(); winCache = { at: Date.now(), p };
+  return p;
+}
+export const resetDriverCache = () => { winCache = null; };
+async function queryWindowsDriver() {
   const script = "$d = Get-CimInstance Win32_PnPEntity | Where-Object { $_.PNPDeviceID -like 'USB\\VID_0E41&PID_414D&MI_01*' } | Select-Object -First 1; if ($d) { 'FOUND|' + $d.Service } else { 'NONE' }";
   const { err, out } = await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script]);
   if (err && !out) return { state: 'unknown' };
@@ -38,6 +45,7 @@ export async function launchZadig() {
   const p = zadigPath(); if (!p) throw new Error('Zadig was not found in this installation. Download it from zadig.akeo.ie.');
   const { err } = await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', `Start-Process -FilePath '${p.replace(/'/g, "''")}' -Verb RunAs`], 15000);
   if (err) throw new Error('Could not open Zadig (administrator permission denied?).');
+  resetDriverCache(); // o estado muda logo depois da troca de driver
   return { started: true };
 }
 
