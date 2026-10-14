@@ -107,7 +107,7 @@ export function createTransport({ inEp, outEp, itf, dev }) {
   inEp.on('data', b => {
     if (closed || failure) return;
     const n = b[0], t = b[2], data = b.subarray(4, 4 + n);
-    if (b.length < 4 || n > CHUNK || b.length < 4 + n || (t === 1 && data.length < 8)) return;
+    if (b.length < 4 || (t === 1 && data.length < 2)) return;
     if (t === 1) { cur = Buffer.from(data); expected = ((data.readUInt16LE(0)) + 1) * 4; }
     else if (t === 4 && cur) cur = Buffer.concat([cur, data]);
     else return;
