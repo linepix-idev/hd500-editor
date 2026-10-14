@@ -2122,3 +2122,12 @@ body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infin
   .insp-title .based-on { display:block; overflow-wrap:anywhere; }
 }
 @media (max-width:799px) { .insp-title .model-title { justify-content:flex-start; gap:6px; text-align:left; } .knobs { justify-items:center; } }
+
+/* Tablets: brand + preset on row 1 (centered), controls on row 2 right-aligned under the same grid. */
+@media (min-width:800px) and (max-width:1100px) {
+  #top { row-gap:6px; }
+  .brand { flex:0 0 auto; }
+  .presetnav { flex:1; justify-content:center; margin:0; }
+  .actions { flex:1 1 100%; justify-content:flex-end; gap:6px; padding-top:6px; border-top:1px solid var(--line); }
+}
+.sidebar-foot { padding:0 12px; }
