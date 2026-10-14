@@ -1,5 +1,6 @@
 // Local symbols. No font, sprite request or network dependency.
 const paths = {
+  sparkle: 'M10 2.5c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7z', sparkleOff: 'M10 2.5c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7z M3 17 17 3',
   save: 'M4 3h10l3 3v11H3V3h1 M6 3v5h8V3 M6 17v-6h8v6',
   undo: 'M7 4 3 8l4 4 M3 8h8a5 5 0 0 1 0 10', redo: 'M13 4l4 4-4 4 M17 8h-8a5 5 0 0 0 0 10',
   reread: 'M16 7a6.5 6.5 0 1 0 .3 6 M16 3v4h-4',

@@ -60,7 +60,7 @@ function paintStatus(status = S.st) {
 document.addEventListener('local-edit', () => { if (S.st?.comparing) { S.st.comparing = false; } paintStatus({ ...S.st, dirty: true, comparing: false }); });
 $('#compare').onclick = async () => { try { await liveEdits.flush(); const v = await api('compare', { on: !S.st?.comparing }); load(v); toast(v.comparing ? 'Hearing the saved version. Press Compare again to return to your edits.' : 'Back to your edits.'); } catch (e) { fail(e); } };
 
-async function load(st) { if(!S.cat) S.cat=await api('catalog'); S.st = st; notify(); if (st?.preset) paintStatus(st); }
+async function load(st) { if(!S.cat) S.cat=await api('catalog'); S.st = st; if (typeof st?.mcp === 'boolean') paintMcp(st.mcp); notify(); if (st?.preset) paintStatus(st); }
 async function init() {
   try { S.cat = await api('catalog'); await load(await api('state')); } catch (e) {
     for(const id of ['save','undo','redo','prev','next','fileMenu','chainTrash']) $('#'+id).disabled=true;
@@ -83,6 +83,7 @@ async function init() {
     else { pill.classList.add('leaving'); document.body.classList.remove('ai-active'); aiHide = setTimeout(() => { pill.hidden = true; pill.classList.remove('leaving'); }, 900); }
     for (const id of d.items ?? []) { const el = document.querySelector(`.block[data-item="${id}"]`); if (el) { el.classList.remove('ai-flash'); void el.offsetWidth; el.classList.add('ai-flash'); } }
   });
+  es.addEventListener('mcp', e => paintMcp(JSON.parse(e.data).enabled));
   es.addEventListener('history', e => { paintStatus(JSON.parse(e.data)); renderSidebar(); });
   es.addEventListener('edit-error', async e => { fail(new Error(JSON.parse(e.data).error)); await liveEdits.flush(); await load(await api('state')); });
   es.addEventListener('param', e => { const { item, id, value } = JSON.parse(e.data); if (liveEdits.ignores(`param:${item}:${id}`)) return; const it = S.st?.preset.items.find(i => i.id === item); const p = it?.params.find(p => p.id === id); if (p) p.value = value; patchParam(item, id, value); });
@@ -97,6 +98,13 @@ async function init() {
 async function reconnect() { try { if(!S.cat) S.cat=await api('catalog'); await load(await api('reconnect', {})); } catch (e) { fail(e); } }
 
 // ---- topo
+function paintMcp(on) {
+  const b = $('#mcpBtn'); if (!b) return; S.mcp = on;
+  b.setAttribute('aria-pressed', String(on)); b.classList.toggle('off', !on); buttonIcon(b, on ? 'sparkle' : 'sparkleOff');
+  b.title = on ? 'MCP on: the AI can read and edit the pedal. Click to turn off.' : 'MCP off: the AI is blocked. Click to turn on.';
+}
+$('#mcpBtn').onclick = async () => { const next = !(S.mcp ?? true); try { const r = await api('mcp', { enabled: next }); paintMcp(r.enabled); toast(r.enabled ? 'MCP on: the AI can edit the pedal.' : 'MCP off: the AI is blocked.'); } catch (e) { fail(e); } };
+paintMcp(true);
 $('#live').onclick = () => { liveEdits.setLive(!liveEdits.live); $('#live').setAttribute('aria-checked', String(liveEdits.live)); $('#live').title = liveEdits.live ? 'Edits go to the pedal while you drag. Save still writes to its memory.' : 'Edits go to the pedal when you release the control.'; };
 initSidebar();
 const step = d => { if(S.st?.connected) return selectSlot(undefined, (S.st.selection.preset + d + S.cat.presets) % S.cat.presets); };
