@@ -95,7 +95,7 @@ const page = c => `<!doctype html>
 <body><main>
 <header><b>HD500 Editor</b><a class="lang" href="${c.other[0]}" hreflang="${c.other[1] === 'English' ? 'en' : 'pt-BR'}">${c.other[1]}</a></header>
 <h1>HD500 Editor</h1><p>${c.lead}</p>${osRow}
-<h2>${c.dl}</h2><p>${c.dlText}</p><p class="mut">${c.beta}</p><a class="btn" href="${REPO}/releases/latest" rel="noopener noreferrer">${c.dlBtn}</a>
+<h2>${c.dl}</h2><p>${c.dlText}</p><p class="mut">${c.beta}</p><a class="btn" href="${REPO}/releases" rel="noopener noreferrer">${c.dlBtn}</a>
 <h2>${c.features}</h2><ul>${c.feats.map(f => `<li>${f}</li>`).join('')}</ul>
 <h2>${c.sys}</h2>${c.rows.map(([n, d, f]) => `<div class="card"><h3>${n}</h3><p>${d}</p><p><a href="pdf/HD500-Editor-${f}-${c.lang === 'en' ? 'en' : 'pt-BR'}.pdf">${c.guide} — ${n}</a></p></div>`).join('')}
 <h2>${c.don}</h2><p>${c.donText}</p>
