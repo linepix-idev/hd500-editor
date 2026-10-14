@@ -1,3 +1,5 @@
+<p align="center"><img src="build/icon.svg" width="96" alt="HD500 Editor logo"></p>
+
 # HD500 Editor
 
 **A free, open editor for the Line 6 POD HD500** — now that the official software is no longer maintained, the community can keep this pedal alive.

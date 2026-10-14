@@ -2253,9 +2253,12 @@ input[type=text]:focus-visible, input[type=number]:focus-visible, input[type=sea
 @keyframes aiSpin { to { transform:rotate(360deg); } }
 @keyframes aiPulse { 0%,100% { box-shadow:0 0 6px 0 rgba(194,139,255,.35); } 50% { box-shadow:0 0 14px 3px rgba(194,139,255,.7); } }
 @keyframes aiIn { from { opacity:0; transform:translateY(-4px) scale(.96); } to { opacity:1; transform:none; } }
-#top { position:relative; }
+#top { position:sticky; }
 #top::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; opacity:0; background:linear-gradient(90deg,transparent,#7aa7ff,#c28bff,#ff8fb1,transparent); background-size:50% 100%; background-repeat:no-repeat; transition:opacity var(--dur-3) var(--ease); pointer-events:none; }
 body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infinite; }
 @keyframes aiSweep { from { background-position:-60% 0; } to { background-position:160% 0; } }
 .block.ai-flash { animation:aiFlash 1.4s var(--ease); }
 @keyframes aiFlash { 0% { box-shadow:0 0 0 0 rgba(194,139,255,.0); } 20% { box-shadow:0 0 0 3px rgba(194,139,255,.65), 0 0 22px 4px rgba(122,167,255,.45); } 100% { box-shadow:0 0 0 0 rgba(194,139,255,0); } }
+
+.brand { display:flex; align-items:center; }
+.brand-mark { width:28px; height:28px; margin-right:10px; border-radius:7px; box-shadow:0 1px 3px rgba(0,0,0,.35); flex:none; }
