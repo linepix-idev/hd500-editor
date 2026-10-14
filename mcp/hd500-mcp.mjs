@@ -249,8 +249,11 @@ const handlers = {
 
 // ---------- JSON-RPC (MCP stdio) ----------
 const send = m => process.stdout.write(JSON.stringify(m) + '\n');
+// Tool calls run one at a time, in order: an edit batch must never interleave with another one.
+let chain = Promise.resolve();
 const rl = readline.createInterface({ input: process.stdin });
-rl.on('line', async line => {
+rl.on('line', line => { chain = chain.then(() => onLine(line)).catch(() => {}); });
+async function onLine(line) {
   let m; try { m = JSON.parse(line); } catch { return; }
   const { id, method, params } = m; if (id === undefined) return;
   try {
@@ -264,4 +267,4 @@ rl.on('line', async line => {
     }
     send({ jsonrpc: '2.0', id, error: { code: -32601, message: `unsupported method: ${method}` } });
   } catch (e) { send({ jsonrpc: '2.0', id, error: { code: -32603, message: String(e.message ?? e) } }); }
-});
+}
