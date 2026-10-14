@@ -499,5 +499,14 @@ export const PT = {
  "MCP (AI access)": "MCP (acesso da IA)",
  "MCP on: the AI can edit the pedal.": "MCP ligado: a IA pode editar o pedal.",
  "MCP off: the AI is blocked.": "MCP desligado: a IA está bloqueada.",
- "Search presets…": "Buscar presets…"
+ "Search presets…": "Buscar presets…",
+ "Install permission": "Instalar permissão",
+ "Open Zadig": "Abrir o Zadig",
+ "Working…": "Trabalhando…",
+ "Needed once. Re-plug the pedal after installing.": "Necessário uma vez. Reconecte o pedal depois de instalar.",
+ "In Zadig: Options › List All Devices, pick “POD HD500 (Interface 1)”, choose WinUSB, click Replace Driver.": "No Zadig: Options › List All Devices, escolha “POD HD500 (Interface 1)”, selecione WinUSB e clique em Replace Driver.",
+ "Zadig opened. Follow the steps, then come back here.": "Zadig aberto. Siga os passos e volte aqui.",
+ "Permission installed. Re-plug the pedal if it does not connect.": "Permissão instalada. Reconecte o pedal se não conectar.",
+ "Audio driver running": "Driver de áudio ativo",
+ "Lets Claude and other AI assistants read and edit the pedal through the MCP server. When off, they are blocked.": "Permite que o Claude e outros assistentes de IA leiam e editem o pedal pelo servidor MCP. Desligado, eles ficam bloqueados."
 };

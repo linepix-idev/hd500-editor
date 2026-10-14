@@ -2014,5 +2014,41 @@
 [
 "Buscar presets…",
 "Search presets…"
+],
+[
+"Instalar permissão",
+"Install permission"
+],
+[
+"Abrir o Zadig",
+"Open Zadig"
+],
+[
+"Trabalhando…",
+"Working…"
+],
+[
+"Necessário uma vez. Reconecte o pedal depois de instalar.",
+"Needed once. Re-plug the pedal after installing."
+],
+[
+"No Zadig: Options › List All Devices, escolha “POD HD500 (Interface 1)”, selecione WinUSB e clique em Replace Driver.",
+"In Zadig: Options › List All Devices, pick “POD HD500 (Interface 1)”, choose WinUSB, click Replace Driver."
+],
+[
+"Zadig aberto. Siga os passos e volte aqui.",
+"Zadig opened. Follow the steps, then come back here."
+],
+[
+"Permissão instalada. Reconecte o pedal se não conectar.",
+"Permission installed. Re-plug the pedal if it does not connect."
+],
+[
+"Driver de áudio ativo",
+"Audio driver running"
+],
+[
+"Permite que o Claude e outros assistentes de IA leiam e editem o pedal pelo servidor MCP. Desligado, eles ficam bloqueados.",
+"Lets Claude and other AI assistants read and edit the pedal through the MCP server. When off, they are blocked."
 ]
 ]

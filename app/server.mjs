@@ -9,6 +9,7 @@ const DEMO = !!process.env.HD500_DEMO; // pedal simulado, sem hardware
 import { sanitize } from './limits.mjs';
 import { Preset, catalog, chainOf, FS_NAMES, CTL_NAMES, INPUT1, INPUT2, INZ, LANES } from '../core/preset.mjs';
 import * as Lib from '../core/library.mjs';
+import * as Drv from '../core/driver.mjs';
 import { EditQueue, GestureHistory, FAST_EDITS } from './edit-flow.mjs';
 import { parameterEdits } from './parameter-edits.mjs';
 import { editKey } from './public/js/live-edits.js';
@@ -202,9 +203,18 @@ const routes = {
   },
   // First-connection checks (no pedal access needed): what is missing, per platform.
   'GET /api/diagnose': async () => ({
-    platform: process.platform, visible: DEMO || deviceVisible(), lastError,
-    udev: process.platform === 'linux' ? ['/etc/udev/rules.d/99-line6-hd500.rules', '/lib/udev/rules.d/99-line6-hd500.rules', '/usr/lib/udev/rules.d/99-line6-hd500.rules'].some(f => existsSync(f)) : null,
+    platform: process.platform, visible: DEMO || deviceVisible(), lastError, kind: Drv.classifyError(lastError), connected: !!pod,
+    udev: process.platform === 'linux' ? Drv.udevInstalled() : null,
+    driver: process.platform === 'win32' && !DEMO ? (await Drv.windowsDriverState()).state : null,   // 'winusb' | 'other' | 'absent' | 'unknown'
+    daemon: process.platform === 'darwin' ? existsSync(process.env.HD500_CTRL_SOCK || '/var/run/hd500audiod.sock') : null,
+    canAssist: Drv.canAssist(),
   }),
+  // Instalação assistida do acesso USB: Zadig (Windows, UAC) ou regra udev (Linux, polkit). Comandos fixos.
+  'POST /api/driver/install': async () => {
+    if (process.platform === 'win32') return Drv.launchZadig();
+    if (process.platform === 'linux') return Drv.installUdevRule();
+    throw new Error('Nothing to install on this system.');
+  },
   // AI presence: the MCP says what it is doing so the app can show it.
   'POST /api/ai': async ({ status = null, items = [] }) => { aiSignal({ status: status ? String(status).slice(0, 80) : null, items: items.filter(Number.isInteger) }); return { ok: true }; },
   'GET /api/backups': async () => BACKUPS.list(),
@@ -240,6 +250,7 @@ export async function handleRequest(req, res) {
   const url = new URL(req.url, 'http://x'), key = `${req.method} ${url.pathname}`;
   try {
     const denied = guard(req); if (denied) return json(res, 403, { error: denied });
+    if (key === 'POST /api/driver/install' && req.headers['x-hd500-actor'] === 'ai') return json(res, 403, { error: 'driver installation is only available from the app window' });
     // Com o MCP desligado a IA só enxerga o catálogo e o próprio estado do interruptor; o resto é recusado.
     if (!mcpEnabled && req.headers['x-hd500-actor'] === 'ai' && key !== 'GET /api/catalog' && key !== 'GET /api/mcp')
       return json(res, 403, { error: 'MCP is turned off in the HD500 Editor app. Ask the user to turn it on (sparkle button in the toolbar).' });
@@ -251,7 +262,7 @@ export async function handleRequest(req, res) {
       if (editing) { try { sanitize(body, preset); } catch (e) { return json(res, 400, { error: e.message }); } }
       if (editing && body.gesture != null && !['start', 'move', 'end'].includes(body.gesture)) throw new Error('invalid gesture');
       const run = async () => {
-        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|api\/ai$|api\/mcp$|state$/.test(key);
+        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|api\/ai$|api\/mcp$|driver\/install$|state$/.test(key);
         if (needsPod) await connect();
         if (editing) sanitize(body, preset); // revalida contra o preset atual: uma troca de modelo/preset pode ter rodado antes desta edição
         return routes[key](body);
