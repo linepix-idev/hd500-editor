@@ -20,7 +20,7 @@ Funciona em Linux, Windows e macOS, fala com o pedal direto por USB e vai além 
 
 | | Linux | Windows | macOS |
 |---|---|---|---|
-| Testado em hardware | ✅ | ❌ ainda não | ❌ ainda não |
+| Editor testado em hardware | ✅ | ✅ (VM Windows 10, USB repassado) | ✅ |
 
 ## Instalar
 

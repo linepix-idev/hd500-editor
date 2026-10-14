@@ -24,8 +24,9 @@ Runs on Linux, Windows and macOS, talks to the pedal directly over USB, and goes
 
 | | Linux | Windows | macOS |
 |---|---|---|---|
-| Tested on hardware | ✅ | ❌ not yet | ❌ not yet |
-| Notes | udev rule (included) | needs a WinUSB driver for the pedal's control interface (Zadig) | expected to work through libusb |
+| Editor tested on hardware | ✅ | ✅ (Windows 10 VM, USB passthrough) | ✅ |
+| USB audio (pedal as sound card) | ✅ kernel driver, works while the editor is open | official Line 6 driver; coexistence with the editor **not yet verified** | output only, via the separate [hd500-audio](https://github.com/linepix-idev/hd500-audio) package |
+| Notes | udev rule (included); audio capture needs playback open at the same time (DAWs do this) | needs WinUSB on the control interface only (Zadig, guided by the app) | unsigned app; a signed audio driver needs an Apple Developer ID |
 
 Everything marked ✅ was verified against a real POD HD500 (firmware 2.x). Please open an issue with your results on other systems or firmware versions.
 
@@ -38,9 +39,9 @@ sudo cp 99-line6-hd500.rules /etc/udev/rules.d/ && sudo udevadm control --reload
 # then unplug and plug the pedal again
 ```
 
-**Windows** — download `HD500-Editor-Setup-<version>.exe` (or the `-portable.exe`). The installer offers to open the bundled [Zadig](https://zadig.akeo.ie) at the end. The Line 6 driver owns the pedal's control interface. Use [Zadig](https://zadig.akeo.ie) to bind the *"POD HD500 (Interface 1)"* to **WinUSB**. (This disables the pedal's USB audio on that interface; keep the official driver if you need audio and use a second profile.) *Untested — feedback welcome.*
+**Windows** — download `HD500-Editor-Setup-<version>.exe` (or the `-portable.exe`). The installer offers to open the bundled [Zadig](https://zadig.akeo.ie) at the end. The Line 6 driver owns the pedal's control interface. Use [Zadig](https://zadig.akeo.ie) to bind the *"POD HD500 (Interface 1)"* to **WinUSB**. Only the control interface changes; for USB audio install Line 6's official driver (Line 6 Central). *Editor connection verified on Windows 10; audio next to the editor is still unverified — feedback welcome.*
 
-**macOS** — download `HD500-Editor-<version>-mac-arm64.dmg` (Apple Silicon) or `-x64.dmg` (Intel). The app is **not signed** (no Apple developer account), so macOS blocks it the first time: open the `.dmg`, drag the app to Applications, then **right-click the app → Open → Open**. If macOS says the app is “damaged”, run once in Terminal: `xattr -cr "/Applications/HD500 Editor.app"`. *Untested on real hardware — feedback welcome.*
+**macOS** — download `HD500-Editor-<version>-mac-arm64.dmg` (Apple Silicon) or `-x64.dmg` (Intel). The app is **not signed** (no Apple developer account), so macOS blocks it the first time: open the `.dmg`, drag the app to Applications, then **right-click the app → Open → Open**. If macOS says the app is “damaged”, run once in Terminal: `xattr -cr "/Applications/HD500 Editor.app"`. The editor connects to the pedal; USB audio output needs the separate hd500-audio package.
 
 **From source** (Node.js ≥ 22):
 
