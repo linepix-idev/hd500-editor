@@ -22,6 +22,11 @@ const BACKUPS = new Lib.Backups(BACKUP_DIR);
 // The MCP server (and other local tools) find the running editor through this file; written only for the real (non-demo) server.
 const DATA_DIR = process.env.HD500_DATA ?? `${process.env.XDG_DATA_HOME ?? `${process.env.HOME ?? process.env.USERPROFILE}/.local/share`}/hd500-editor`;
 const PORT_FILE = `${DATA_DIR}/server.json`;
+// Liga/desliga do acesso da IA (MCP). Persistido ao lado do server.json; o demo/testes não escrevem em disco.
+const SETTINGS_FILE = `${DATA_DIR}/settings.json`;
+let mcpEnabled = true;
+if (!DEMO) { try { mcpEnabled = JSON.parse(readFileSync(SETTINGS_FILE, 'utf8')).mcp !== false; } catch {} }
+const saveSettings = () => { if (DEMO) return; try { mkdirSync(DATA_DIR, { recursive: true }); writeFileSync(SETTINGS_FILE, JSON.stringify({ mcp: mcpEnabled })); } catch {} };
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 let pod = null, preset = null, selection = { set: 0, preset: 0 }, setNames = [], slotNames = new Map(), lastError = null;
@@ -44,7 +49,7 @@ const stateSoon = () => { clearTimeout(stateTimer); stateTimer = setTimeout(() =
 
 const clients = new Set();
 const emit = (ev, data) => clients.forEach(r => r.write(`event: ${ev}\ndata: ${JSON.stringify(data)}\n\n`));
-const view = () => ({ connected: !!pod, comparing: !!compareStash, dirty: !!compareStash || (!!preset && !same(preset.body, loadedBody)), canUndo: hist.idx > 0, canRedo: hist.idx < hist.list.length - 1, selection, setNames, preset: preset?.toJSON(), chain: preset ? Object.fromEntries(Object.entries(chainOf(preset)).map(([k, v]) => [k, v.map(i => i.id)])) : null });
+const view = () => ({ mcp: mcpEnabled, connected: !!pod, comparing: !!compareStash, dirty: !!compareStash || (!!preset && !same(preset.body, loadedBody)), canUndo: hist.idx > 0, canRedo: hist.idx < hist.list.length - 1, selection, setNames, preset: preset?.toJSON(), chain: preset ? Object.fromEntries(Object.entries(chainOf(preset)).map(([k, v]) => [k, v.map(i => i.id)])) : null });
 
 async function connect() {
   if (pod) return;
@@ -214,6 +219,13 @@ const routes = {
     await pod.writeSlot(info.set, info.preset, p); await reloadIfCurrent({ set: info.set, preset: info.preset });
     return { ok: true, set: info.set, preset: info.preset, name: p.name };
   },
+  'GET /api/mcp': async () => ({ enabled: mcpEnabled }),
+  'POST /api/mcp': async ({ enabled }) => {
+    if (typeof enabled !== 'boolean') throw new Error('enabled must be true or false');
+    mcpEnabled = enabled; saveSettings(); clearTimeout(aiTimer);
+    emit('mcp', { enabled }); if (!enabled) emit('ai', { status: null });
+    return { enabled };
+  },
   'GET /api/globals': async () => pod.globals(),
   // read-only probe of a wider id range (finding where the pedal keeps settings we have not located yet)
   'POST /api/globals/probe': async ({ from = 0, to = 0x3f }) => pod.globals(Array.from({ length: Math.max(0, Math.min(to, 0xff) - from + 1) }, (_, i) => from + i)),
@@ -228,6 +240,9 @@ export async function handleRequest(req, res) {
   const url = new URL(req.url, 'http://x'), key = `${req.method} ${url.pathname}`;
   try {
     const denied = guard(req); if (denied) return json(res, 403, { error: denied });
+    // Com o MCP desligado a IA só enxerga o catálogo e o próprio estado do interruptor; o resto é recusado.
+    if (!mcpEnabled && req.headers['x-hd500-actor'] === 'ai' && key !== 'GET /api/catalog' && key !== 'GET /api/mcp')
+      return json(res, 403, { error: 'MCP is turned off in the HD500 Editor app. Ask the user to turn it on (sparkle button in the toolbar).' });
     if (key === 'GET /api/events') { res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' }); res.write('\n'); clients.add(res); req.on('close', () => clients.delete(res)); return; }
     if (routes[key]) {
       const body = req.method === 'POST' ? await readBody(req) : {};
@@ -236,7 +251,7 @@ export async function handleRequest(req, res) {
       if (editing) { try { sanitize(body, preset); } catch (e) { return json(res, 400, { error: e.message }); } }
       if (editing && body.gesture != null && !['start', 'move', 'end'].includes(body.gesture)) throw new Error('invalid gesture');
       const run = async () => {
-        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|api\/ai$|state$/.test(key);
+        const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|api\/ai$|api\/mcp$|state$/.test(key);
         if (needsPod) await connect();
         if (editing) sanitize(body, preset); // revalida contra o preset atual: uma troca de modelo/preset pode ter rodado antes desta edição
         return routes[key](body);

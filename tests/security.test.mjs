@@ -126,3 +126,20 @@ test('importar bundle valida o lote inteiro antes da primeira escrita', async ()
   assert.equal(await importBundle(pod, bundle(ok)), 2);
   assert.equal(writes.length, 2);
 });
+
+test('MCP desligado no app bloqueia a IA (x-hd500-actor: ai) e religa sem reiniciar', async t => {
+  const h = { 'x-hd500-editor': '1', Origin: `http://127.0.0.1:${port}` }, ai = { ...h, 'x-hd500-actor': 'ai' };
+  const post = (enabled, headers = h) => call(port, { method: 'POST', path: '/api/mcp', headers, body: JSON.stringify({ enabled }) });
+  t.after(async () => { await post(true); await stop(); });
+  assert.equal((await call(port, { path: '/api/state', headers: ai })).status, 200);       // ligado por padrão
+  assert.equal((await post('x')).status, 500);                                              // só booleano
+  assert.equal((await post(false)).status, 200);
+  assert.equal((await call(port, { path: '/api/state', headers: ai })).status, 403);       // IA bloqueada
+  assert.equal((await call(port, { method: 'POST', path: '/api/edit', headers: ai, body: '{"op":"undo"}' })).status, 403);
+  assert.equal((await call(port, { path: '/api/catalog', headers: ai })).status, 200);     // descoberta continua
+  assert.equal(JSON.parse((await call(port, { path: '/api/mcp', headers: ai })).body).enabled, false);
+  assert.equal((await call(port, { path: '/api/state', headers: h })).status, 200);        // a UI não é afetada
+  assert.equal((await post(false, ai)).status, 403);                                        // a IA não se religa sozinha
+  assert.equal((await post(true)).status, 200);
+  assert.equal((await call(port, { path: '/api/state', headers: ai })).status, 200);
+});

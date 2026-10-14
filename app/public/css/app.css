@@ -2269,3 +2269,86 @@ body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infin
 .block:has(.node-tags.dual) .nm { padding-bottom:56px; }
 .block:has(.node-tags.dual) { min-height:164px; }
 #chain.compact .block:has(.node-tags.dual), #chain.tight .block:has(.node-tags.dual) { min-height:160px; }
+
+/* ================= Apple polish layer =================
+   Control height 36pt on pointer devices, 44pt on touch; sidebar controls share one rhythm. */
+:root { --ctl-h:36px; --ctl-r:10px; }
+@media (pointer:coarse) { :root { --ctl-h:44px; } }
+
+/* Set picker: one inset group, same height as the search field; native <select> kept for accessibility and mobile wheels. */
+.set-row { display:grid; grid-template-columns:minmax(0,1fr) var(--ctl-h); gap:8px; align-items:center; padding:0 2px; }
+#setSel {
+  -webkit-appearance:none; appearance:none; width:100%; height:var(--ctl-h); min-height:var(--ctl-h);
+  padding:0 30px 0 12px; border:0; border-radius:var(--ctl-r); background-color:var(--panel3);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='14' fill='none' stroke='%238e8e93' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 5.2 5 2.2l3 3M2 8.8l3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 11px center;
+  font:600 14px/1 var(--font-text); letter-spacing:-.01em; text-overflow:ellipsis; color:var(--text);
+}
+#setSel:hover { background-color:color-mix(in srgb,var(--panel3),var(--text) 6%); }
+#setSel:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+.set-row > .icon { width:var(--ctl-h); height:var(--ctl-h); min-height:var(--ctl-h); padding:0; display:grid; place-items:center; border:0; border-radius:var(--ctl-r); background:var(--panel3); color:var(--dim); }
+.set-row > .icon:hover { color:var(--text); background:color-mix(in srgb,var(--panel3),var(--text) 8%); }
+.set-row > .icon .symbol { width:16px; height:16px; }
+.library-search { height:var(--ctl-h); border:0; border-radius:var(--ctl-r); padding:0 10px; margin:0 2px; }
+.library-search input { min-height:0; height:100%; padding:0; font-size:14px; }
+.sidebar-head { padding:0 10px 0 10px; }
+.bank-title { margin:18px 12px 6px; font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+
+/* Preset rows: quiet by default, clear hover, unmistakable current. */
+.slot { min-height:40px; padding:0 10px; margin:1px 0; border:0; border-radius:var(--ctl-r); font-size:14px; line-height:1.2; }
+.slot i { min-width:26px; font-weight:500; }
+@media (hover:hover) {
+  .slot:not(.cur):hover { background:color-mix(in srgb,var(--text) 8%,transparent); }
+  .slot:not(.cur):hover i { color:var(--text); }
+}
+.slot:not(.cur):active { background:color-mix(in srgb,var(--text) 14%,transparent); }
+.slot.cur { color:var(--text); font-weight:650; background:color-mix(in srgb,var(--accent) 24%,transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent); }
+.slot.cur i { color:var(--accent); font-weight:650; }
+.slot.cur .loaded-mark { width:6px; height:6px; box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent); }
+@media (hover:hover) {
+  .slot.cur:hover { background:color-mix(in srgb,var(--accent) 34%,transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 70%,transparent),0 6px 16px -8px color-mix(in srgb,var(--accent) 70%,transparent); transform:translateY(-.5px); }
+}
+.slot.cur:active { background:color-mix(in srgb,var(--accent) 42%,transparent); transform:none; }
+.slot:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+
+/* Toolbar: MCP switch state, no wrapping labels. */
+#save { white-space:nowrap; }
+.mcp-btn.off { color:var(--dim); opacity:.75; }
+.mcp-btn:not(.off) { color:var(--accent); }
+.insp-title .chip { white-space:nowrap; }
+
+/* Phones: three calm rows instead of one crowded, wrapping bar.
+   row 1 navigation + app controls · row 2 preset · row 3 edit controls. */
+@media (max-width:799px) {
+  #top { display:flex; flex-wrap:wrap; align-items:center; gap:6px 4px; padding:8px 12px 10px; min-height:0; }
+  .actions { display:contents; }
+  #sidebarToggle { order:1; }
+  .brand { order:2; flex:1; min-width:0; font-size:16px; }
+  .brand span { display:none; }
+  #mcpBtn { order:3; } #fileMenu { order:4; } #pedalSettings { order:5; } #theme { order:6; }
+  .presetnav { order:7; width:100%; margin:0; padding:6px 0 0; justify-content:space-between; border-top:1px solid var(--line); }
+  .presetname { flex:1; justify-content:center; min-width:0; }
+  .presetname b { font-size:17px; }
+  .live-toggle { order:8; margin-right:auto; gap:8px; }
+  .live-toggle label { display:none; }
+  #undo { order:9; } #redo { order:10; } #compare { order:11; } #save { order:12; }
+  #aiPill { order:13; }
+  .actions .icon, #top > .icon { width:40px; height:40px; min-height:40px; }
+  #save { min-height:40px; padding:0 16px; font-size:15px; font-weight:600; border-radius:20px; margin-left:4px; }
+  #help, #language, #revert, .toolbar-divider { display:none !important; }
+  .insp-title .chip { font-size:11px; letter-spacing:.06em; }
+}
+
+/* Phones: block header as a 2-row grid (title gets the free width), top bar scrolls away instead of eating 20% of the screen. */
+@media (max-width:799px) {
+  #top { position:static; }
+  #librarySidebar { top:0; height:100dvh; }
+  #inspector .insp-head { grid-template-columns:48px minmax(0,1fr) auto auto; gap:8px 12px; align-items:center; }
+  #inspector .insp-head > .category-tile { grid-column:1; grid-row:1; }
+  #inspector .insp-head > .insp-title { grid-column:2; grid-row:1; min-width:0; }
+  #inspector .insp-head > .model-info-button { grid-column:3; grid-row:1; align-self:center; margin-top:0; }
+  #inspector .insp-head > .switch { grid-column:4; grid-row:1; }
+  #inspector .insp-head > .fs-assign { grid-column:1 / -1; grid-row:2; justify-self:stretch; }
+  .insp-title .based-on { display:block; overflow-wrap:anywhere; }
+}
+@media (max-width:799px) { .insp-title .model-title { justify-content:flex-start; gap:6px; text-align:left; } .knobs { justify-items:center; } }

@@ -493,5 +493,11 @@ export const PT = {
  "AI": "IA",
  "Mix": "Mixagem",
  "Level and pan of paths A and B, and Trails": "Nível e pan dos caminhos A e B, e Trails",
- "${tr('Set')} ${set + 1} · HD500": "${tr('Set')} ${set + 1} · HD500"
+ "${tr('Set')} ${set + 1} · HD500": "${tr('Set')} ${set + 1} · HD500",
+ "MCP on: the AI can read and edit the pedal. Click to turn off.": "MCP ligado: a IA pode ler e editar o pedal. Clique para desligar.",
+ "MCP off: the AI is blocked. Click to turn on.": "MCP desligado: a IA está bloqueada. Clique para ligar.",
+ "MCP (AI access)": "MCP (acesso da IA)",
+ "MCP on: the AI can edit the pedal.": "MCP ligado: a IA pode editar o pedal.",
+ "MCP off: the AI is blocked.": "MCP desligado: a IA está bloqueada.",
+ "Search presets…": "Buscar presets…"
 };

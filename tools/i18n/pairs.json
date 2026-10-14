@@ -1990,5 +1990,29 @@
 [
 "${tr('Set')} ${set + 1} · HD500",
 "${tr('Set')} ${set + 1} · HD500"
+],
+[
+"MCP ligado: a IA pode ler e editar o pedal. Clique para desligar.",
+"MCP on: the AI can read and edit the pedal. Click to turn off."
+],
+[
+"MCP desligado: a IA está bloqueada. Clique para ligar.",
+"MCP off: the AI is blocked. Click to turn on."
+],
+[
+"MCP (acesso da IA)",
+"MCP (AI access)"
+],
+[
+"MCP ligado: a IA pode editar o pedal.",
+"MCP on: the AI can edit the pedal."
+],
+[
+"MCP desligado: a IA está bloqueada.",
+"MCP off: the AI is blocked."
+],
+[
+"Buscar presets…",
+"Search presets…"
 ]
 ]
