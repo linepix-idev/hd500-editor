@@ -1,0 +1,112 @@
+# Deduplicação de app.css
+
+- Antes: 2354 linhas / 77890 bytes.
+- Depois: 2124 linhas / 71401 bytes.
+- Ganho: 230 linhas / 6489 bytes.
+- Lotes: declarações anteriores à linha original 1300 (103 linhas); declarações posteriores (65 linhas); classes ausentes e dois @media esvaziados (62 linhas).
+- Referências abaixo usam as linhas do arquivo original.
+
+## Remoções
+
+- `button.icon` — sobrescrita posterior no mesmo contexto: `width` L122 → L1843; `height` L123 → L1843.
+- `#top` — sobrescrita posterior no mesmo contexto: `position` L214 → L2256; `box-shadow` L223 → L1937; `padding` L1458 → L2323; `gap` L1459 → L2323; `flex-wrap` L1460 → L1901; `min-height` L1461 → L2323; `flex-wrap` L1901 → L2323.
+- `#setSel` — sobrescrita posterior no mesmo contexto: `width` L320 → L2280.
+- `.library-search` — sobrescrita posterior no mesmo contexto: `border` L327 → L1985; `padding` L330 → L2292; `border` L1985 → L2292.
+- `.library-search input` — sobrescrita posterior no mesmo contexto: `padding` L338 → L2293; `font-size` L342 → L2293.
+- `.bank-title` — sobrescrita posterior no mesmo contexto: `font-size` L353 → L2295; `font-weight` L355 → L2295; `margin` L356 → L2295.
+- `.slot` — sobrescrita posterior no mesmo contexto: `padding` L366 → L2298; `margin` L367 → L2298; `border` L369 → L2298; `font-size` L373 → L2298; `min-height` L374 → L2298.
+- `.slot i` — sobrescrita posterior no mesmo contexto: `min-width` L380 → L2299; `font-variant-numeric` L381 → L1849.
+- `.slot.cur` — sobrescrita posterior no mesmo contexto: `border-color` L402 → L1984; `font-weight` L404 → L2305.
+- `main` — sobrescrita posterior no mesmo contexto: `padding` L455 → L1938; `gap` L458 → L1938; `padding` L1536 → L1993; `gap` L1537 → L1993; `gap` L1920 → L1938; `padding` L1920 → L1938; `padding` L1927 → L1992.
+- `h1` — sobrescrita posterior no mesmo contexto: `letter-spacing` L473 → L1845.
+- `.conn` — sobrescrita posterior no mesmo contexto: `background` L482 → L1986.
+- `.conn.on .dot` — sobrescrita posterior no mesmo contexto: `box-shadow` L493 → L1987.
+- `.canvas-toolbar>div` — sobrescrita posterior no mesmo contexto: `display` L518 → L2141; `gap` L519 → L2141.
+- `.path-row` — sobrescrita posterior no mesmo contexto: `background` L557 → L1941.
+- `.lane` — sobrescrita posterior no mesmo contexto: `min-height` L583 → L1856.
+- `.block` — sobrescrita posterior no mesmo contexto: `width` L659 → L1850; `height` L660 → L1850; `padding` L663 → L1850; `width` L1850 → L1947; `min-height` L1850 → L1947; `padding` L1850 → L1947.
+- `.block .grp` — sobrescrita posterior no mesmo contexto: `max-width` L691 → L1852; `white-space` L692 → L1852.
+- `.block .nm` — sobrescrita posterior no mesmo contexto: `font-size` L697 → L1952; `line-height` L698 → L1853; `font-weight` L699 → L1952; `display` L701 → L1853; `overflow` L704 → L1853; `padding-bottom` L1853 → L1952; `padding-bottom` L1952 → L2070.
+- `.block .fsb` — sobrescrita posterior no mesmo contexto: `right` L708 → L1854; `bottom` L709 → L1854; `font-size` L710 → L1953; `font-weight` L711 → L1953.
+- `.block.emptyslot` — sobrescrita posterior no mesmo contexto: `background` L726 → L1949; `min-height` L1855 → L1949.
+- `.block.amp,.block.cab` — sobrescrita posterior no mesmo contexto: `width` L738 → L1948.
+- `#inspector,#side` — sobrescrita posterior no mesmo contexto: `padding` L874 → L1940; `padding` L1561 → L1993.
+- `.insp-head` — sobrescrita posterior no mesmo contexto: `gap` L884 → L1955; `margin-bottom` L885 → L1955; `flex-wrap` L886 → L1859; `gap` L1859 → L1955.
+- `.insp-head .category-tile` — sobrescrita posterior no mesmo contexto: `width` L891 → L1957; `height` L892 → L1957.
+- `.insp-title` — sobrescrita posterior no mesmo contexto: `flex` L899 → L1860; `min-width` L900 → L1860.
+- `.insp-title .model-title` — sobrescrita posterior no mesmo contexto: `font-size` L909 → L1956; `font-size` L1591 → L1993; `min-height` L1724 → L1861; `font-size` L1930 → L1956.
+- `.knobs` — sobrescrita posterior no mesmo contexto: `gap` L940 → L1958; `gap` L1598 → L1993.
+- `.knob .val` — sobrescrita posterior no mesmo contexto: `transition` L970 → L1731.
+- `.knob .rd` — sobrescrita posterior no mesmo contexto: `top` L984 → L1734; `font-size` L985 → L1858; `letter-spacing` L987 → L1858; `font-variant-numeric` L989 → L1849; `max-width` L990 → L1858; `font-size` L1858 → L1960.
+- `.knob .lab` — sobrescrita posterior no mesmo contexto: `font-size` L995 → L1959; `overflow` L998 → L1857; `white-space` L1000 → L1857.
+- `.tabs` — sobrescrita posterior no mesmo contexto: `padding` L1031 → L1964; `border` L1032 → L1964; `margin-bottom` L1034 → L1964.
+- `.tabs button` — sobrescrita posterior no mesmo contexto: `flex` L1037 → L1890; `min-width` L1045 → L1929.
+- `.tabs button[aria-selected=true]` — sobrescrita posterior no mesmo contexto: `box-shadow` L1054 → L1965.
+- `#tabBody>.row label` — sobrescrita posterior no mesmo contexto: `font-size` L1063 → L1962.
+- `.fsgrid` — sobrescrita posterior no mesmo contexto: `gap` L1077 → L2171; `background` L1078 → L2171; `padding` L1080 → L2171; `border` L1081 → L1975.
+- `.fsbtn` — sobrescrita posterior no mesmo contexto: `border-radius` L1084 → L2172; `display` L1085 → L2172; `flex-direction` L1086 → L2172; `align-items` L1087 → L2172; `padding` L1088 → L2172; `min-height` L1089 → L2172; `background` L1090 → L2172; `gap` L1091 → L2172; `border` L1976 → L2172.
+- `.fs-chip` — sobrescrita posterior no mesmo contexto: `border` L1110 → L1977; `background` L1113 → L1977; `overflow` L1115 → L1912; `text-overflow` L1116 → L1912; `white-space` L1713 → L1864.
+- `.fs-chip::before` — sobrescrita posterior no mesmo contexto: `display` L1120 → L1978.
+- `.fsbtn.hot` — sobrescrita posterior no mesmo contexto: `box-shadow` L1131 → L1979.
+- `.fsbtn.exp` — sobrescrita posterior no mesmo contexto: `min-height` L1135 → L2178; `flex-direction` L1136 → L2178.
+- `.models` — sobrescrita posterior no mesmo contexto: `gap` L1279 → L1969; `gap` L1865 → L1969.
+- `.brand` — sobrescrita posterior no mesmo contexto: `flex` L1464 → L2326; `font-size` L1465 → L2326.
+- `.brand span` — sobrescrita posterior no mesmo contexto: `display` L1468 → L2327.
+- `.presetnav` — sobrescrita posterior no mesmo contexto: `order` L1472 → L2329; `width` L1473 → L2329; `justify-content` L1474 → L2329; `border-top` L1475 → L2329; `margin` L1477 → L2329.
+- `.presetname b` — sobrescrita posterior no mesmo contexto: `font-size` L1483 → L2331.
+- `.actions .icon` — sobrescrita posterior no mesmo contexto: `width` L1489 → L1900; `height` L1490 → L1900; `width` L1900 → L2336; `height` L1900 → L2336.
+- `#help,#language,.toolbar-divider` — sobrescrita posterior no mesmo contexto: `display` L1496 → L2338.
+- `#save` — sobrescrita posterior no mesmo contexto: `font-size` L1499 → L2337; `padding` L1500 → L2337.
+- `#revert` — sobrescrita posterior no mesmo contexto: `display` L1506 → L2338.
+- `#librarySidebar` — sobrescrita posterior no mesmo contexto: `top` L1513 → L2345; `height` L1516 → L2345.
+- `.block > .gear` — sobrescrita posterior no mesmo contexto: `width` L1739 → L1851; `height` L1739 → L1851; `margin-bottom` L1739 → L1851; `width` L1851 → L1950; `height` L1851 → L1950; `margin-bottom` L1851 → L1950.
+- `.mx-path` — sobrescrita posterior no mesmo contexto: `border` L1745 → L1975; `box-shadow` L1745 → L1975.
+- `.mx-scale` — sobrescrita posterior no mesmo contexto: `font-size` L1749 → L1888.
+- `.mx-fader` — sobrescrita posterior no mesmo contexto: `width` L1751 → L1915.
+- `.set-row` — sobrescrita posterior no mesmo contexto: `display` L1763 → L2279; `gap` L1763 → L2279; `align-items` L1763 → L2279.
+- `.ctl-list` — sobrescrita posterior no mesmo contexto: `display` L1768 → L2161; `gap` L1768 → L2161.
+- `.ctl-row` — sobrescrita posterior no mesmo contexto: `border` L1768 → L1975.
+- `.based-on` — sobrescrita posterior no mesmo contexto: `line-height` L1773 → L1863.
+- `.model-text` — sobrescrita posterior no mesmo contexto: `min-width` L1774 → L1862.
+- `.switch::before, .block .led::before` — sobrescrita posterior no mesmo contexto: `box-shadow` L1806 → L2047.
+- `.switch::after, .block .led::after` — sobrescrita posterior no mesmo contexto: `box-shadow` L1818 → L2048.
+- `.block .led` — sobrescrita posterior no mesmo contexto: `width` L1836 → L2046; `min-width` L1837 → L2046.
+- `.model-card` — sobrescrita posterior no mesmo contexto: `border` L1866 → L1970; `border-radius` L1866 → L1970.
+- `.models .model-choice` — sobrescrita posterior no mesmo contexto: `padding` L1867 → L1971.
+- `.models .model-choice.cur` — sobrescrita posterior no mesmo contexto: `border-color` L1868 → L1972.
+- `.model-info-button` — sobrescrita posterior no mesmo contexto: `flex` L1869 → L2109; `width` L1869 → L2109; `padding` L1869 → L2109; `background` L1869 → L2109.
+- `.model-info-button span` — sobrescrita posterior no mesmo contexto: `display` L1870 → L2112; `width` L1870 → L2112; `height` L1870 → L2112; `border` L1870 → L2112; `border-radius` L1870 → L2112; `font-size` L1870 → L2112; `width` L2112 → L2117; `height` L2112 → L2117; `font-size` L2112 → L2123; `line-height` L2112 → L2241; `font-size` L2123 → L2241; `color` L2123 → L2241.
+- `#inspector, #side` — sobrescrita posterior no mesmo contexto: `padding` L1922 → L1940; `padding` L1926 → L1992.
+- `#tabBody .inset-details` — sobrescrita posterior no mesmo contexto: `margin` L2023 → L2026.
+- `#tabBody .inset-details > summary` — sobrescrita posterior no mesmo contexto: `padding` L2024 → L2027; `font-size` L2024 → L2027.
+- `#tabs.tabs button` — sobrescrita posterior no mesmo contexto: `font-size` L2039 → L2125.
+- `#inspector .insp-head` — sobrescrita posterior no mesmo contexto: `grid-template-columns` L2054 → L2242.
+- `.node-tags` — sobrescrita posterior no mesmo contexto: `flex-wrap` L2071 → L2134.
+- `.model-info-button span::before` — sobrescrita posterior no mesmo contexto: `top` L2113 → L2118; `width` L2113 → L2118; `height` L2113 → L2118; `margin-left` L2113 → L2118.
+- `.model-info-button span::after` — sobrescrita posterior no mesmo contexto: `top` L2114 → L2119; `width` L2114 → L2119; `height` L2114 → L2119; `margin-left` L2114 → L2119; `border-radius` L2114 → L2119.
+- `.node-tags.dual` — sobrescrita posterior no mesmo contexto: `gap` L2135 → L2267.
+- `.node-tags.dual .tag` — sobrescrita posterior no mesmo contexto: `flex` L2136 → L2268; `justify-content` L2136 → L2268; `padding` L2136 → L2268.
+- `.set-label` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L314.
+- `.eyebrow` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L467; L1543.
+- `.signal-dot` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L496.
+- `.io .second-source` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L644.
+- `.canvas-footer` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L647; L1569.
+- `.workspace-footer` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1177; L1635.
+- `.canvas-footer>span:last-child` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1573.
+- `.mx-panlabel` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1755.
+- `.mx-panslider` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1756.
+- `.ctl-name` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1769.
+- `.live-pill` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1988.
+- `.live-pill i` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1989.
+- `.live-pill[aria-pressed=true] i` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1990.
+- `.live-pill[aria-pressed=false] i` — classe ausente no HTML/JS; busca rg e montagem dinâmica conferidas: L1991.
+
+## Critérios e verificações
+
+- Sem reordenar regras. Blocos mortos foram eliminados; blocos separados com declarações úteis foram mantidos quando a união exigiria mover declarações pela cascata.
+- Dois wrappers vazios removidos: `@media (max-width:1199px)` (original L1925) e `@media (max-width:420px)` (original L2039). Outros @media repetidos foram mantidos para preservar a ordem.
+- Classes ausentes conferidas com `rg -F` em `app/public/index.html` e `app/public/js/*.js`, seguido de inspeção das montagens de classes. Seletores agrupados com ramos ainda usados foram mantidos.
+- Classes dinâmicas preservadas: `g-*` (`GROUP_CLASS` em `js/store.js`), `io-${kind}` (`js/chain.js`) e `mx-${which}` (`js/panels.js`).
+- Variáveis de `:root`, regras de interação, `[data-theme]`, print e prefers-reduced-* preservadas. Camada Apple e todo seu sufixo comparados byte a byte.
+- Verificação lexical: chaves, parênteses e colchetes balanceados, ignorando strings e comentários. Diff revisado sem git.
+- Não verificados: renderização, comparação pixel a pixel e validação completa com parser CSS. Nenhum servidor/navegador executado; `node --check` não se aplica.

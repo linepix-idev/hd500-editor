@@ -17,6 +17,7 @@ const manifest = {};
 for (const [w, h] of [[390, 844], [820, 1100], [1440, 900]]) for (const theme of ['dark', 'light']) {
   const page = await browser.newPage(); await page.setViewport({ width: w, height: h, deviceScaleFactor: 1 });
   await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: theme }, { name: 'prefers-reduced-motion', value: 'reduce' }]);
+  await page.evaluateOnNewDocument(t => { try { localStorage.setItem('hd500.theme', t); } catch {} }, theme);
   await page.goto(URL_); await page.waitForSelector('.block'); await wait(1200);
   const shot = async name => { const buf = await page.screenshot({ fullPage: true }); const key = `${w}-${theme}-${name}`; writeFileSync(`${out}/${key}.png`, buf); manifest[key] = createHash('sha256').update(buf).digest('hex'); };
   await shot('default');
