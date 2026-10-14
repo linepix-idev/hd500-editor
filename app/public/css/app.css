@@ -2220,3 +2220,19 @@ body.comparing #presetName b::after { content:" · saved"; font-weight:500; colo
 #inspector .mixer-tile { background:linear-gradient(160deg,#b88cff,#7a4ee0); color:#fff; }
 #inspector .model-title.static { cursor:default; }
 .mixer-body .mx-grid, .mixer-body > div:first-child { gap:16px; }
+
+/* ---- Focus: a soft system-style ring instead of a hard 3px outline ---- */
+:focus { outline:none; }
+:focus-visible { outline:2px solid color-mix(in srgb,var(--focus) 85%,transparent); outline-offset:2px; }
+input[type=text], input[type=number], input[type=search], select, textarea { transition:box-shadow var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease); }
+input[type=text]:focus, input[type=number]:focus, input[type=search]:focus, select:focus, textarea:focus,
+input[type=text]:focus-visible, input[type=number]:focus-visible, input[type=search]:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline:none; border-color:color-mix(in srgb,var(--focus) 70%,transparent); box-shadow:0 0 0 4px color-mix(in srgb,var(--focus) 24%,transparent);
+}
+/* fields drawn inside grouped lists have no border of their own: ring the whole row instead */
+.ios-group > .row:focus-within { background:color-mix(in srgb,var(--focus) 7%,transparent); }
+.ios-group > .row input:focus, .ios-group > .row select:focus, .ios-group > .row input:focus-visible, .ios-group > .row select:focus-visible { box-shadow:none; border-color:transparent; }
+.library-search:focus-within, .model-search:focus-within { box-shadow:0 0 0 4px color-mix(in srgb,var(--focus) 24%,transparent); border-radius:12px; }
+.library-search input:focus, .library-search input:focus-visible { box-shadow:none; border-color:transparent; }
+#modal input[type=search] { border-radius:12px; }
+.library-search:focus-within { border-color:color-mix(in srgb,var(--focus) 75%,transparent); box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 22%,transparent); }
