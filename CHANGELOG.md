@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.13 (beta)
+- Windows: the connection assistant has a "Get the Line 6 audio driver" button, and the installer explains clearly that the pedal is either a sound card (Line 6 driver) or editable here (WinUSB), not both.
+- Installation and user guides (PDF) for Linux, Windows and macOS, in English and Portuguese, with each system's limitations (docs/pdf).
+- Releases are now created as a draft pre-release with the installers and the guides attached.
+
 ## 0.2.12 (beta)
 - Driver assistant: shows what is missing per system (cable, udev rule, WinUSB driver), offers the fix (Zadig with administrator prompt on Windows, polkit on Linux) and connects by itself once it is done. It also appears when the cable is unplugged during use.
 - Windows: the diagnosis now looks at the whole device. Line 6's official audio driver takes over the pedal and the editor cannot connect while it is active; the assistant says so. On Windows the pedal is either a sound card (Line 6 driver) or editable here (WinUSB), not both.
