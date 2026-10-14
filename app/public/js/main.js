@@ -9,14 +9,14 @@ import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, 
 import { S, onChange, notify, presetLabel } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
-import { renderSetup, renderMixer, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, openDevTools } from './panels.js';
+import { renderSetup, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, openDevTools } from './panels.js';
 import { selectSlot } from './nav.js';
 import { icon, buttonIcon } from './icons.js';
 
 initTooltips();
 new ResizeObserver(() => document.documentElement.style.setProperty('--toolbar-height', `${$('#top').getBoundingClientRect().height}px`)).observe($('#top'));
 
-const TABS = { setup: renderSetup, mixer: renderMixer, controllers: renderControllers, fs: renderFootswitches };
+const TABS = { setup: renderSetup, controllers: renderControllers, fs: renderFootswitches };
 let lastPreset = null, saving = false;
 
 function render() {
@@ -81,7 +81,7 @@ async function init() {
     const { item, active } = JSON.parse(e.data); if (liveEdits.ignores(`active:${item}`)) return; const it = S.st?.preset.items.find(i => i.id === item); if (!it) return;
     it.active = active; notify(); flashItem(item); if (it.fs) flashFs(it.fs);
   });
-  es.addEventListener('setup', e => { const ev = JSON.parse(e.data); if (liveEdits.ignores(`setup:${ev.id}`)) return; const set = S.st?.preset.settings.find(x => x.id === ev.id); if (set) set.value = ev.value;  { const m = S.st?.preset.mixer, k = ({ 44: 'levelA', 45: 'levelB', 46: 'panA', 47: 'panB' })[ev.id]; if (m && k) { m[k] = ev.value; if (S.tab === 'mixer') renderSide(); } if (ev.id === 23 && S.st && typeof ev.value === 'number') { S.st.preset.tempo = ev.value; if (S.tab === 'setup') renderSide(); } if (ev.id === 56 && S.st) { S.st.preset.trails = ev.value === 1; if (S.tab === 'mixer') renderSide(); } } learnSetup(ev); });
+  es.addEventListener('setup', e => { const ev = JSON.parse(e.data); if (liveEdits.ignores(`setup:${ev.id}`)) return; const set = S.st?.preset.settings.find(x => x.id === ev.id); if (set) set.value = ev.value;  { const m = S.st?.preset.mixer, k = ({ 44: 'levelA', 45: 'levelB', 46: 'panA', 47: 'panB' })[ev.id]; if (m && k) { m[k] = ev.value; if (S.sel === 'mixer') renderInspector($('#inspector')); } if (ev.id === 23 && S.st && typeof ev.value === 'number') { S.st.preset.tempo = ev.value; if (S.tab === 'setup') renderSide(); } if (ev.id === 56 && S.st) { S.st.preset.trails = ev.value === 1; if (S.sel === 'mixer') renderInspector($('#inspector')); } } learnSetup(ev); });
   es.addEventListener('unknown', e => learnUnknown(JSON.parse(e.data)));
   es.addEventListener('progress', e => libraryProgress(JSON.parse(e.data)));
 }
@@ -174,7 +174,7 @@ addEventListener('drop', async e => {
 // Local symbols and responsive library controls.
 for(const [id,name] of Object.entries({sidebarToggle:'sidebar',prev:'left',next:'right',undo:'undo',redo:'redo',revert:'reread',fileMenu:'library',pedalSettings:'settings',compare:'swap',language:'globe',help:'help',libraryMore:'more',libraryClose:'close',colorLegend:'colors',chainTrash:'trash'})) buttonIcon($('#'+id),name);
 buttonIcon($('#save'),'save','Save to pedal');$('#searchIcon').append(icon('search'));
-for(const [tab,name] of Object.entries({setup:'input',mixer:'mixer',controllers:'expression',fs:'footswitch'})) $('#tabs [data-tab="'+tab+'"]').prepend(icon(name));
+for(const [tab,name] of Object.entries({setup:'input',controllers:'expression',fs:'footswitch'})) $('#tabs [data-tab="'+tab+'"]').prepend(icon(name));
 $('#conn').setAttribute('aria-live','polite');
 function closeSidebar() { document.body.classList.remove('sidebar-open');document.body.classList.add('sidebar-collapsed');$('#drawerBackdrop').hidden=true;$('#sidebarToggle').setAttribute('aria-expanded','false');$('#sidebarToggle').focus(); syncSidebar(); }
 function openSidebar() { document.body.classList.remove('sidebar-collapsed');document.body.classList.add('sidebar-open');$('#drawerBackdrop').hidden=!matchMedia('(max-width: 799px)').matches;$('#sidebarToggle').setAttribute('aria-expanded','true'); syncSidebar(); if(innerWidth<800) $('#setSel').focus(); }
@@ -200,10 +200,8 @@ $('#librarySidebar').addEventListener('keydown',e=>{
   }
 });
 
-// atalho para o Mixer: abre a aba e leva o painel para a tela (ele fica abaixo da cadeia em telas baixas)
-const openMixer = () => { S.tab = 'mixer'; renderSide(); document.querySelector('#side')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); };
-{ const b = $('#openMixer'); b.append(icon('mixer'), document.createTextNode('Mixer')); b.onclick = openMixer; }
-document.addEventListener('open-mixer', openMixer);
+// The mixer is a node in the chain: select it (click or M) and its editor opens in the block inspector.
+const openMixer = () => { S.sel = 'mixer'; notify(); document.querySelector('#inspector')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' }); };
 addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && e.key.toLowerCase() === 't' && !e.target.matches('input, textarea, select, [contenteditable]')) tapTempo(); });
 addEventListener('keydown', e => { if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === 'm' && !e.target.matches('input, textarea, select, [contenteditable]')) openMixer(); });
 

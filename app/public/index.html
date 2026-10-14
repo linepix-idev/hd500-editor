@@ -44,7 +44,7 @@
   <main>
     <div class="workspace-heading"><div><h1>Signal chain</h1></div><button class="conn" id="conn" title="Reconnect to the pedal"><i class="dot"></i><span id="connText">connecting…</span></button></div>
     <section id="chainWrap" aria-label="Signal chain">
-      <div class="canvas-toolbar"><div><button id="openMixer" class="pill" title="Mixer: level and pan of paths A and B (M)" aria-label="Open the mixer"></button><button id="colorLegend" class="icon" title="Signal colors" aria-label="Signal colors"></button><button id="chainTrash" class="icon" title="Drag a block here to clear it" aria-label="Clear selected block"></button></div></div>
+      <div class="canvas-toolbar"><div><button id="colorLegend" class="icon" title="Signal colors" aria-label="Signal colors"></button><button id="chainTrash" class="icon" title="Drag a block here to clear it" aria-label="Clear selected block"></button></div></div>
       <div class="chain-scroll"><div id="chain"><div class="chain-skeleton"></div></div></div>
     </section>
     <div class="split">
@@ -52,7 +52,6 @@
       <aside id="side">
         <div class="tabs" role="tablist" aria-label="Preset controls" id="tabs">
           <button id="tab-setup" role="tab" data-tab="setup" aria-selected="true" aria-controls="tabBody">Inputs</button>
-          <button id="tab-mixer" role="tab" data-tab="mixer" aria-selected="false" aria-controls="tabBody">Mixer</button>
           <button id="tab-controllers" role="tab" data-tab="controllers" aria-selected="false" aria-controls="tabBody">Controllers</button>
           <button id="tab-fs" role="tab" data-tab="fs" aria-selected="false" aria-controls="tabBody">Footswitches</button>
         </div>

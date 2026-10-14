@@ -2029,7 +2029,7 @@ main { gap:28px; padding:32px; }
 #tabBody .mx-path, #tabBody .mx-trails, #tabBody .mx-grid { margin-bottom:8px; }
 
 /* Side-panel tab bar: iOS tab-bar layout (icon over label, equal columns, tinted selection) */
-#tabs.tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; padding:4px; margin:0 0 24px; overflow:visible; border:0; border-radius:14px; background:var(--panel2); }
+#tabs.tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; padding:4px; margin:0 0 24px; overflow:visible; border:0; border-radius:14px; background:var(--panel2); }
 #tabs.tabs button { flex:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-width:0; min-height:58px; padding:8px 0 7px; overflow:hidden; text-overflow:ellipsis; border:0; border-radius:10px; background:transparent; color:var(--dim); font:500 10.5px/1.15 var(--font-text); letter-spacing:0; white-space:nowrap; box-shadow:none; }
 #tabs.tabs .symbol { display:block; width:22px; height:22px; stroke-width:1.5; }
 #tabs.tabs button:hover { color:var(--text); background:color-mix(in srgb,var(--text) 6%,transparent); }
@@ -2214,3 +2214,9 @@ body.comparing #presetName b::after { content:" · saved"; font-weight:500; colo
 .cmd { font:12px ui-monospace,monospace; overflow-wrap:anywhere; flex:1; color:var(--text); }
 .connect-error { color:var(--ios-red); }
 #chain > .connect-help { grid-column:1 / -1; width:100%; }
+
+/* Mixer as a block: node selection + inspector body */
+.mix-node.sel .io-tile { box-shadow:0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+#inspector .mixer-tile { background:linear-gradient(160deg,#b88cff,#7a4ee0); color:#fff; }
+#inspector .model-title.static { cursor:default; }
+.mixer-body .mx-grid, .mixer-body > div:first-child { gap:16px; }

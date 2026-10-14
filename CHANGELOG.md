@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.2.9
+- The Mixer is now a block of the signal chain: select the Mixer node (or press M) and it opens in the block inspector like any pedal. The Mixer tab and toolbar button are gone.
 - Tempo pill with Tap in the chain toolbar (blinks at the tempo; T key); the chain now fits the window in two compact steps.
 - Compare button: hear the saved version against your edits.
 - Backups sheet (File ▸ Backups…) and Setlist sheet (File ▸ Print setlist…: print/PDF/CSV).

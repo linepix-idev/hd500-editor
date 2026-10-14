@@ -7,9 +7,18 @@ import { ParamControl, edit, fmt } from './params.js';
 import { pickModel } from './picker.js';
 import { icon, categoryIcon } from './icons.js';
 import { tr } from './i18n.js';
+import { renderMixer } from './panels.js';
 
 let inspectedKey = null;
 export function renderInspector(root) {
+  if (S.sel === 'mixer') {
+    if (root.querySelector('.mx-path [data-dragging], .knob[data-dragging]') && inspectedKey === 'mixer') return;
+    inspectedKey = 'mixer';
+    const body = h('div', { class: 'mixer-body' });
+    root.replaceChildren(h('div', { class: 'insp-head' }, h('span', { class: 'category-tile mixer-tile' }, icon('mixer')),
+      h('div', { class: 'insp-title' }, h('span', { class: 'chip' }, 'Mix'), h('span', { class: 'model-title static' }, 'Mixer'), h('small', { class: 'based-on' }, 'Level and pan of paths A and B, and Trails'))), body);
+    renderMixer(body); return;
+  }
   const it = S.st.preset.items.find(i => i.id === S.sel);
   if (!it) { root.replaceChildren(h('div', { class: 'placeholder' }, 'Select a block in the signal chain.')); return; }
   const key = `${it.id}:${it.type}`;

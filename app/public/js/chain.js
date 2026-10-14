@@ -167,6 +167,7 @@ export function renderChain(root) {
   const signature=JSON.stringify([c,setup.input1,setup.input2,items.map(i=>[i.id,i.type,i.model,i.group,i.active,i.empty,i.fs])]);
   if(signature===chainSignature && root.querySelector('.paths')) {
     root.querySelectorAll('.block').forEach(el=>el.classList.toggle('sel',Number(el.dataset.item)===S.sel));
+    root.querySelector('#chainMixer')?.classList.toggle('sel',S.sel==='mixer');
     drawWires(); return;
   }
   chainSignature=signature;
@@ -180,7 +181,7 @@ export function renderChain(root) {
       h('div',{class:'input-source',dataset:{source:2}},ioTile(sourceIcon(inName(setup.input2===0?setup.input1:setup.input2))),h('b',{},'Input 2'),h('span',{class:'source'},inName(setup.input2)))),
     Lane('pre','Before · shared',c.pre),
     h('div',{class:'paths'},row('A',0,1,'aPre','aPost'),row('B',2,3,'bPre','bPost')),
-    h('button',{class:'io mix-node',id:'chainMixer',type:'button',title:'Mixer: level and pan of paths A and B (M)','aria-label':'Open the mixer',onClick:()=>document.dispatchEvent(new Event('open-mixer'))},h('span',{class:'io-tile io-mixer'},icon('mixer')),h('b',{},'Mixer'),h('span',{},'A + B')),
+    h('button',{class:`io mix-node ${S.sel==='mixer'?'sel':''}`,id:'chainMixer',type:'button',title:'Mixer: level and pan of paths A and B (M)','aria-label':'Open the mixer',onClick:()=>{ S.sel='mixer'; notify(); }},h('span',{class:'io-tile io-mixer'},icon('mixer')),h('b',{},'Mixer'),h('span',{},'A + B')),
     Lane('post','After · mix',c.post),h('div',{class:'io',id:'chainOutput'},ioTile('output'),h('b',{},'Output'),h('span',{},'Stereo')));
   resizeObserver?.disconnect(); resizeObserver=new ResizeObserver(()=>drawWires()); resizeObserver.observe(root);
   requestAnimationFrame(drawWires);
