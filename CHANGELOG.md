@@ -1,6 +1,12 @@
 # Changelog
 
 ## 0.2.9
+- Tempo pill with Tap in the chain toolbar (blinks at the tempo; T key); the chain now fits the window in two compact steps.
+- Compare button: hear the saved version against your edits.
+- Backups sheet (File ▸ Backups…) and Setlist sheet (File ▸ Print setlist…: print/PDF/CSV).
+- First-connection assistant: checks the USB cable, the udev rule / WinUSB driver and other programs using the pedal.
+- Controllers panel as grouped cards; footswitch panel with stomp keys and LEDs; Toe + EXP chips on blocks with both.
+- DT amp controls explained (only used with DT50/DT25 over L6 LINK).
 - Effect info sheets: maker/unit and sourced facts with Portuguese translations, friendly source labels; i18n coverage check.
 - Save now reloads the slot afterwards so the pedal's "edited" asterisk clears.
 - Cleaner UI: the Advanced tab (raw bytes, MIDI bytes, setting learner) moved to File ▸ Developer tools; footers removed; side-panel tab bar has four items.

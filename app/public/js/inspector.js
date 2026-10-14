@@ -47,7 +47,7 @@ function DtRow(it) {
       opts.map((o, i) => h('option', { value: i }, o)));
     sel.value = it.dt[key]; return h('label', { class: 'dim' }, `${label} `, sel);
   };
-  return h('details', { class: 'inset-details' }, h('summary', {}, 'Dynamic Tone'), h('div', { class: 'row' }, mk('Topology', 'topology', ['I', 'II', 'III', 'IV']), mk('Class', 'class', ['A', 'A/B']), mk('Mode', 'mode', ['Tri', 'Pent'])));
+  return h('details', { class: 'inset-details' }, h('summary', {}, 'DT amp power stage (L6 LINK)'), h('p', { class: 'ios-footer' }, 'Only used when a Line 6 DT50 or DT25 amp is connected through L6 LINK. Without one these settings do not change the sound.'), h('div', { class: 'row' }, mk('Topology', 'topology', ['I', 'II', 'III', 'IV']), mk('Class', 'class', ['A', 'A/B']), mk('Mode', 'mode', ['Tri', 'Pent'])));
 }
 
 function RangeRow(it, p) {
