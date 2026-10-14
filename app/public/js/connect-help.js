@@ -33,7 +33,7 @@ export async function connectHelp(error, retry) {
       step(!!d.visible, 'POD HD500 found on USB', d.visible ? null : 'Plug the pedal into the computer with the USB cable and switch it on.'),
       linux ? step(d.udev ?? null, 'USB permission (udev rule)', d.udev ? null : 'Needed once. Re-plug the pedal after installing.', !d.udev && d.canAssist ? action('Install permission') : null) : null,
       win ? step(d.driver === 'winusb' ? true : d.driver === 'other' ? false : null, 'WinUSB driver on the control interface',
-        d.driver === 'winusb' ? null : d.driver === 'absent' ? 'Checked as soon as the pedal is plugged in.' : 'In Zadig: Options › List All Devices, pick “POD HD500 (Interface 1)”, choose WinUSB, click Replace Driver.',
+        d.driver === 'winusb' ? null : d.driver === 'absent' ? 'Checked as soon as the pedal is plugged in.' : "Another driver controls the pedal (usually Line 6's audio driver). In Zadig: Options › List All Devices, pick “POD HD500” (or “Interface 1”), choose WinUSB, click Replace Driver.",
         d.driver !== 'winusb' && d.driver !== 'absent' && d.canAssist ? action('Open Zadig') : null) : null,
       mac ? step(d.daemon ? true : null, d.daemon ? 'Audio driver running' : 'Nothing to install', d.daemon ? null : 'If it still fails, close other programs that use the pedal.') : null,
       step(kind === 'busy' ? false : null, 'No other program using the pedal', 'Close the official Line 6 editor or any other MIDI/USB tool.'),
@@ -44,6 +44,7 @@ export async function connectHelp(error, retry) {
       h('h2', {}, 'Connect your POD HD500'),
       h('p', { class: 'ios-footer' }, 'The editor connects by itself as soon as the pedal is ready.'),
       h('div', { class: 'ios-group' }, steps), cmd,
+      win && d.driver && d.driver !== 'winusb' && d.driver !== 'absent' ? h('p', { class: 'ios-footer' }, 'Heads-up: on Windows the pedal is either a sound card (Line 6 driver) or editable here (WinUSB), not both at once.') : null,
       (d.lastError || error) && !d.connected ? h('p', { class: 'ios-footer connect-error' }, d.lastError || error) : null,
       h('div', { class: 'ios-action' }, h('button', { class: 'primary', type: 'button', disabled: trying, onClick: tryAgain }, trying ? 'Trying…' : 'Try again'))].filter(Boolean));
   };

@@ -205,7 +205,7 @@ const routes = {
   'GET /api/diagnose': async () => ({
     platform: process.platform, visible: DEMO || deviceVisible(), lastError, kind: Drv.classifyError(lastError), connected: !!pod,
     udev: process.platform === 'linux' ? Drv.udevInstalled() : null,
-    driver: process.platform === 'win32' && !DEMO ? (await Drv.windowsDriverState()).state : null,   // 'winusb' | 'other' | 'absent' | 'unknown'
+    ...(process.platform === 'win32' && !DEMO ? await (async () => { const w = await Drv.windowsDriverState(); return { driver: w.state, driverService: w.service ?? null }; })() : { driver: null, driverService: null }),   // driver: 'winusb' | 'other' | 'absent' | 'unknown'
     daemon: process.platform === 'darwin' ? existsSync(process.env.HD500_CTRL_SOCK || '/var/run/hd500audiod.sock') : null,
     canAssist: Drv.canAssist(),
   }),

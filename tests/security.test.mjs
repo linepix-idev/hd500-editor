@@ -149,6 +149,10 @@ test('assistente de driver: diagnóstico com forma estável, classificação de 
   const { classifyError, UDEV_RULE } = await import('../core/driver.mjs');
   const { readFileSync } = await import('node:fs');
   assert.equal(classifyError('On Windows the pedal must use the WinUSB driver on this interface'), 'driver');
+  const { parseWindowsDrivers } = await import('../core/driver.mjs');
+  assert.equal(parseWindowsDrivers('').state, 'absent');
+  assert.equal(parseWindowsDrivers('USB\\VID_0E41&PID_414D\\5&1&0|usbccgp\nUSB\\VID_0E41&PID_414D&MI_01\\6&1&0&0001|WINUSB').state, 'winusb');
+  assert.deepEqual(parseWindowsDrivers('USB\\VID_0E41&PID_414D\\5&1&0|L6PODHD'), { state: 'other', service: 'L6PODHD' }, 'driver de áudio da Line 6 assumiu o dispositivo inteiro');
   assert.equal(classifyError('No permission to access the pedal. Install the project\'s udev rule'), 'permission');
   assert.equal(classifyError('The pedal is in use by another program.'), 'busy');
   assert.equal(classifyError('POD HD500 not found (USB cable?)'), 'notfound');

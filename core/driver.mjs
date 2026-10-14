@@ -17,7 +17,7 @@ export function classifyError(message) {
 const run = (file, args, timeout = 6000) => new Promise(res =>
   execFile(file, args, { timeout, windowsHide: true }, (err, stdout) => res({ err, out: String(stdout ?? '').trim() })));
 
-/** Windows: qual driver está ligado à interface de controle (MI_01)? 'winusb' | 'other' | 'absent' | 'unknown' */
+/** Windows: qual driver controla o pedal? 'winusb' | 'other' (+service) | 'absent' | 'unknown' */
 let winCache = null; // o assistente consulta a cada 2 s: um PowerShell por consulta pesa; reaproveita o resultado por 4 s e junta chamadas simultâneas
 export function windowsDriverState() {
   if (winCache && Date.now() - winCache.at < 4000) return winCache.p;
@@ -25,13 +25,19 @@ export function windowsDriverState() {
   return p;
 }
 export const resetDriverCache = () => { winCache = null; };
+/** Linhas "DeviceID|Service" do pedal (dispositivo inteiro e/ou interfaces MI_xx) -> estado. Com o driver de áudio da Line 6 o pedal vira UM dispositivo só (sem MI_01), por isso não basta olhar a interface 1. */
+export function parseWindowsDrivers(out) {
+  const rows = String(out ?? '').split(/\r?\n/).map(l => l.trim()).filter(l => /^USB\\VID_0E41/i.test(l)).map(l => { const [id, svc = ''] = l.split('|'); return { id, service: svc.trim() }; });
+  if (!rows.length) return { state: 'absent' };
+  if (rows.some(r => /^winusb$/i.test(r.service))) return { state: 'winusb' };
+  const owner = rows.map(r => r.service).find(s => s && !/^usbccgp$/i.test(s)) ?? rows[0].service;
+  return { state: 'other', service: owner };
+}
 async function queryWindowsDriver() {
-  const script = "$d = Get-CimInstance Win32_PnPEntity | Where-Object { $_.PNPDeviceID -like 'USB\\VID_0E41&PID_414D&MI_01*' } | Select-Object -First 1; if ($d) { 'FOUND|' + $d.Service } else { 'NONE' }";
+  const script = "Get-CimInstance Win32_PnPEntity | Where-Object { $_.PNPDeviceID -like 'USB\\VID_0E41&PID_414D*' } | ForEach-Object { $_.PNPDeviceID + '|' + $_.Service }";
   const { err, out } = await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script]);
   if (err && !out) return { state: 'unknown' };
-  if (out.startsWith('NONE')) return { state: 'absent' };
-  const service = out.split('|')[1] ?? '';
-  return { state: /^winusb$/i.test(service) ? 'winusb' : 'other', service };
+  return parseWindowsDrivers(out);
 }
 
 /** Caminho do Zadig empacotado (instalador) ou do clone do repositório. */
