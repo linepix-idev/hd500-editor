@@ -131,6 +131,8 @@ export function flashFs(fs) {
 // ---------------------------------------------------------------------------------------- Biblioteca
 const L = { multi: new Set(), multiSet: null, lastMulti: null, set: null, names: new Map(), pending: new Map(), errors: new Map(), versions: new Map(), queue: Promise.resolve(), search: '', generation: 0 };
 let sidebarSignature = '', selectionSet = null;
+// Ao desconectar a lista é apagada; sem zerar a assinatura, a reconexão achava que ela já estava desenhada e deixava a biblioteca vazia.
+export const resetSidebar = () => { sidebarSignature = ''; };
 function Slot(set, i, name) {
   const cur = set === S.st.selection.set && i === S.st.selection.preset;
   const b = h('button', { class: `slot ${cur ? 'cur' : ''} ${name == null ? 'skeleton' : ''} ${L.multiSet === set && L.multi.has(i) ? 'multi' : ''}`, dataset: { set, preset: i }, 'aria-current': cur ? 'true' : 'false', 'aria-label': `${presetLabel(i)} · ${name ?? tr('Loading…')}`, draggable: true, title: name ?? '', onClick: async e => { if (e.shiftKey || e.ctrlKey || e.metaKey) { toggleMulti(set, i, e.shiftKey); return; } L.multi.clear(); await selectSlot(set, i); if (!S.st?.dirty && matchMedia('(max-width: 799px)').matches) closeDrawer(); },

@@ -2131,3 +2131,9 @@ body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infin
   .actions { flex:1 1 100%; justify-content:flex-end; gap:6px; padding-top:6px; border-top:1px solid var(--line); }
 }
 .sidebar-foot { padding:0 12px; }
+
+/* "Sem conexão": bloco centrado com largura legível (antes ficava numa coluna de uma palavra por linha) e botão em pílula. */
+#chain > .placeholder { margin:auto; width:min(320px,78vw); padding:48px 20px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+#chain > .placeholder .symbol { margin:0; }
+#chain > .placeholder p { margin:0; }
+#chain > .placeholder button { min-height:var(--ctl-h); padding:0 18px; border-radius:calc(var(--ctl-h) / 2); white-space:nowrap; }
