@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer"><title>HD500 Editor — free editor for the Line 6 POD HD500</title><meta name="description" content="A free, open editor for the Line 6 POD HD500, for Linux, Windows and macOS."><style>:root{color-scheme:light dark;--bg:#fff;--fg:#1d1d1f;--mut:#6e6e73;--card:#f5f5f7;--line:#d2d2d7;--acc:#0071e3}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--fg:#f5f5f7;--mut:#a1a1a6;--card:#1c1c1e;--line:#38383a;--acc:#2997ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:760px;margin:0 auto;padding:40px 20px 64px}header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:40px;line-height:1.1;letter-spacing:-.02em;margin:28px 0 8px}h2{font-size:24px;margin:44px 0 8px;letter-spacing:-.01em}
+p{margin:8px 0}.mut{color:var(--mut)}a{color:var(--acc)}.lang{font-size:15px}
+.btn{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;border-radius:980px;padding:11px 22px;margin-top:10px;font-weight:600}
+.card{background:var(--card);border-radius:18px;padding:18px 20px;margin:12px 0}.card h3{margin:0 0 4px;font-size:18px}
+ul{padding-left:20px}li{margin:6px 0}code,.key{font:14px ui-monospace,Menlo,Consolas,monospace;word-break:break-all}
+.pix{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:center}.pix img{width:200px;height:200px;background:#fff;border-radius:14px;padding:8px}
+.key{display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:4px 0 12px;user-select:all}
+@media(max-width:560px){h1{font-size:32px}.pix{grid-template-columns:1fr;justify-items:center}}
+footer{margin-top:48px;color:var(--mut);font-size:14px}</style></head>
+<body><main>
+<header><b>HD500 Editor</b><a class="lang" href="index.html" hreflang="pt-BR">Português</a></header>
+<h1>HD500 Editor</h1><p>A free, open editor for the <b>Line 6 POD HD500</b>, now that the official software is no longer maintained. Runs on Linux, Windows and macOS and talks to the pedal directly over USB.</p>
+<h2>Download</h2><p>Releases live on the project’s releases page.</p><p class="mut">Current version: 0.2.13 (beta)</p><a class="btn" href="https://github.com/linepix-idev/hd500-editor/releases/latest" rel="noopener noreferrer">See releases</a>
+<h2>What it does</h2><ul><li>Signal graph: drag effects before/after the amp and between paths A and B.</li><li>Live editing of every amp, cab and effect, mixer, footswitches and expression pedals.</li><li>8 sets × 64 presets: rename, copy, swap, export and import (.h5e), with an automatic backup before every write.</li><li>Nothing is written to the pedal’s memory until you press “Save to pedal”.</li></ul>
+<h2>Systems and limitations</h2><div class="card"><h3>Linux</h3><p>Editor and USB audio work together. .deb package or AppImage.</p><p><a href="pdf/HD500-Editor-Linux-en.pdf">PDF guide — Linux</a></p></div><div class="card"><h3>Windows</h3><p>The pedal is either a sound card (Line 6’s official driver) <i>or</i> editable in the app (WinUSB), never both at once. Unsigned installer: SmartScreen warns.</p><p><a href="pdf/HD500-Editor-Windows-en.pdf">PDF guide — Windows</a></p></div><div class="card"><h3>macOS</h3><p>The editor works. Installer not signed by Apple (right-click ▸ Open). Audio input and the pedal under System Settings ▸ Sound need an Apple certificate and do not work yet.</p><p><a href="pdf/HD500-Editor-macOS-en.pdf">PDF guide — macOS</a></p></div>
+<h2>Support the project</h2><p>HD500 Editor is free. If it helped you, a Pix donation (Brazil) helps keep it maintained. It is voluntary, entitles you to nothing and creates no relationship.</p>
+<div class="card pix"><img src="pix-qr.svg" alt="QR code Pix" width="200" height="200"><div>
+<p>Point your banking app’s camera at the QR code, or copy the key below.</p><p class="mut">Pix key (random)</p><span class="key">06ae28e6-4a7d-4a5b-9f24-140d47d9163e</span><p class="mut">Pix copy and paste</p><span class="key">00020101021126580014br.gov.bcb.pix013606ae28e6-4a7d-4a5b-9f24-140d47d9163e5204000053039865802BR5917Moises Lima Gomes6006Guarai62070503***6304F797</span><p class="mut">Receiver: <b>Moises Lima Gomes</b></p></div></div>
+<p class="mut">Check that the name in your banking app matches the receiver before confirming.</p>
+<footer><p>Independent project, not affiliated with Line 6 or Yamaha Guitar Group. MIT license. <a href="https://github.com/linepix-idev/hd500-editor" rel="noopener noreferrer">Source code</a></p></footer>
+</main></body></html>

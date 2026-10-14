@@ -2143,3 +2143,9 @@ body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infin
 .mcp-row { gap:12px; }
 .mcp-row > label { flex:1; min-width:0; }
 .mcp-row small { display:block; margin-top:2px; line-height:1.35; }
+
+/* Support (Pix) */
+.pix-box { display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin:12px 0; }
+.pix-box img { width:180px; height:180px; background:#fff; border-radius:14px; padding:8px; }
+.pix-box > div { flex:1; min-width:220px; }
+.row-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }

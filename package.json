@@ -118,7 +118,8 @@
   "devDependencies": {
     "electron": "^44.7.1",
     "electron-builder": "^26.15.3",
-    "puppeteer-core": "^25.13.0"
+    "puppeteer-core": "^25.13.0",
+    "qrcode": "^1.5.4"
   },
   "homepage": "https://github.com/linepix-idev/hd500-editor#readme",
   "keywords": [

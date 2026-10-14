@@ -1,3 +1,4 @@
+import { PIX } from './donate-data.js';
 import { openGlobals } from './global.js';
 import { openBackups } from './backups.js';
 import { openSetlist } from './setlist.js';
@@ -164,8 +165,19 @@ $('#fileMenu').onclick = e => { const r = e.currentTarget.getBoundingClientRect(
   ['Backups…', openBackups],
   ['Developer tools…', openDevTools],
   ['Help and shortcuts', showHelp],
+  ['Support the project (Pix)…', openSupport],
   ...Object.entries(langs).filter(([k]) => k !== lang).map(([k, name]) => [name, () => setLang(k)]),
 ]); };
+
+function openSupport() {
+  const copy = async (text) => { try { await navigator.clipboard.writeText(text); toast('Copied.'); } catch { toast(text); } };
+  modal('Support the project', [
+    h('p', {}, 'HD500 Editor is free and open. If it helps you, a Pix donation (Brazil) keeps it maintained. It is voluntary and entitles you to nothing.'),
+    h('div', { class: 'pix-box' }, h('img', { src: 'pix-qr.svg', alt: 'Pix QR code', width: 180, height: 180 }),
+      h('div', {}, h('p', { class: 'dim' }, 'Scan with your bank app, or copy the Pix key.'), h('code', { class: 'cmd' }, PIX.key),
+        h('div', { class: 'row-actions' }, h('button', { class: 'tap-btn', type: 'button', onClick: () => copy(PIX.key) }, 'Copy Pix key'), h('button', { class: 'tap-btn', type: 'button', onClick: () => copy(PIX.payload) }, 'Copy Pix code (copia e cola)')))),
+    h('p', { class: 'dim' }, 'Receiver: ', PIX.name), h('p', { class: 'dim' }, 'Check that the name in your bank app matches before confirming.')]);
+}
 
 function showHelp() {
   const k = (a, b) => h('tr', {}, h('td', {}, h('kbd', {}, a)), h('td', {}, b));
