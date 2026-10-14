@@ -2,3 +2,4 @@ node_modules
 dist
 backups
 build/win/zadig.exe
+tools/sources/

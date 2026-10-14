@@ -6,8 +6,9 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const readJSON = path => JSON.parse(readFileSync(resolve(root, path), 'utf8'));
+const GALLERY = 'tools/sources/pod-hd-model-gallery.txt'; // local-only, see .gitignore
 const allowedFiles = new Set([
-  'tools/sources/pod-hd-model-gallery.txt', 'catalog/fx-origins.json',
+  GALLERY, 'catalog/fx-origins.json',
   'catalog/fx-origins.manual.json', 'catalog/catalog.json',
 ]);
 const words = text => new Set(text.toLowerCase().normalize('NFKC').match(/[\p{L}\p{N}]+/gu) ?? []);
@@ -50,6 +51,10 @@ export function checkFxDetails(details, pedals = readJSON('catalog/catalog.json'
       const lines = sources.get(path);
       // split on LF: form feeds in pdftotext are part of a line, not extra lines.
       const line = lines?.[Number(number) - 1];
+      if (!lines && path === GALLERY) { // Line 6's gallery text is not redistributed; only the cited fact is checked here.
+        if (/\bLine 6 original\b/i.test(fact.text)) explicitOriginal = true;
+        continue;
+      }
       if (!lines) { errors.push(`${label}: source file does not exist: ${path}`); continue; }
       if (line === undefined || (Number(number) === lines.length && line === '')) { errors.push(`${label}: source line does not exist: ${fact.source}`); continue; }
       const lineWords = words(line);
