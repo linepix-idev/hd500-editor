@@ -8,7 +8,7 @@ const paths = {
   guitar: 'M13 2l3 3 M14 4l-6 7 M9 8c-2-2-4 0-3 2-4-1-5 4-2 6s7 0 5-3c3 0 3-3 1-4',
   mic: 'M7 3a3 3 0 0 1 6 0v6a3 3 0 0 1-6 0V3 M4 8v1a6 6 0 0 0 12 0V8 M10 15v3 M7 18h6',
   output: 'M3 7h4l4-4v14l-4-4H3V7 M14 6q6 4 0 8',
-  footswitch: 'M3 6h14v11H3V6 M7 6V4h6v2 M7 12h6 M10 9v6', expression: 'M6 2h8l2 16H4L6 2 M7 6h6 M7 9h6 M7 12h6',
+  footswitch: 'M10 2.6h.01 M5.2 6h9.6A2.2 2.2 0 0 1 17 8.2v7.6a2.2 2.2 0 0 1-2.2 2.2H5.2A2.2 2.2 0 0 1 3 15.8V8.2A2.2 2.2 0 0 1 5.2 6z M6.2 10h7.6a.9.9 0 0 1 .9.9v3.2a.9.9 0 0 1-.9.9H6.2a.9.9 0 0 1-.9-.9v-3.2a.9.9 0 0 1 .9-.9z', expression: 'M6 2h8l2 16H4L6 2 M7 6h6 M7 9h6 M7 12h6',
   amp: 'M3 3h14v14H3V3 M3 7h14 M6 5h.1 M10 5h.1 M14 5h.1 M6 10l8 4 M6 14l8-4',
   cab: 'M4 2h12v16H4V2 M13 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M13 14a3 3 0 1 1-6 0 3 3 0 0 1 6 0',
   dynamics: 'M2 10h3l2-6 3 12 3-12 2 6h3', distortion: 'M2 13h4V6h4v8h4V7h4',
