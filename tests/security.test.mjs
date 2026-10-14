@@ -143,3 +143,24 @@ test('MCP desligado no app bloqueia a IA (x-hd500-actor: ai) e religa sem reinic
   assert.equal((await post(true)).status, 200);
   assert.equal((await call(port, { path: '/api/state', headers: ai })).status, 200);
 });
+
+test('assistente de driver: diagnóstico com forma estável, classificação de erro e instalação só pela janela do app', async t => {
+  t.after(stop);
+  const { classifyError, UDEV_RULE } = await import('../core/driver.mjs');
+  const { readFileSync } = await import('node:fs');
+  assert.equal(classifyError('On Windows the pedal must use the WinUSB driver on this interface'), 'driver');
+  const { parseWindowsDrivers } = await import('../core/driver.mjs');
+  assert.equal(parseWindowsDrivers('').state, 'absent');
+  assert.equal(parseWindowsDrivers('USB\\VID_0E41&PID_414D\\5&1&0|usbccgp\nUSB\\VID_0E41&PID_414D&MI_01\\6&1&0&0001|WINUSB').state, 'winusb');
+  assert.deepEqual(parseWindowsDrivers('USB\\VID_0E41&PID_414D\\5&1&0|L6PODHD'), { state: 'other', service: 'L6PODHD' }, 'driver de áudio da Line 6 assumiu o dispositivo inteiro');
+  assert.equal(classifyError('No permission to access the pedal. Install the project\'s udev rule'), 'permission');
+  assert.equal(classifyError('The pedal is in use by another program.'), 'busy');
+  assert.equal(classifyError('POD HD500 not found (USB cable?)'), 'notfound');
+  assert.equal(classifyError('boom'), 'other'); assert.equal(classifyError(null), null);
+  assert.equal(UDEV_RULE, readFileSync(new URL('../99-line6-hd500.rules', import.meta.url), 'utf8').split('\n').find(l => l.startsWith('SUBSYSTEM')), 'regra embutida igual ao arquivo do repositório');
+  assert.ok(readFileSync(new URL('../build/linux/after-install.sh', import.meta.url), 'utf8').includes(UDEV_RULE), 'regra do .deb igual ao arquivo do repositório');
+  const h = { 'x-hd500-editor': '1', Origin: `http://127.0.0.1:${port}` };
+  const d = JSON.parse((await call(port, { path: '/api/diagnose', headers: h })).body);
+  for (const k of ['platform', 'visible', 'kind', 'udev', 'driver', 'daemon', 'canAssist']) assert.ok(k in d, `diagnose.${k}`);
+  assert.equal((await call(port, { method: 'POST', path: '/api/driver/install', headers: { ...h, 'x-hd500-actor': 'ai' }, body: '{}' })).status, 403); // a IA não instala driver
+});

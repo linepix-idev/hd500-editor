@@ -2083,8 +2083,6 @@ body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infin
 
 /* Toolbar: MCP switch state, no wrapping labels. */
 #save { white-space:nowrap; }
-.mcp-btn.off { color:var(--dim); opacity:.75; }
-.mcp-btn:not(.off) { color:var(--accent); }
 .insp-title .chip { white-space:nowrap; }
 
 /* Phones: three calm rows instead of one crowded, wrapping bar.
@@ -2095,7 +2093,7 @@ body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infin
   #sidebarToggle { order:1; }
   .brand { order:2; flex:1; min-width:0; font-size:16px; }
   .brand span { display:none; }
-  #mcpBtn { order:3; } #fileMenu { order:4; } #pedalSettings { order:5; } #theme { order:6; }
+  #fileMenu { order:3; } #pedalSettings { order:4; } #theme { order:5; }
   .presetnav { order:7; width:100%; margin:0; padding:6px 0 0; justify-content:space-between; border-top:1px solid var(--line); }
   .presetname { flex:1; justify-content:center; min-width:0; }
   .presetname b { font-size:17px; }
@@ -2137,3 +2135,11 @@ body.ai-active #top::after { opacity:1; animation:aiSweep 2.2s ease-in-out infin
 #chain > .placeholder .symbol { margin:0; }
 #chain > .placeholder p { margin:0; }
 #chain > .placeholder button { min-height:var(--ctl-h); padding:0 18px; border-radius:calc(var(--ctl-h) / 2); white-space:nowrap; }
+
+/* MCP row inside pedal settings: Apple-style icon tile + title/description + switch. */
+.mcp-tile { width:30px; height:30px; flex:none; display:grid; place-items:center; border-radius:8px; color:#fff; background:linear-gradient(160deg,#7aa7ff,#a06bff 60%,#ff8fb1); transition:filter var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease); }
+.mcp-tile .symbol { width:18px; height:18px; }
+.mcp-row.off .mcp-tile { filter:grayscale(1); opacity:.55; }
+.mcp-row { gap:12px; }
+.mcp-row > label { flex:1; min-width:0; }
+.mcp-row small { display:block; margin-top:2px; line-height:1.35; }

@@ -6,6 +6,8 @@ Third-party material
 * catalog/catalog.json — model and parameter tables derived from lpedit-lib by Nicolas Schwartz
   (https://github.com/StarAurryon/lpedit-lib), LGPL-3.0. Converted and extended by tools/gen-catalog.py.
   Its protocol research (POD HD500X) was the starting point of this project.
+* build/win/zadig.exe (Windows installers only) — Zadig 2.9 by Pete Batard, GPL-3.0, redistributed unmodified as a separate program that the user launches
+  (https://zadig.akeo.ie, source: https://github.com/pbatard/libwdi). It is downloaded and checksum-verified at release time; see .github/workflows/release.yml.
 * Electron, node-usb (usb), puppeteer-core and their dependencies — see their respective licenses.
 
 * app/public/js/gear.js, catalog/gear-styles.json — original vector illustrations of amps, cabs, microphones and pedals, drawn from real-world gear archetypes; no Line 6 artwork is used.

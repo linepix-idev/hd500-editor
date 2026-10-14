@@ -26,7 +26,12 @@ function render() {
   for (const id of ['save','undo','redo','prev','next','fileMenu','chainTrash']) $('#'+id).disabled=!st?.connected || (id==='save' && saving);
   $('#conn').classList.toggle('on', !!st?.connected);
   $('#connText').textContent = st?.connected ? 'POD HD500 connected' : 'disconnected';
-  if (!st?.connected || !st.preset) { $('#chain').replaceChildren(h('div', { class: 'placeholder' }, icon('input'), h('p',{},'No connection to the pedal.'), h('button',{onClick:reconnect},'Try again'))); $('#inspector').replaceChildren(); $('#tabBody').replaceChildren(); $('#libraryList').replaceChildren(); resetSidebar(); return; }
+  if (!st?.connected || !st.preset) {
+    if (!$('#chain .connect-help')) { // first paint: simple notice at once, then the full assistant (driver/permission steps, one-click fix, auto-connect)
+      $('#chain').replaceChildren(h('div', { class: 'placeholder' }, icon('input'), h('p',{},'No connection to the pedal.'), h('button',{onClick:reconnect},'Try again')));
+      connectHelp(S.st?.lastError ?? '', reconnect).then(el => { if (!S.st?.connected && !$('#chain .connect-help')) $('#chain').replaceChildren(el); }).catch(() => {});
+    }
+    $('#inspector').replaceChildren(); $('#tabBody').replaceChildren(); $('#libraryList').replaceChildren(); resetSidebar(); return; }
   if(!$('#pname').isContentEditable) $('#pname').textContent = st.preset.name || '—';
   $('#pnum').textContent = `${S.st.setNames[st.selection.set]?.slice(0, 10) ?? 'Set ' + (st.selection.set + 1)} · ${presetLabel(st.selection.preset)}`;
   $('#dirty').hidden = !st.dirty; $('#save').classList.add('primary'); $('#save').setAttribute('aria-label',st.dirty?'Save unsaved changes':'Save to pedal');
@@ -98,13 +103,7 @@ async function init() {
 async function reconnect() { try { if(!S.cat) S.cat=await api('catalog'); await load(await api('reconnect', {})); } catch (e) { fail(e); } }
 
 // ---- topo
-function paintMcp(on) {
-  const b = $('#mcpBtn'); if (!b) return; S.mcp = on;
-  b.setAttribute('aria-pressed', String(on)); b.classList.toggle('off', !on); buttonIcon(b, on ? 'sparkle' : 'sparkleOff');
-  b.title = on ? 'MCP on: the AI can read and edit the pedal. Click to turn off.' : 'MCP off: the AI is blocked. Click to turn on.';
-}
-$('#mcpBtn').onclick = async () => { const next = !(S.mcp ?? true); try { const r = await api('mcp', { enabled: next }); paintMcp(r.enabled); toast(r.enabled ? 'MCP on: the AI can edit the pedal.' : 'MCP off: the AI is blocked.'); } catch (e) { fail(e); } };
-paintMcp(true);
+function paintMcp(on) { S.mcp = on; document.dispatchEvent(new CustomEvent('mcp-changed', { detail: on })); } // o interruptor vive em Configurações do pedal
 $('#live').onclick = () => { liveEdits.setLive(!liveEdits.live); $('#live').setAttribute('aria-checked', String(liveEdits.live)); $('#live').title = liveEdits.live ? 'Edits go to the pedal while you drag. Save still writes to its memory.' : 'Edits go to the pedal when you release the control.'; };
 initSidebar();
 const step = d => { if(S.st?.connected) return selectSlot(undefined, (S.st.selection.preset + d + S.cat.presets) % S.cat.presets); };

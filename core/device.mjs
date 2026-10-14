@@ -15,6 +15,8 @@ export class Pod extends EventEmitter {
     dev.on(m => this.#onMessage(m));
   }
   close() { return this.dev.close(); }
+  /** O transporte perdeu o dispositivo (USB re-enumerou/cabo): a conexão precisa ser refeita. */
+  get failed() { return !!this.dev.failed; }
 
   // eventos originados no painel do pedal (knobs, footswitches, troca de preset)
   #onMessage(m) {
