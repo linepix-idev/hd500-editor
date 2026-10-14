@@ -74,14 +74,17 @@ export function modal(title, body, { onClose } = {}) {
 }
 
 export function download(name, data, type = 'application/octet-stream') {
-  const a = h('a', { href: URL.createObjectURL(new Blob([data], { type })), download: name }); document.body.append(a); a.click(); a.remove();
+  const url = URL.createObjectURL(new Blob([data], { type }));
+  const a = h('a', { href: url, download: name }); document.body.append(a);
+  try { a.click(); } finally { a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
 }
 export const b64ToBytes = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 export const bytesToB64 = u8 => { let s = ''; for (const b of u8) s += String.fromCharCode(b); return btoa(s); };
 export function pickFile(accept) {
   return new Promise(res => {
     const inp = $('#filePick'); inp.value = ''; inp.accept = accept ?? '';
-    inp.onchange = () => res(inp.files[0] ?? null); inp.click();
+    const finish = file => { inp.onchange = null; inp.oncancel = null; res(file); };
+    inp.onchange = () => finish(inp.files[0] ?? null); inp.oncancel = () => finish(null); inp.click();
   });
 }
 

@@ -91,3 +91,56 @@ test('all 115 sheets select PT/EN notes and facts, hide redundant origins and gr
       : 'Source: Line 6 POD HD Model Gallery (origin list) [1]; Line 6 POD HD Model Gallery [2][3]');
   }
 });
+
+test('mixer traduz título e descrição em português', () => {
+  assert.equal(pt.tr('Mix'), 'Mixagem');
+  assert.equal(pt.tr('Level and pan of paths A and B, and Trails'), 'Nível e pan dos caminhos A e B, e Trails');
+  assert.equal(en.tr('Mix'), 'Mix');
+});
+
+test('setlist ignora resposta antiga quando o usuário troca de set durante a leitura', async () => {
+  const pending = []; let pick, sheet;
+  const source = readFileSync(new URL('../app/public/js/setlist.js', import.meta.url), 'utf8')
+    .replace(/^import .*;\n/gm, '').replace(/^export /gm, '') + '\n globalThis.open = openSetlist;';
+  const context = {
+    S: { st: { setNames: ['PRIMEIRO', 'SEGUNDO'], selection: { set: 0 } } }, tr: s => s,
+    api: (_, body) => new Promise(resolve => pending.push({ set: body.set, resolve })),
+    h: (tag, attrs = {}, ...children) => {
+      const node = { tag, attrs, children: children.flat(), replaceChildren(...kids) { this.children = kids.flat(); } };
+      if (tag === 'select') pick = node;
+      if (attrs.class === 'setlist-sheet') sheet = node;
+      return node;
+    },
+    modal() {}, fail: e => { throw e; }, toast() {}, download() {}, presetLabel: i => String(i),
+  };
+  runInNewContext(source, context);
+  const initial = context.open();
+  pick.value = '1'; const next = pick.attrs.onChange();
+  assert.deepEqual(pending.map(p => p.set), [0, 1]);
+  pending[1].resolve(['NOVO']); await next;
+  assert(textContent(sheet).includes('NOVO'));
+  pending[0].resolve(['ANTIGO']); await initial;
+  assert(textContent(sheet).includes('NOVO')); assert(!textContent(sheet).includes('ANTIGO'));
+});
+
+test('download libera URL temporária e seletor de arquivo resolve ao cancelar', async () => {
+  const source = readFileSync(new URL('../app/public/js/util.js', import.meta.url), 'utf8');
+  const fragment = source.slice(source.indexOf('export function download'), source.indexOf('/** Delayed'))
+    .replace(/^export /gm, '') + '\n globalThis.helpers = { download, pickFile };';
+  const timers = [], revoked = [], input = { files: [], click() {} };
+  let clicks = 0, removed = 0;
+  const context = {
+    h: () => ({ click() { clicks++; }, remove() { removed++; } }),
+    document: { body: { append() {} } }, $: () => input, Blob,
+    URL: { createObjectURL: () => 'blob:test', revokeObjectURL: url => revoked.push(url) },
+    setTimeout: fn => timers.push(fn),
+  };
+  runInNewContext(fragment, context);
+  context.helpers.download('test.csv', 'data');
+  assert.equal(clicks, 1); assert.equal(removed, 1); assert.equal(timers.length, 1);
+  timers[0](); assert.deepEqual(revoked, ['blob:test']);
+  const cancelled = context.helpers.pickFile('.h5e'); input.oncancel();
+  assert.equal(await cancelled, null); assert.equal(input.onchange, null); assert.equal(input.oncancel, null);
+  const selected = context.helpers.pickFile('.h5e'); const file = { name: 'test.h5e' }; input.files = [file]; input.onchange();
+  assert.equal(await selected, file); assert.equal(input.oncancel, null);
+});

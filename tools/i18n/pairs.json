@@ -1978,5 +1978,17 @@
 [
 "IA",
 "AI"
+],
+[
+"Mixagem",
+"Mix"
+],
+[
+"Nível e pan dos caminhos A e B, e Trails",
+"Level and pan of paths A and B, and Trails"
+],
+[
+"${tr('Set')} ${set + 1} · HD500",
+"${tr('Set')} ${set + 1} · HD500"
 ]
 ]
