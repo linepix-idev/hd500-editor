@@ -9,7 +9,7 @@ import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, 
 import { S, onChange, notify, presetLabel } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
-import { renderSetup, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, openDevTools } from './panels.js';
+import { renderSetup, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, resetSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, openDevTools } from './panels.js';
 import { selectSlot } from './nav.js';
 import { icon, buttonIcon } from './icons.js';
 
@@ -26,7 +26,7 @@ function render() {
   for (const id of ['save','undo','redo','prev','next','fileMenu','chainTrash']) $('#'+id).disabled=!st?.connected || (id==='save' && saving);
   $('#conn').classList.toggle('on', !!st?.connected);
   $('#connText').textContent = st?.connected ? 'POD HD500 connected' : 'disconnected';
-  if (!st?.connected || !st.preset) { $('#chain').replaceChildren(h('div', { class: 'placeholder' }, icon('input'), h('p',{},'No connection to the pedal.'), h('button',{onClick:reconnect},'Try again'))); $('#inspector').replaceChildren(); $('#tabBody').replaceChildren(); $('#libraryList').replaceChildren(); return; }
+  if (!st?.connected || !st.preset) { $('#chain').replaceChildren(h('div', { class: 'placeholder' }, icon('input'), h('p',{},'No connection to the pedal.'), h('button',{onClick:reconnect},'Try again'))); $('#inspector').replaceChildren(); $('#tabBody').replaceChildren(); $('#libraryList').replaceChildren(); resetSidebar(); return; }
   if(!$('#pname').isContentEditable) $('#pname').textContent = st.preset.name || '—';
   $('#pnum').textContent = `${S.st.setNames[st.selection.set]?.slice(0, 10) ?? 'Set ' + (st.selection.set + 1)} · ${presetLabel(st.selection.preset)}`;
   $('#dirty').hidden = !st.dirty; $('#save').classList.add('primary'); $('#save').setAttribute('aria-label',st.dirty?'Save unsaved changes':'Save to pedal');
