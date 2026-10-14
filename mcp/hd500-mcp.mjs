@@ -35,7 +35,9 @@ const call = async (path, body) => {
   base ??= await find();
   let r;
   try { r = await fetch(`${base}/api/${path}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1', 'x-hd500-actor': 'ai' }, body: JSON.stringify(body) }); }
-  catch { base = await find(); r = await fetch(`${base}/api/${path}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1', 'x-hd500-actor': 'ai' }, body: JSON.stringify(body) }); }
+  catch (e) { // POST só repete se a conexão nem chegou a abrir; senão a operação pode já ter sido executada
+    if (body !== undefined && e?.cause?.code !== 'ECONNREFUSED') throw e;
+    base = await find(); r = await fetch(`${base}/api/${path}`, body === undefined ? {} : { method: 'POST', headers: { 'content-type': 'application/json', 'x-hd500-editor': '1', 'x-hd500-actor': 'ai' }, body: JSON.stringify(body) }); }
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error ?? `HTTP ${r.status}`);
   return j;

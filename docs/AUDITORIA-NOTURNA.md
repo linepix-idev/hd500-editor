@@ -4,15 +4,13 @@ Data: 14/10/2026. Branch: `estabilizacao-noturna`.
 
 ## Situação da entrega
 
-**Correções implementadas e testes verdes; entrega Git bloqueada pelo ambiente.**
+Commitado na branch `estabilizacao-noturna` (sem push). Claude revisou o diff do Codex e testou com a POD HD500 real conectada.
 
-O sandbox permite editar o projeto, mas mantém `.git` somente para leitura. A tentativa de `git add` e `git commit` retornou:
+**Regressão achada no teste ao vivo e corrigida:** o filtro de tamanho de pacote adicionado ao transporte (`b.length < 4 + n`, `data.length < 8`) descartava pacotes legítimos e o `/api/reconnect` falhava ~85% das vezes (`the pedal did not answer in time`). Baseline: 8/8 ok; com o filtro: 1/8. Agora só protege contra leitura truncada (`readUInt16LE`): 10/10 ok. Lição: testes com DemoPod/endpoints falsos não pegam isso; só o pedal real.
 
-```text
-fatal: Unable to create '.../hd500-edit/.git/index.lock': Operation not permitted
-```
+**Também corrigido por Claude:** `mcp/hd500-mcp.mjs` repetia POST em qualquer falha de fetch (podia executar undo/seleção/gravação duas vezes). Agora só repete se a conexão foi recusada.
 
-Nenhum commit foi criado; não há hashes para informar. O working tree contém as correções abaixo e este relatório. Portanto, o critério de pronto completo (testes verdes + commits separados + working tree limpo) **não foi alcançado**. Não foi feito push nem contornado o sandbox.
+**Teste MCP:** a gambiarra de ponte em memória do Codex (feita por limite do sandbox dele) foi revertida; o teste original com socket real passa.
 
 ## Correções implementadas
 
@@ -20,7 +18,7 @@ Cada linha descreve uma unidade para commit separado quando `.git` estiver grav�
 
 | Mensagem sugerida do commit | Motivo / alteração | Testes |
 | --- | --- | --- |
-| Teste MCP sem abrir porta local | O teste falhava com `listen EPERM` neste sandbox. Processo MCP continua real, com as requisições encaminhadas ao handler real em memória e DemoPod. Não testa socket TCP. | Cenários existentes de `tests/mcp.test.mjs`; ponte `tests/mcp-fetch.mjs`. |
+| (revertido) Teste MCP sem abrir porta local | O teste falhava com `listen EPERM` neste sandbox. Processo MCP continua real, com as requisições encaminhadas ao handler real em memória e DemoPod. Não testa socket TCP. | Cenários existentes de `tests/mcp.test.mjs`; ponte `tests/mcp-fetch.mjs`. |
 | Cancele pedidos ao falhar ou fechar o transporte | Falha de envio deixava waiter/timer ativo e podia causar rejeição não tratada; erro de endpoint e fechamento não cancelavam pedidos. Limpa esperas, rejeita fila e impede envio após encerramento. Endpoints injetáveis permitem regressões sem USB. | `tests/core.test.mjs`: falha de envio seguida de recuperação; desconexão/fechamento com pedidos ativos e enfileirados. |
 | Descarte pacotes USB truncados sem lançar exceção | Primeiro pacote com dados insuficientes chegava a `readUInt16LE`; valida tamanho do envelope e cabeçalho antes de ler. Não altera empacotamento ou comandos SysEx. | `tests/core.test.mjs`: pacotes truncados seguidos de resposta válida. |
 | Libere conexão incompleta e preserve estado ao falhar leitura | Falha no primeiro refresh deixava `pod` definido e bloqueava novas tentativas. Refresh agora publica preset/seleção/nomes somente após todas as leituras; drop limpa histórico, comparação e timers de seleção/estado. | `tests/security.test.mjs`: falha inicial com fechamento e nova conexão; falha na seleção preservando estado/histórico anterior. |
@@ -41,7 +39,7 @@ As linhas referem-se aos arquivos desta entrega. Cenários inferidos por leitura
 - `app/server.mjs:216`: ajustes globais recebem id/value sem validação dedicada. Entrada arbitrária chega a `setGlobal`. Sugestão: exigir números finitos, limites de inteiros e restringir ajustes conhecidos. Não alterado porque os limites de muitos ajustes ainda são desconhecidos; não inventar limites do pedal.
 - `app/server.mjs:229`: `sanitize` roda antes de entrar na fila. Se uma troca de modelo/preset já estiver aguardando execução, o próximo parâmetro pode ser validado contra o modelo anterior e executado no novo. Sugestão: revalidar dentro da fila antes do envio e sinalizar visão obsoleta. Cenário inferido; não alterado porque afeta coalescência, ACK imediato e sincronização UI/MCP.
 - `app/parameter-edits.mjs:7` e `app/server.mjs:89`: edições rápidas e mutate atualizam estado local antes do sucesso do envio/apply. Em falha, a UI pode apresentar valor que o pedal recusou. Sugestão: reconciliar por releitura ou preservar baseline por operação, considerando ecos concorrentes. Não alterado porque a correção exige definir recuperação de gestos e alterações feitas no painel; undo/redo e compare foram tratados separadamente.
-- `mcp/hd500-mcp.mjs:38`: erro de fetch repete também POST. Se o servidor já executou undo/seleção/gravação e a resposta se perdeu, a repetição pode executar novamente. Sugestão: repetir automaticamente só leitura, ou usar identificação idempotente de operação. Não alterado por exigir contrato de retry/erro entre MCP e servidor; cenário inferido, sem simulação de perda de resposta nesta auditoria.
+- ~~`mcp/hd500-mcp.mjs:38`: erro de fetch repete também POST.~~ CORRIGIDO (ver topo). Texto original: Se o servidor já executou undo/seleção/gravação e a resposta se perdeu, a repetição pode executar novamente. Sugestão: repetir automaticamente só leitura, ou usar identificação idempotente de operação. Não alterado por exigir contrato de retry/erro entre MCP e servidor; cenário inferido, sem simulação de perda de resposta nesta auditoria.
 
 ### Média
 
