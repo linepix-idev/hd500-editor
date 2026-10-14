@@ -119,7 +119,7 @@
     "electron-builder": "^26.15.3",
     "puppeteer-core": "^25.13.0"
   },
-  "homepage": "https://github.com/OWNER/hd500-editor#readme",
+  "homepage": "https://github.com/linepix-idev/hd500-editor#readme",
   "keywords": [
     "line6",
     "pod-hd500",
@@ -130,10 +130,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/hd500-editor.git"
+    "url": "git+https://github.com/linepix-idev/hd500-editor.git"
   },
   "bugs": {
-    "url": "https://github.com/OWNER/hd500-editor/issues"
+    "url": "https://github.com/linepix-idev/hd500-editor/issues"
   },
   "engines": {
     "node": ">=22"

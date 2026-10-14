@@ -45,7 +45,7 @@ sudo cp 99-line6-hd500.rules /etc/udev/rules.d/ && sudo udevadm control --reload
 **From source** (Node.js ≥ 22):
 
 ```sh
-git clone https://github.com/OWNER/hd500-editor.git && cd hd500-editor
+git clone https://github.com/linepix-idev/hd500-editor.git && cd hd500-editor
 npm install
 npm run app        # desktop window (Electron)
 npm start          # or: web UI at http://127.0.0.1:5230
