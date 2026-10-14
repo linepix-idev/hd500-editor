@@ -81,7 +81,12 @@ ul{padding-left:20px}li{margin:6px 0}code,.key{font:14px ui-monospace,Menlo,Cons
 .pix{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:center}.pix img{width:200px;height:200px;background:#fff;border-radius:14px;padding:8px}
 .key{display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:4px 0 12px;user-select:all}
 @media(max-width:560px){h1{font-size:32px}.pix{grid-template-columns:1fr;justify-items:center}}
+
+.os{display:flex;gap:28px;margin:18px 0 4px;align-items:center}.os span{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px;color:var(--mut)}.os svg{width:40px;height:40px;fill:var(--fg)}
 footer{margin-top:48px;color:var(--mut);font-size:14px}`;
+
+const icon = n => readFileSync(out('tools/donate/icons', n + '.svg'), 'utf8').replace(/<title>.*?<\/title>/, '').replace('<svg ', '<svg aria-hidden="true" ');
+const osRow = `<div class="os">${[['linux', 'Linux'], ['windows', 'Windows'], ['apple', 'macOS']].map(([n, l]) => `<span>${icon(n)}${l}</span>`).join('')}</div>`;
 
 const page = c => `<!doctype html>
 <html lang="${c.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -89,7 +94,7 @@ const page = c => `<!doctype html>
 <meta name="referrer" content="no-referrer"><title>${esc(c.title)}</title><meta name="description" content="${esc(c.desc)}"><style>${css}</style></head>
 <body><main>
 <header><b>HD500 Editor</b><a class="lang" href="${c.other[0]}" hreflang="${c.other[1] === 'English' ? 'en' : 'pt-BR'}">${c.other[1]}</a></header>
-<h1>HD500 Editor</h1><p>${c.lead}</p>
+<h1>HD500 Editor</h1><p>${c.lead}</p>${osRow}
 <h2>${c.dl}</h2><p>${c.dlText}</p><p class="mut">${c.beta}</p><a class="btn" href="${REPO}/releases/latest" rel="noopener noreferrer">${c.dlBtn}</a>
 <h2>${c.features}</h2><ul>${c.feats.map(f => `<li>${f}</li>`).join('')}</ul>
 <h2>${c.sys}</h2>${c.rows.map(([n, d, f]) => `<div class="card"><h3>${n}</h3><p>${d}</p><p><a href="pdf/HD500-Editor-${f}-${c.lang === 'en' ? 'en' : 'pt-BR'}.pdf">${c.guide} — ${n}</a></p></div>`).join('')}

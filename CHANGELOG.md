@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.15 (beta)
+- Repository prepared for public release: Line 6's gallery text is no longer distributed (kept local-only; the provenance check skips line verification when it is absent) and was removed from the history.
+- Project site: operating-system logos.
+
 ## 0.2.14 (beta)
 - Support the project: new menu item with a Pix QR code and key (voluntary donation), also shown on the new static project site (site/).
 
