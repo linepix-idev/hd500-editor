@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.11
+- macOS: when the HD500 Audio driver (hd500audiod) is installed it owns the USB device exclusively; the editor now talks to the pedal through the daemon's local socket (/var/run/hd500audiod.sock) and falls back to direct USB when the daemon is not running. Editor and audio work at the same time.
+
 ## 0.2.10
 - macOS: the pedal arrives with no active USB configuration; the editor now activates it before opening interface 1 (verified on a real POD HD500, Apple Silicon).
 - Installers: Windows setup bundles Zadig and offers the WinUSB step; icons for all systems; AppImage falls back to --no-sandbox.

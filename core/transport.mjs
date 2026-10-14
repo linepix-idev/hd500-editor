@@ -1,6 +1,8 @@
 // Transporte USB do POD HD500 (0e41:414d): interface 1, bulk 0x01 (saída) / 0x81 (entrada), pacotes de 64 bytes.
 // Cada pacote = [n][0][t][0] + até 60 bytes de dados (t=1 primeiro, t=4 continuação). Ver docs/protocol.md.
 import { createRequire } from 'module';
+import net from 'net';
+import { EventEmitter } from 'events';
 const { findByIds } = createRequire(import.meta.url)('usb');
 
 export const VID = 0x0e41, PID = 0x414d, CHUNK = 60;
@@ -31,7 +33,21 @@ export function toPackets(frame) {
 }
 
 /** No macOS (e às vezes no Windows) o pedal chega sem configuração USB ativa e a interface 1 "não existe" até ativá-la. */
+/** Socket do hd500audiod (driver de áudio do macOS): ele é o único dono do USB e repassa o canal de controle. */
+const DAEMON_SOCK = process.env.HD500_CTRL_SOCK || '/var/run/hd500audiod.sock';
+let daemonSock = null;
+function connectDaemon() {
+  if (process.platform !== 'darwin' && !process.env.HD500_CTRL_SOCK) return Promise.resolve(null);
+  return new Promise(res => {
+    const s = net.connect(DAEMON_SOCK);
+    s.once('connect', () => { s.removeAllListeners('error'); res(s); });
+    s.once('error', () => res(null));
+  });
+}
+
 export async function prepareDevice() {
+  daemonSock = await connectDaemon();
+  if (daemonSock) return;
   const dev = findByIds(VID, PID);
   if (!dev) throw new PodNotFound();
   try {
@@ -41,17 +57,33 @@ export async function prepareDevice() {
   finally { try { dev.close(); } catch {} }
 }
 
+/** Pontas "USB" falsas apoiadas no socket do daemon: pacotes (até 64 bytes) com prefixo de tamanho nos dois sentidos. */
+function daemonEndpoints(sock) {
+  const inEp = new EventEmitter(), pending = [];
+  let acc = Buffer.alloc(0);
+  inEp.startPoll = () => {}; inEp.stopPoll = cb => cb && cb();
+  sock.on('data', d => { // quadros [tamanho][dados]
+    acc = Buffer.concat([acc, d]);
+    while (acc.length > 0 && acc.length > acc[0]) { const n = acc[0]; inEp.emit('data', Buffer.from(acc.subarray(1, 1 + n))); acc = acc.subarray(1 + n); }
+  });
+  sock.on('error', () => {}); sock.on('close', () => inEp.emit('error', new Error('daemon')));
+  const outEp = { transfer: (pkt, cb) => sock.write(Buffer.concat([Buffer.from([pkt.length]), pkt]), e => cb(e || null)) };
+  return { inEp, outEp, itf: { release: (_, cb) => cb && cb() }, dev: { reset: cb => { sock.end(); cb && cb(); }, close() { sock.destroy(); } } };
+}
+
 export function openDevice() {
-  const dev = findByIds(VID, PID);
+  const viaDaemon = daemonSock ? daemonEndpoints(daemonSock) : null; daemonSock = null;
+  const dev = viaDaemon ? viaDaemon.dev : findByIds(VID, PID);
   if (!dev) throw new PodNotFound();
   let itf;
-  try {
+  if (!viaDaemon) try {
     dev.open();
     itf = dev.interface(1);
     if (process.platform === 'linux' && itf.isKernelDriverActive()) itf.detachKernelDriver(); // o driver do kernel ocupa a interface de controle
     itf.claim();
   } catch (e) { try { dev.close(); } catch {} throw friendly(e); }
-  const inEp = itf.endpoint(0x81), outEp = itf.endpoint(0x01);
+  if (viaDaemon) itf = viaDaemon.itf;
+  const inEp = viaDaemon ? viaDaemon.inEp : itf.endpoint(0x81), outEp = viaDaemon ? viaDaemon.outEp : itf.endpoint(0x01);
 
   const waiters = [], listeners = new Set();
   let cur = null, expected = 0, idle = null, closed = false;
