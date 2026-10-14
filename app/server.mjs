@@ -6,6 +6,7 @@ import { Pod, SETS, PRESETS_PER_SET } from '../core/device.mjs';
 import { deviceVisible } from '../core/transport.mjs';
 import { DemoPod } from './demo-device.mjs';
 const DEMO = !!process.env.HD500_DEMO; // pedal simulado, sem hardware
+import { sanitize } from './limits.mjs';
 import { Preset, catalog, chainOf, FS_NAMES, CTL_NAMES, INPUT1, INPUT2, INZ, LANES } from '../core/preset.mjs';
 import * as Lib from '../core/library.mjs';
 import { EditQueue, GestureHistory, FAST_EDITS } from './edit-flow.mjs';
@@ -213,6 +214,7 @@ export async function handleRequest(req, res) {
       const body = req.method === 'POST' ? await readBody(req) : {};
       const editing = key === 'POST /api/edit';
       if (editing && !edits[body.op]) throw new Error(`unknown operation: ${body.op}`);
+      if (editing) { try { sanitize(body, preset); } catch (e) { return json(res, 400, { error: e.message }); } }
       if (editing && body.gesture != null && !['start', 'move', 'end'].includes(body.gesture)) throw new Error('invalid gesture');
       const run = async () => {
         const needsPod = !/catalog|reconnect|disconnect|backups\/detailed|backups$|diagnose|state$/.test(key);
