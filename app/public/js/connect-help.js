@@ -38,12 +38,12 @@ export async function connectHelp(error, retry) {
     ].filter(Boolean);
     const cmd = linux && !d.udev && !d.canAssist ? h('div', { class: 'ios-group' }, h('div', { class: 'row' }, h('code', { class: 'cmd' }, RULE),
       h('button', { class: 'tap-btn', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(RULE); toast('Copied.'); } catch { toast(RULE); } } }, 'Copy'))) : null;
-    root.replaceChildren(
+    root.replaceChildren(...[
       h('h2', {}, 'Connect your POD HD500'),
       h('p', { class: 'ios-footer' }, 'The editor connects by itself as soon as the pedal is ready.'),
       h('div', { class: 'ios-group' }, steps), cmd,
       error && !d.connected ? h('p', { class: 'ios-footer connect-error' }, error) : null,
-      h('div', { class: 'ios-action' }, h('button', { class: 'primary', type: 'button', onClick: retry }, 'Try again')));
+      h('div', { class: 'ios-action' }, h('button', { class: 'primary', type: 'button', onClick: retry }, 'Try again'))].filter(Boolean));
   };
   const refresh = async () => {
     try { d = await api('diagnose'); } catch { return; }
