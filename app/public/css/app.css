@@ -2236,3 +2236,9 @@ input[type=text]:focus-visible, input[type=number]:focus-visible, input[type=sea
 .library-search input:focus, .library-search input:focus-visible { box-shadow:none; border-color:transparent; }
 #modal input[type=search] { border-radius:12px; }
 .library-search:focus-within { border-color:color-mix(in srgb,var(--focus) 75%,transparent); box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 22%,transparent); }
+
+/* Info glyph visibility fix: keep the ring/dot/stem in currentColor, hide only the letter */
+.model-info-button span { color:inherit; font-size:11px; line-height:1; text-indent:-200%; white-space:nowrap; overflow:hidden; }
+#inspector .insp-head { grid-template-columns:auto auto auto 1fr auto; }
+#inspector .insp-head .fs-assign { justify-self:end; }
+#inspector .insp-head .model-info-button { align-self:start; margin-top:14px; }
