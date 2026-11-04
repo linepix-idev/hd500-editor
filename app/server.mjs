@@ -75,7 +75,10 @@ async function connectOnce() {
   });
   pod.on('active', ({ item, active }) => { if (isEcho(`active:${item}`)) return; preset?.setItemActive(item, active); emit('active', { item, active }); });
   pod.on('unknown', ev => emit('unknown', ev));
+  // troca de modelo / faixa de expressão no painel mudam vários bytes do preset: relê o buffer inteiro
+  pod.on('model', () => panelChanged()); pod.on('saved', () => panelChanged()); pod.on('range', () => panelChanged());
   pod.on('setup', ({ id, value, vtype }) => { // ajuste mexido no painel do pedal: serve para descobrir o que cada id faz
+    if (id === SAVE_SIGNAL) panelChanged();
     if (isEcho(`setup:${id}`)) return;
     try { vtype === 1 ? preset?.setSetupFloat(id, value) : preset?.setSetup(id, value); } catch {}
     emit('setup', { id, value, vtype });
@@ -83,6 +86,25 @@ async function connectOnce() {
   pod.on('selection', () => { clearTimeout(selectionTimer); selectionTimer = setTimeout(() => queue.enqueue(() => refresh()).catch(() => {}), 300); });
   try { await refresh(true); }
   catch (e) { lastError = e.message; await drop(); throw e; }
+}
+// Sincronia com o painel do pedal, sempre por evento (nunca por consulta periódica: a cada leitura de slot o
+// HD500X mostra "sincronizando" e o painel fica preso). Troca de modelo (0x11), faixa de expressão (0x2E/0x2F),
+// o aviso de preset salvo (0x36) e o ajuste 0x1C (também visto ao salvar) disparam UMA releitura do buffer e do slot.
+const SAVE_SIGNAL = 0x1c;
+let panelTimer = null;
+function panelChanged() { clearTimeout(panelTimer); panelTimer = setTimeout(() => queue.enqueue(() => syncFromPedal()).catch(() => {}), 600); }
+async function syncFromPedal() {
+  if (!pod || !preset || compareStash) return;
+  let changed = false;
+  const cur = await pod.readCurrent();
+  if (!same(cur.body, preset.body)) { preset = cur; changed = true; }
+  const stored = await pod.readSlot(selection.set, selection.preset);
+  if (!same(stored.body, loadedBody)) { // gravado por fora (botão SAVE do pedal, outro editor)
+    loadedBody = Buffer.from(stored.body); changed = true;
+    const names = slotNames.get(selection.set); if (names) names[selection.preset] = stored.name;
+    emit('slot-changed', { set: selection.set, preset: selection.preset, name: stored.name });
+  }
+  if (changed) { emit('state', view()); emit('history', status()); }
 }
 async function refresh(first = false) {
   const nextPreset = await pod.readCurrent(), nextSelection = await pod.selection();
@@ -97,7 +119,7 @@ async function reloadIfCurrent(...slots) {
   await pod.select(selection.set, selection.preset); await wait(150); await refresh();
 }
 async function drop() {
-  clearTimeout(selectionTimer); clearTimeout(stateTimer);
+  clearTimeout(selectionTimer); clearTimeout(stateTimer); clearTimeout(panelTimer);
   try { await Promise.race([pod?.close(), wait(2500)]); } catch {} // dispositivo morto: o fechamento USB pode não responder
   if (pod) droppedAt = Date.now();
   pod = null; preset = null; loadedBody = null; compareStash = null; sent.clear(); hist.reset();

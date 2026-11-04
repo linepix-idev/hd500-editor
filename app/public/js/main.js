@@ -10,7 +10,7 @@ import { initTooltips, h, api, fail, toast, $, modal, menu, download, pickFile, 
 import { S, onChange, notify, presetLabel } from './store.js';
 import { renderChain, flashItem, isDragging, clearBlock } from './chain.js';
 import { renderInspector, patchParam } from './inspector.js';
-import { renderSetup, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, resetSidebar, initSidebar, invalidate, flashFs, libraryProgress, learnSetup, learnUnknown, openDevTools } from './panels.js';
+import { renderSetup, renderControllers, renderFootswitches, renderAdvanced, renderSidebar, resetSidebar, initSidebar, invalidate, setSlotName, flashFs, libraryProgress, learnSetup, learnUnknown, openDevTools } from './panels.js';
 import { selectSlot } from './nav.js';
 import { icon, buttonIcon } from './icons.js';
 
@@ -99,6 +99,7 @@ async function init() {
   });
   es.addEventListener('setup', e => { const ev = JSON.parse(e.data); if (liveEdits.ignores(`setup:${ev.id}`)) return; const set = S.st?.preset.settings.find(x => x.id === ev.id); if (set) set.value = ev.value;  { const m = S.st?.preset.mixer, k = ({ 44: 'levelA', 45: 'levelB', 46: 'panA', 47: 'panB' })[ev.id]; if (m && k) { m[k] = ev.value; if (S.sel === 'mixer') renderInspector($('#inspector')); } if (ev.id === 23 && S.st && typeof ev.value === 'number') { S.st.preset.tempo = ev.value; if (S.tab === 'setup') renderSide(); } if (ev.id === 56 && S.st) { S.st.preset.trails = ev.value === 1; if (S.sel === 'mixer') renderInspector($('#inspector')); } } learnSetup(ev); });
   es.addEventListener('unknown', e => learnUnknown(JSON.parse(e.data)));
+  es.addEventListener('slot-changed', e => { const { set, preset, name } = JSON.parse(e.data); setSlotName(set, preset, name); }); // salvo no painel do pedal
   es.addEventListener('progress', e => libraryProgress(JSON.parse(e.data)));
 }
 async function reconnect() { try { if(!S.cat) S.cat=await api('catalog'); await load(await api('reconnect', {})); } catch (e) { fail(e); } }

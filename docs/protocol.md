@@ -37,6 +37,7 @@ Replies swap the address bytes. Acknowledgements are 12 bytes: word 2 = status (
 | `0x23`, `0x27`, `0x2C` | ← | | preset/set changed notifications |
 | `0x28` → `0x29` | | `set` → `set` + name[16] | set name |
 | `0x2A` → `0x2B` | → | `set, name[16]` | **rename set** |
+| `0x36` | ← | `0`, preset name (16 bytes) | preset saved from the pedal's panel (HD500X) |
 | `0x2D` / `0x2E` / `0x2F` | ↔ | `0, item, vtype, param id, f32` | parameter value / heel / toe |
 
 Items: `0` Amp A · `1` Cab A · `2` Amp B · `3` Cab B · `4…11` FX 1…8.

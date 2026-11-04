@@ -218,6 +218,8 @@ async function importBundle() {
   if (!confirm(`Write ${n} presets from ${b.sets?.length ?? 0} set(s) to the pedal, in the same places? The current slots go to the backups/ folder.`)) return;
   try { const r = await api('library/import', { bundle: b, renameSets: confirm('Also restore the set names?') }); toast(`${r.written} presets written.`); invalidate(); } catch (e) { fail(e); }
 }
+// Preset salvo pelo painel do pedal: troca só aquele nome na lista (reler o set inteiro deixaria o pedal "sincronizando").
+export function setSlotName(set, i, name) { const n = L.names.get(set); if (!n) return; n[i] = name; sidebarSignature = ''; renderSidebar(); }
 export function libraryProgress({ done, total }) {
   const bar = $('#libbar'); if (!bar) return;
   bar.hidden = false; const value = Math.round(done / total * 100);

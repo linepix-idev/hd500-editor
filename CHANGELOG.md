@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.17 (beta)
+- **Follows the pedal's front panel**: changing an amp/effect model or an expression heel/toe range on the pedal reloads the preset in the editor; **saving on the pedal** (new message `0x36`, seen on the HD500X) clears the "unsaved" mark and updates that preset's name in the list.
+- All of this is event-driven: the editor never polls the pedal (reading a memory slot makes the HD500X show "syncing" and would keep its panel busy).
+
 ## 0.2.16 (beta)
 - **POD HD500X support**: the editor finds the HD500X (USB `0e41:4159`) as well as the HD500. Tested on a real HD500X on Windows 10 (WinUSB): connects, reads the current preset, every block, the whole library (8 × 64 names) and the global settings (same ids as the HD500), follows preset changes live, and passes the full hardware suite (28 checks: parameters, bypass, model change, tempo, A/B, a 300-move knob drag, footswitch/order/name, 5 reconnections, preset switching, the whole library, global settings, saving to memory and renaming a slot, restored byte for byte).
 - Linux udev rule and the Windows driver diagnosis cover both models.

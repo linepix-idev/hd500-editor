@@ -23,6 +23,9 @@ export class Pod extends EventEmitter {
     switch (M.cmdOf(m)) {
       case M.CMD.PARAM: this.emit('param', { item: M.word(m, 1), id: M.word(m, 3), value: m.readFloatLE(24) }); break;
       case M.CMD.ACTIVE: this.emit('active', { item: M.word(m, 1), active: M.word(m, 2) > 0 }); break;
+      case M.CMD.TYPE: this.emit('model', { item: M.word(m, 1), type: M.word(m, 2) }); break; // troca de modelo no painel
+      case M.CMD.PARAM_MIN: case M.CMD.PARAM_MAX: this.emit('range', { item: M.word(m, 1) }); break; // faixa calcanhar/ponta mexida no painel
+      case M.CMD.PRESET_SAVED: this.emit('saved', { name: m.subarray(12, 28).toString('latin1').replace(/\0.*$/s, '').trimEnd() }); break;
       case M.CMD.SETUP: { const vtype = M.word(m, 1); this.emit('setup', { id: M.word(m, 2), vtype, value: vtype === 1 ? m.readFloatLE(20) : M.word(m, 3) }); break; }
       case M.CMD.ALERT: case M.CMD.PRESET_SELECTED: case M.CMD.SET_SELECTED: this.emit('selection'); break;
       case M.CMD.PRESET_LOAD: break; // chega como resposta a consultas; quem pediu já a recebe pelo request()

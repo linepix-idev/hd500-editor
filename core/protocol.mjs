@@ -4,6 +4,7 @@ export const CMD = {
   TYPE: 0x11, ACTIVE: 0x13, SETUP: 0x16, STATUS_SET: 0x20, STATUS_QUERY: 0x21, STATUS_RESP: 0x22, ALERT: 0x23,
   PRESET_SELECTED: 0x27, SET_QUERY: 0x28, SET_LOAD: 0x29, SET_NAME: 0x2a, SET_NAME_ACK: 0x2b, SET_SELECTED: 0x2c,
   PARAM: 0x2d, PARAM_MIN: 0x2e, PARAM_MAX: 0x2f,
+  PRESET_SAVED: 0x36, // aviso do pedal: preset salvo pelo painel (traz o nome; visto no HD500X)
 };
 export const STATUS = { PRESET: 8, SET: 9 };
 export const CURRENT = 0xFFFFFFFF;           // destino do PresetSet = só buffer de edição
