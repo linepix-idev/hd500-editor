@@ -1,7 +1,8 @@
-# POD HD500 — USB control protocol (`0e41:414d`)
+# POD HD500 / HD500X — USB control protocol (`0e41:414d` / `0e41:4159`)
 
 Reverse-engineered from the last official editor (POD HD500 Edit 2.27) and **verified on a real HD500**. Little-endian everywhere; a "word" is 32 bits.
 Complements the public work of *lpedit-lib* (POD HD500X), which uses the same message layout.
+**HD500X** (`0e41:4159`): verified on a real unit (Windows 10, WinUSB) with the exact same transport, messages, preset layout, library and global-setting ids; 60-byte chunks work for full-preset writes.
 
 ## Transport
 
