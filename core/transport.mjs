@@ -1,14 +1,16 @@
-// Transporte USB do POD HD500 (0e41:414d): interface 1, bulk 0x01 (saída) / 0x81 (entrada), pacotes de 64 bytes.
+// Transporte USB do POD HD500 (0e41:414d) e HD500X (0e41:4159): interface 1, bulk 0x01 (saída) / 0x81 (entrada), pacotes de 64 bytes.
 // Cada pacote = [n][0][t][0] + até 60 bytes de dados (t=1 primeiro, t=4 continuação). Ver docs/protocol.md.
 import { createRequire } from 'module';
 import net from 'net';
 import { EventEmitter } from 'events';
 const { findByIds } = createRequire(import.meta.url)('usb');
 
-export const VID = 0x0e41, PID = 0x414d, CHUNK = 60;
+export const VID = 0x0e41, PID = 0x414d, PID_X = 0x4159, PIDS = [PID, PID_X], CHUNK = 60;
+/** Modelos aceitos. Envio sempre em pacotes de 60 bytes de dados: o HD500 descarta pacotes maiores; o HD500X aceita os dois. */
+const findPod = () => { for (const p of PIDS) { const d = findByIds(VID, p); if (d) return d; } return null; };
 
 /** O pedal está ligado ao computador? (não abre o dispositivo) */
-export const deviceVisible = () => !!findByIds(VID, PID);
+export const deviceVisible = () => !!findPod();
 
 function friendly(e) {
   const m = String(e.message);
@@ -20,7 +22,7 @@ function friendly(e) {
     return new Error('On Windows the pedal must use the WinUSB driver on this interface (use Zadig; see the README).');
   return e;
 }
-export class PodNotFound extends Error { constructor() { super('POD HD500 not found (USB cable? udev rule? another program using the pedal?)'); } }
+export class PodNotFound extends Error { constructor() { super('POD HD500/HD500X not found (USB cable? udev rule? another program using the pedal?)'); } }
 
 /** Divide uma mensagem em pacotes USB de 64 bytes: [n][0][t][0] + até 60 bytes (t=1 primeiro, t=4 demais). */
 export function toPackets(frame) {
@@ -48,7 +50,7 @@ function connectDaemon() {
 export async function prepareDevice() {
   daemonSock = await connectDaemon();
   if (daemonSock) return;
-  const dev = findByIds(VID, PID);
+  const dev = findPod();
   if (!dev) throw new PodNotFound();
   try {
     dev.open();
@@ -73,7 +75,7 @@ function daemonEndpoints(sock) {
 
 export function openDevice() {
   const viaDaemon = daemonSock ? daemonEndpoints(daemonSock) : null; daemonSock = null;
-  const dev = viaDaemon ? viaDaemon.dev : findByIds(VID, PID);
+  const dev = viaDaemon ? viaDaemon.dev : findPod();
   if (!dev) throw new PodNotFound();
   let itf;
   if (!viaDaemon) try {
@@ -115,7 +117,7 @@ export function createTransport({ inEp, outEp, itf, dev }) {
     if (cur.length >= expected) deliver(); else idle = setTimeout(() => { cur = null; expected = 0; }, 400); // mensagem incompleta (pacote perdido): descarta; quem pediu tenta de novo
   });
   inEp.on('error', e => cancel(e));
-  inEp.startPoll(4, 64);
+  inEp.startPoll(4, inEp.descriptor?.wMaxPacketSize || 64); // HD500: 64; HD500X pode anunciar pacotes maiores
 
   const send = async frame => {
     for (const pkt of toPackets(frame)) {

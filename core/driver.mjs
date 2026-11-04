@@ -34,7 +34,7 @@ export function parseWindowsDrivers(out) {
   return { state: 'other', service: owner };
 }
 async function queryWindowsDriver() {
-  const script = "Get-CimInstance Win32_PnPEntity | Where-Object { $_.PNPDeviceID -like 'USB\\VID_0E41&PID_414D*' } | ForEach-Object { $_.PNPDeviceID + '|' + $_.Service }";
+  const script = "Get-CimInstance Win32_PnPEntity | Where-Object { ($_.PNPDeviceID -like 'USB\\VID_0E41&PID_414D*' -or $_.PNPDeviceID -like 'USB\\VID_0E41&PID_4159*') } | ForEach-Object { $_.PNPDeviceID + '|' + $_.Service }";
   const { err, out } = await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script]);
   if (err && !out) return { state: 'unknown' };
   return parseWindowsDrivers(out);
@@ -55,7 +55,7 @@ export async function launchZadig() {
   return { started: true };
 }
 
-export const UDEV_RULE = 'SUBSYSTEM=="usb", ATTR{idVendor}=="0e41", ATTR{idProduct}=="414d", MODE="0666", TAG+="uaccess"';
+export const UDEV_RULE = 'SUBSYSTEM=="usb", ATTR{idVendor}=="0e41", ATTR{idProduct}=="414d|4159", MODE="0666", TAG+="uaccess"';
 export const udevInstalled = () => ['/etc/udev/rules.d/99-line6-hd500.rules', '/lib/udev/rules.d/99-line6-hd500.rules', '/usr/lib/udev/rules.d/99-line6-hd500.rules'].some(existsSync);
 
 /** Linux: instala a regra udev pedindo a senha pelo polkit (pkexec). Conteúdo constante. */

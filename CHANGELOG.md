@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.16 (beta)
+- **POD HD500X support**: the editor finds the HD500X (USB `0e41:4159`) as well as the HD500. Tested on a real HD500X on Windows 10 (WinUSB): connects, reads the current preset, set names and every block, and follows preset changes live. Editing and saving on the HD500X still need confirmation from users.
+- Linux udev rule and the Windows driver diagnosis cover both models.
+- USB input reads use the size the pedal announces for its endpoint; output stays in 60-byte chunks (the HD500 drops larger packets, the HD500X accepts both).
+
 ## 0.2.15 (beta)
 - Repository prepared for public release: Line 6's gallery text is no longer distributed (kept local-only; the provenance check skips line verification when it is absent) and was removed from the history.
 - Project site: operating-system logos.

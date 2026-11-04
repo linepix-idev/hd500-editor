@@ -1,6 +1,6 @@
 # HD500 Editor
 
-**Um editor livre e aberto para o Line 6 POD HD500.** Como o software oficial não é mais mantido, a comunidade pode manter este pedal vivo.
+**Um editor livre e aberto para o Line 6 POD HD500 e HD500X.** Como o software oficial não é mais mantido, a comunidade pode manter este pedal vivo.
 Funciona em Linux, Windows e macOS, fala com o pedal direto por USB e vai além do editor original.
 
 ![HD500 Editor](docs/img/editor.png)
@@ -20,7 +20,7 @@ Funciona em Linux, Windows e macOS, fala com o pedal direto por USB e vai além 
 
 | | Linux | Windows | macOS |
 |---|---|---|---|
-| Editor testado em hardware | ✅ | ✅ (VM Windows 10, USB repassado) | ✅ |
+| Editor testado em hardware | ✅ | ✅ (VM Windows 10, USB repassado; HD500X em Windows 10 real: conexão e leitura) | ✅ |
 
 ## Instalar
 
