@@ -52,7 +52,19 @@ const clients = new Set();
 const emit = (ev, data) => clients.forEach(r => r.write(`event: ${ev}\ndata: ${JSON.stringify(data)}\n\n`));
 const view = () => ({ mcp: mcpEnabled, connected: !!pod, comparing: !!compareStash, dirty: !!compareStash || (!!preset && !same(preset.body, loadedBody)), canUndo: hist.idx > 0, canRedo: hist.idx < hist.list.length - 1, selection, setNames, preset: preset?.toJSON(), chain: preset ? Object.fromEntries(Object.entries(chainOf(preset)).map(([k, v]) => [k, v.map(i => i.id)])) : null });
 
+// Logo após uma queda (reset USB, STALL) o sistema reenumera o pedal: por alguns segundos ele some ou falha.
+// Nessa janela o connect insiste em vez de devolver "não encontrado"; fora dela, falha na hora (pedal desplugado).
+let droppedAt = 0;
+const TRANSIENT_USB = /not found|STALL|NO_DEVICE|PIPE|LIBUSB_ERROR_IO|TIMED_OUT|did not answer/i;
 async function connect() {
+  if (pod) return;
+  const until = DEMO ? 0 : droppedAt + 10000;
+  for (;;) {
+    try { return await connectOnce(); }
+    catch (e) { if (Date.now() > until || !TRANSIENT_USB.test(String(e.message))) throw e; await wait(500); }
+  }
+}
+async function connectOnce() {
   if (pod) return;
   try { pod = DEMO ? new DemoPod() : await Pod.connect(); lastError = null; } catch (e) { pod = null; lastError = e.message; throw e; }
   // alterações feitas no painel do pedal
@@ -87,6 +99,7 @@ async function reloadIfCurrent(...slots) {
 async function drop() {
   clearTimeout(selectionTimer); clearTimeout(stateTimer);
   try { await Promise.race([pod?.close(), wait(2500)]); } catch {} // dispositivo morto: o fechamento USB pode não responder
+  if (pod) droppedAt = Date.now();
   pod = null; preset = null; loadedBody = null; compareStash = null; sent.clear(); hist.reset();
 }
 
@@ -245,7 +258,7 @@ const routes = {
     await pod.setGlobal(id, value); return { ok: true }; },
 };
 
-const DEAD_USB = /NO_DEVICE|LIBUSB_ERROR_(IO|PIPE|NOT_FOUND)/;
+const DEAD_USB = /NO_DEVICE|LIBUSB_ERROR_(IO|PIPE|NOT_FOUND)|LIBUSB_TRANSFER_STALL/;
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
 export async function handleRequest(req, res) {
   const url = new URL(req.url, 'http://x'), key = `${req.method} ${url.pathname}`;

@@ -73,7 +73,7 @@ function daemonEndpoints(sock) {
   return { inEp, outEp, itf: { release: (_, cb) => cb && cb() }, dev: { reset: cb => { sock.end(); cb && cb(); }, close() { sock.destroy(); } } };
 }
 
-export function openDevice() {
+export async function openDevice() {
   const viaDaemon = daemonSock ? daemonEndpoints(daemonSock) : null; daemonSock = null;
   const dev = viaDaemon ? viaDaemon.dev : findPod();
   if (!dev) throw new PodNotFound();
@@ -86,6 +86,10 @@ export function openDevice() {
   } catch (e) { try { dev.close(); } catch {} throw friendly(e); }
   if (viaDaemon) itf = viaDaemon.itf;
   const inEp = viaDaemon ? viaDaemon.inEp : itf.endpoint(0x81), outEp = viaDaemon ? viaDaemon.outEp : itf.endpoint(0x01);
+  // Windows: se o editor anterior morreu sem liberar o USB (fechado à força, travou), a 1ª transferência toma STALL.
+  // Limpar o halt zera o estado dos endpoints; erro aqui não impede a conexão.
+  if (!viaDaemon && process.platform === 'win32')
+    for (const ep of [outEp, inEp]) await new Promise(res => { try { ep.clearHalt(() => res()); } catch { res(); } });
 
   return createTransport({ inEp, outEp, itf, dev });
 }

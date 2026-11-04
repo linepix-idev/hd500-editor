@@ -1,8 +1,10 @@
 # Changelog
 
 ## 0.2.16 (beta)
-- **POD HD500X support**: the editor finds the HD500X (USB `0e41:4159`) as well as the HD500. Tested on a real HD500X on Windows 10 (WinUSB): connects, reads the current preset, every block, the whole library (8 × 64 names) and the global settings (same ids as the HD500), follows preset changes live, and writes a full preset (~4 KB) to the edit buffer in 60-byte chunks. Saving to a memory slot was not tested on the HD500X yet.
+- **POD HD500X support**: the editor finds the HD500X (USB `0e41:4159`) as well as the HD500. Tested on a real HD500X on Windows 10 (WinUSB): connects, reads the current preset, every block, the whole library (8 × 64 names) and the global settings (same ids as the HD500), follows preset changes live, and passes the full hardware suite (28 checks: parameters, bypass, model change, tempo, A/B, a 300-move knob drag, footswitch/order/name, 5 reconnections, preset switching, the whole library, global settings, saving to memory and renaming a slot, restored byte for byte).
 - Linux udev rule and the Windows driver diagnosis cover both models.
+- **Robustness**: right after a USB drop (reset, STALL) the editor keeps trying for a few seconds while the system re-enumerates the pedal, instead of reporting "not found"; a STALL during a command now triggers the automatic reconnection; on Windows the endpoints are cleared when opening, so a previous editor that was force-closed no longer breaks the first command.
+- New hardware test suite `npm run test:hw` (`HD500_URL=http://127.0.0.1:<port>`, `HD500_WRITE=1` to include saving to a scratch "New Tone" slot, restored afterwards). Works on HD500 and HD500X.
 - USB input reads use the size the pedal announces for its endpoint; output stays in 60-byte chunks (the HD500 drops larger packets, the HD500X accepts both).
 
 ## 0.2.15 (beta)

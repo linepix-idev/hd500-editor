@@ -8,7 +8,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 export const SETS = 8, PRESETS_PER_SET = 64;
 
 export class Pod extends EventEmitter {
-  static async connect() { await prepareDevice(); return new Pod(openDevice()); }
+  static async connect() { await prepareDevice(); return new Pod(await openDevice()); }
   constructor(dev) {
     super();
     this.dev = dev;

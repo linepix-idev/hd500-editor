@@ -15,7 +15,8 @@
     "test:live-demo": "HD500_DEMO=1 PORT=5231 node tests/live-edit.test.mjs tests/mcp.test.mjs tests/limits.test.mjs",
     "test:ui": "node tests/ui-smoke.mjs /tmp",
     "test:ui-i18n": "HD500_DEMO=1 PORT=5231 node tests/ui-i18n.mjs",
-    "test:live": "node tests/api-live.mjs && node tests/ui-interact.mjs"
+    "test:live": "node tests/api-live.mjs && node tests/ui-interact.mjs",
+    "test:hw": "node tests/hw-full.mjs"
   },
   "author": {
     "name": "Linepix",

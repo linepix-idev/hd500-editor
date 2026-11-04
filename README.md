@@ -28,7 +28,7 @@ Runs on Linux, Windows and macOS, talks to the pedal directly over USB, and goes
 | USB audio (pedal as sound card) | ✅ kernel driver, works while the editor is open | ✅ with Line 6's official driver, but **not at the same time as the editor** (see below) | output only, via the separate [hd500-audio](https://github.com/linepix-idev/hd500-audio) package |
 | Notes | udev rule (included); audio capture needs playback open at the same time (DAWs do this) | needs WinUSB on the control interface only (Zadig, guided by the app) | unsigned app; a signed audio driver needs an Apple Developer ID |
 
-Everything marked ✅ was verified against a real POD HD500 (firmware 2.x). **POD HD500X**: tested on Windows 10 (connection, presets, library, global settings, live updates, live editing); saving to the pedal's memory still needs user reports. Please open an issue with your results on other systems or firmware versions.
+Everything marked ✅ was verified against a real POD HD500 (firmware 2.x). **POD HD500X**: tested on a real unit on Windows 10 with the full hardware suite (`npm run test:hw`, 28/28: editing, library, global settings, saving to memory, reconnection). Please open an issue with your results on other systems or firmware versions.
 
 ## Install
 

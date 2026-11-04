@@ -20,7 +20,7 @@ Funciona em Linux, Windows e macOS, fala com o pedal direto por USB e vai além 
 
 | | Linux | Windows | macOS |
 |---|---|---|---|
-| Editor testado em hardware | ✅ | ✅ (VM Windows 10, USB repassado; HD500X em Windows 10 real: conexão e leitura) | ✅ |
+| Editor testado em hardware | ✅ | ✅ (VM Windows 10, USB repassado; HD500X em Windows 10 real: bateria completa 28/28) | ✅ |
 
 ## Instalar
 
